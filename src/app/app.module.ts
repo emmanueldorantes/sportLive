@@ -4,8 +4,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './components/login/login.component';
-// import { MenuComponent } from './components/menu/menu.component';
-// import { HomeComponent } from './components/home/home.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 // HomeComponent,
 @NgModule({
@@ -15,11 +16,17 @@ import { LoginComponent } from './components/login/login.component';
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     BrowserAnimationsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule
   ],
-  schemas: [ NO_ERRORS_SCHEMA ],
-  providers: [],
+  schemas: [NO_ERRORS_SCHEMA],
+  providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
