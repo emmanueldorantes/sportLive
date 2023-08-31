@@ -1,1 +1,34 @@
-<p>lista works!</p>
+<div class="container mt-4">
+    <input class="form-control mb-2" placeholder="Filtrar por nombre" [(ngModel)]="filtroNombre">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr
+                *ngFor="let profile of profiles | filtroPerfil:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
+                <td>{{ profile.autoincrement }}</td>
+                <td>{{ profile.name }}</td>
+                <td>
+                    <button mat-icon-button (click)="editarPerfil(profile._id)">
+                        <span>
+                            <i class="ti ti-edit"></i>
+                        </span>                        
+                    </button>
+                    <button mat-icon-button color="warn" (click)="eliminarPerfil(profile._id, profile.name)">
+                        <span>
+                            <i class="ti ti-trash"></i>
+                        </span>                        
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+</div>

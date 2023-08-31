@@ -7,6 +7,7 @@ import { LoginComponent } from './components/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { MaterialModule } from './material.module';
 
 // HomeComponent,
 @NgModule({
@@ -21,7 +22,8 @@ import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/c
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    MaterialModule    
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

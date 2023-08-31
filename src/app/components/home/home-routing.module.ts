@@ -11,6 +11,7 @@ const routes: Routes = [
         path: '', component: HomeComponent, canActivate: [authGuard], canActivateChild: [authChildGuard],
         children: [
             { path: 'perfil', component: PerfilFormComponent, canActivate: [authGuard] },
+            { path: 'perfil/:id', component: PerfilFormComponent, canActivate: [authGuard] },
             { path: 'perfiles', component: ListaComponent, canActivate: [authGuard] }
         ]
     }

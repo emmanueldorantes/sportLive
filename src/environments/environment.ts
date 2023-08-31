@@ -4,5 +4,9 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  api: 'http://localhost:3008/graphql',
+  fileManager: '',
+  encryption_key: 'SportLive2023',
+  serverSocketProcess: '',
 };
