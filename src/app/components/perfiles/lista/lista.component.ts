@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../../../services/title.service';
-import { PefilesService } from '../../../services/pefiles.service';
+import { GraphqlService } from '../../../services/graphql.service';
 import { Profile } from '../../../models/profile';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
@@ -21,7 +21,7 @@ export class ListaComponent implements OnInit {
 
   constructor(
     private titleService: TitleService,
-    private pefilesService: PefilesService,
+    private graphqlService: GraphqlService,
     private dialog: MatDialog,
     private router: Router
   ) {
@@ -37,7 +37,7 @@ export class ListaComponent implements OnInit {
   }
 
   async getProfiles(): Promise<any> {
-    let response = await this.pefilesService.post(this.query, this.variables);
+    let response = await this.graphqlService.post(this.query, this.variables);
     return response.data.getProfiles;
   }
 

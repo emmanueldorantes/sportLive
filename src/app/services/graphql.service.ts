@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from 'axios';
 @Injectable({
   providedIn: 'root'
 })
-export class PefilesService {
+export class GraphqlService {
   private path: string;
 
   constructor() {
