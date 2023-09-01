@@ -7,6 +7,8 @@ import { UsuarioFormComponent } from '../usuarios/usuario-form/usuario-form.comp
 import { ListaUsuariosComponent } from '../usuarios/lista-usuarios/lista-usuarios.component';
 import { authGuard } from '../../guards/auth.guard';
 import { authChildGuard } from '../../guards/auth-child.guard';
+import {FieldformComponent}from '../field/fieldform/fieldform.component';
+import {FieldlistComponent}from '../field/fieldlist/fieldlist.component';
 
 const routes: Routes = [
     {
@@ -17,7 +19,9 @@ const routes: Routes = [
             { path: 'perfiles', component: ListaComponent, canActivate: [authGuard] },
             { path: 'usuario', component: UsuarioFormComponent, canActivate: [authGuard] },
             { path: 'usuario/:id', component: UsuarioFormComponent, canActivate: [authGuard] },
-            { path: 'usuarios', component: ListaUsuariosComponent, canActivate: [authGuard] }
+            { path: 'usuarios', component: ListaUsuariosComponent, canActivate: [authGuard] },
+            { path: 'fieldlist', component: FieldlistComponent, canActivate: [authGuard] },
+            { path: 'fieldform', component: FieldformComponent, canActivate: [authGuard] }
         ]
     }
 ];

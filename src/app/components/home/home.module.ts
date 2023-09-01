@@ -11,6 +11,8 @@ import { ListaUsuariosComponent } from '../usuarios/lista-usuarios/lista-usuario
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FiltroPerfilPipe } from '../../pipes/filtro-perfil.pipe';
+import { FieldformComponent } from '../field/fieldform/fieldform.component';
+import { FieldlistComponent } from '../field/fieldlist/fieldlist.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { FiltroPerfilPipe } from '../../pipes/filtro-perfil.pipe';
     ListaComponent,
     UsuarioFormComponent,
     ListaUsuariosComponent,
-    FiltroPerfilPipe
+    FiltroPerfilPipe,
+    FieldformComponent,
+    FieldlistComponent
   ],
   imports: [
     MaterialModule,
