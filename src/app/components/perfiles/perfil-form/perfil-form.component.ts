@@ -24,6 +24,8 @@ export class PerfilFormComponent implements OnInit {
   profileId: any = '';
   isCreating: boolean = true;
   modules: any;
+  permissions: any;
+  idsMenus: any;
 
   todosPerfiles: boolean = false;
   verPerfiles: boolean = false;
@@ -66,8 +68,6 @@ export class PerfilFormComponent implements OnInit {
     this.gruposPermisos = [];
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
-
-
       todosPerfiles: false,
       verPerfiles: false,
       editarPerfiles: false,
@@ -100,23 +100,32 @@ export class PerfilFormComponent implements OnInit {
     this.mutation = "";
     this.variables = {};
     this.modules = [];
+    this.permissions = [];
+    this.idsMenus = {};
   }
 
   async ngOnInit() {
     this.modules = await this.getMenu();
     this.modules.forEach((menuData: any, index: number) => {
-      console.log(index);
       this.gruposPermisos.push({
+        id: menuData._id,
         name: menuData.name,
         label: `todos${menuData.name}`,
-        permisos: [
+        permisos: []
+      });
+      if (menuData.name == "Estadisticas") {
+        this.gruposPermisos[index].permisos.push(
+          { label: 'Ver', controlName: `ver${menuData.name}` }
+        );
+      } else {
+        this.gruposPermisos[index].permisos.push(
           { label: 'Ver', controlName: `ver${menuData.name}` },
           { label: 'Editar', controlName: `editar${menuData.name}` },
           { label: 'Eliminar', controlName: `eliminar${menuData.name}` }
-        ]
-      });
+        );
+      }
     });
-    console.log(this.gruposPermisos)
+
     this.route.params.subscribe(async params => {
       this.profileId = params['id'];
       this.isCreating = (this.profileId !== undefined) ? false : true;
@@ -125,6 +134,13 @@ export class PerfilFormComponent implements OnInit {
         let dataProfile = await this.getProfile();
         if (dataProfile) {
           this.name = dataProfile.name;
+          let menusData = dataProfile.modules;
+          for (let index in menusData) {
+            let id = menusData[index].menu._id;
+            let nameModule = this.getNameMenu(id);
+            let permissions = menusData[index].permissions[0];
+            this.activeCheckboxesModules(nameModule, permissions);
+          }
         }
       }
     });
@@ -145,7 +161,7 @@ export class PerfilFormComponent implements OnInit {
         }
       }
     } else {
-      this.snakBar.open("Debe capturar los campos obligatorios...", "Aceptar", {
+      this.snakBar.open("Capture el nombre del prefil.", "Aceptar", {
         duration: 5000,
         horizontalPosition: "right",
         verticalPosition: "top"
@@ -190,9 +206,10 @@ export class PerfilFormComponent implements OnInit {
 
   setMutationInsert() {
     this.mutation = `
-      mutation($name: String!) {
+      mutation($name: String!, $modules: Any) {
         createProfile(input: {
-          name: $name
+          name: $name,
+          modules: $modules
         }){
             _id,
             name
@@ -200,15 +217,17 @@ export class PerfilFormComponent implements OnInit {
     }`;
     this.variables = {
       module: 'profiles',
-      name: this.profile.name
+      name: this.profile.name,
+      modules: this.permissions
     };
   }
 
   setMutationUpdate() {
     this.mutation = `
-      mutation($id: ID!, $name: String!) {
+      mutation($id: ID!, $name: String!, $modules: Any) {
         updateProfile(_id: $id, input: {
-          name: $name
+          name: $name,
+          modules: $modules
         }){
             _id,
             name
@@ -217,16 +236,25 @@ export class PerfilFormComponent implements OnInit {
     this.variables = {
       module: 'profiles',
       id: this.profileId,
-      name: this.profile.name
+      name: this.profile.name,
+      modules: this.permissions
     };
   }
 
   setQuery() {
     this.query = `
       query($id: ID!) {
-        getProfile(_id: $id, filters: {qry: {}}){
+        getProfile(_id: $id, filters: {
+          qry: {}
+        }){
             _id,
-            name
+            name,
+            modules {
+              menu {
+                _id
+              },
+              permissions
+            }
         }
     }`;
     this.variables = {
@@ -249,95 +277,89 @@ export class PerfilFormComponent implements OnInit {
   toggleAllPermissions(event: any) {
     let checkbox = event.target;
     const isChecked = event.target.checked;
-    if (checkbox.id === 'Perfiles') {
-      this.verPerfiles = isChecked;
-      this.editarPerfiles = isChecked;
-      this.eliminarPerfiles = isChecked;
+    let seeControl;
+    let editControl;
+    let deleteControl;
+    if (checkbox.id !== 'Estadisticas') {
+      seeControl = this.profileForm.get(`ver${checkbox.id}`);
+      seeControl?.setValue(isChecked);
+      editControl = this.profileForm.get(`editar${checkbox.id}`);
+      editControl?.setValue(isChecked);
+      deleteControl = this.profileForm.get(`eliminar${checkbox.id}`);
+      deleteControl?.setValue(isChecked);
+    } else {
+      seeControl = this.profileForm.get(`ver${checkbox.id}`);
+      seeControl?.setValue(isChecked);
     }
-    else if (checkbox.id === 'Usuarios') {
-      this.verUsuarios = isChecked;
-      this.editarUsuarios = isChecked;
-      this.eliminarUsuarios = isChecked;
-    }
-    else if (checkbox.id === 'Canchas') {
-      this.verCanchas = isChecked;
-      this.editarCanchas = isChecked;
-      this.eliminarCanchas = isChecked;
-    }
-    else if (checkbox.id === 'Torneos') {
-      this.verTorneos = isChecked;
-      this.editarTorneos = isChecked;
-      this.eliminarTorneos = isChecked;
-    }
-    else if (checkbox.id === 'Equipos') {
-      this.verEquipos = isChecked;
-      this.editarEquipos = isChecked;
-      this.eliminarEquipos = isChecked;
-    }
-    else if (checkbox.id === 'Jugadores') {
-      this.verJugadores = isChecked;
-      this.editarJugadores = isChecked;
-      this.eliminarJugadores = isChecked;
-    }
-    else if (checkbox.id === 'Estadisticas') {
-      this.verEstadisticas = isChecked;
-    }
+    this.setIdsMenuModule();
   }
 
-  togglePermission(event: any) {
+  togglePermission(event: any, module: string) {
     let checkbox = event.target;
-    if (checkbox.id === 'verPerfiles' || checkbox.id === 'editarPerfiles' || checkbox.id === 'eliminarPerfiles') {
-      if (this.verPerfiles && !this.editarPerfiles && !this.eliminarPerfiles || !this.verPerfiles && this.editarPerfiles && !this.eliminarPerfiles || !this.verPerfiles && !this.editarPerfiles && this.eliminarPerfiles)
-        this.todosPerfiles = true;
-      else if (!this.verPerfiles && !this.editarPerfiles && !this.eliminarPerfiles)
-        this.todosPerfiles = false;
-    }
-    else if (checkbox.id === 'verUsuarios' || checkbox.id === 'editarUsuarios' || checkbox.id === 'eliminarUsuarios') {
-      if (this.verUsuarios && !this.editarUsuarios && !this.eliminarUsuarios || !this.verUsuarios && this.editarUsuarios && !this.eliminarUsuarios || !this.verUsuarios && !this.editarUsuarios && this.eliminarUsuarios)
-        this.todosUsuarios = true;
-      else if (!this.verUsuarios && !this.editarUsuarios && !this.eliminarUsuarios)
-        this.todosUsuarios = false;
-    }
-    else if (checkbox.id === 'verCanchas' || checkbox.id === 'editarCanchas' || checkbox.id === 'eliminarCanchas') {
-      if (this.verCanchas && !this.editarCanchas && !this.eliminarCanchas || !this.verCanchas && this.editarCanchas && !this.eliminarCanchas || !this.verCanchas && !this.editarCanchas && this.eliminarCanchas)
-        this.todosCanchas = true;
-      else if (!this.verCanchas && !this.editarCanchas && !this.eliminarCanchas)
-        this.todosCanchas = false;
-    }
-    else if (checkbox.id === 'verTorneos' || checkbox.id === 'editarTorneos' || checkbox.id === 'eliminarTorneos') {
-      if (this.verTorneos && !this.editarTorneos && !this.eliminarTorneos || !this.verTorneos && this.editarTorneos && !this.eliminarTorneos || !this.verTorneos && !this.editarTorneos && this.eliminarTorneos)
-        this.todosTorneos = true;
-      else if (!this.verTorneos && !this.editarTorneos && !this.eliminarTorneos)
-        this.todosTorneos = false;
-    }
-    else if (checkbox.id === 'verEquipos' || checkbox.id === 'editarEquipos' || checkbox.id === 'eliminarEquipos') {
-      if (this.verEquipos && !this.editarEquipos && !this.eliminarEquipos || !this.verEquipos && this.editarEquipos && !this.eliminarEquipos || !this.verEquipos && !this.editarEquipos && this.eliminarEquipos)
-        this.todosEquipos = true;
-      else if (!this.verEquipos && !this.editarEquipos && !this.eliminarEquipos)
-        this.todosEquipos = false;
-    }
-    else if (checkbox.id === 'verJugadores' || checkbox.id === 'editarJugadores' || checkbox.id === 'eliminarJugadores') {
-      if (this.verJugadores && !this.editarJugadores && !this.eliminarJugadores || !this.verJugadores && this.editarJugadores && !this.eliminarJugadores || !this.verJugadores && !this.editarJugadores && this.eliminarJugadores)
-        this.todosJugadores = true;
-      else if (!this.verJugadores && !this.editarJugadores && !this.eliminarJugadores)
-        this.todosJugadores = false;
-    }
-    else if (checkbox.id === 'verEstadisticas') {
-      this.todosEstadisticas = this.verEstadisticas;
+    if (checkbox.id === `ver${module}` || checkbox.id === `editar${module}` || checkbox.id === `eliminar${module}`) {
+      let seeControl = this.profileForm.get(`ver${module}`);
+      let editControl = this.profileForm.get(`editar${module}`);
+      let deleteControl = this.profileForm.get(`eliminar${module}`);
+      let allControl = this.profileForm.get(`todos${module}`);
+
+      if (module !== "Estadisticas") {
+        if (seeControl?.value && !editControl?.value && !deleteControl?.value ||
+          !seeControl?.value && editControl?.value && !deleteControl?.value ||
+          !seeControl?.value && !editControl?.value && deleteControl?.value)
+          allControl?.setValue(true);
+        else if (!seeControl?.value && !editControl?.value && !deleteControl?.value)
+          allControl?.setValue(false);
+      } else {
+        if (seeControl?.value)
+          allControl?.setValue(true);
+        else if (!seeControl?.value)
+          allControl?.setValue(false);
+      }
     }
   }
 
   validationOfActiveModules(valuesForm: any) {
-    if (!valuesForm.todosP && !valuesForm.todosU && !valuesForm.todosC && !valuesForm.todosT && !valuesForm.todosE && !valuesForm.todosJ && !valuesForm.todosEst) {
-      this.snakBar.open("Debe seleccionar por le menos un modulo para guardar el perfil.", "Aceptar", {
-        duration: 5000,
-        horizontalPosition: "right",
-        verticalPosition: "top"
-      });
-      return false;
-    } else {
+    let hasActivePermissions = false;
+    this.permissions = [];
+    for (let field in valuesForm) {
+      if (field.indexOf("todos") !== -1 && valuesForm[field]) {
+        hasActivePermissions = true;
+        break;
+      }
+    }
+
+    if (hasActivePermissions) {
+      for (let field in valuesForm) {
+        if (field.indexOf("todos") !== -1) {
+          let module: any = field.split("todos").pop();
+          if (module !== 'Estadisticas') {
+            this.permissions.push({
+              menu: this.idsMenus[module],
+              permissions: {
+                see: valuesForm[`ver${module}`],
+                edit: valuesForm[`editar${module}`],
+                delete: valuesForm[`eliminar${module}`]
+              }
+            });
+          } else {
+            this.permissions.push({
+              menu: this.idsMenus[module],
+              permissions: {
+                see: valuesForm[`ver${module}`]
+              }
+            });
+          }
+        }
+      }
       return true;
     }
+
+    this.snakBar.open("Debe seleccionar al menos un módulo para guardar el perfil.", "Aceptar", {
+      duration: 6000,
+      horizontalPosition: "right",
+      verticalPosition: "top"
+    });
+    return false;
   }
 
   setQueryMenu() {
@@ -356,5 +378,38 @@ export class PerfilFormComponent implements OnInit {
     let response = await this.graphqlService.post(this.query, this.variables);
     let modules = response.data.getMenu;
     return (modules) ? modules : false;
+  }
+
+  setIdsMenuModule() {
+    this.idsMenus = {};
+    for (let menu in this.modules) {
+      this.idsMenus[`${this.modules[menu].name}`] = this.modules[menu]._id;
+    }
+  }
+
+  getNameMenu(idMenu: any) {
+    for (let index in this.gruposPermisos) {
+      let id = String(this.gruposPermisos[index].id);
+      if (id === String(idMenu)) {
+        return this.gruposPermisos[index].name;
+      }
+    }
+  }
+
+  activeCheckboxesModules(module: string, permission: any) {
+    let seeControl;
+    let editControl;
+    let deleteControl;
+    if (module !== 'Estadisticas') {
+      seeControl = this.profileForm.get(`ver${module}`);
+      seeControl?.setValue(permission.see);
+      editControl = this.profileForm.get(`editar${module}`);
+      editControl?.setValue(permission.edit);
+      deleteControl = this.profileForm.get(`eliminar${module}`);
+      deleteControl?.setValue(permission.delete);
+    } else {
+      seeControl = this.profileForm.get(`ver${module}`);
+      seeControl?.setValue(permission.see);
+    }
   }
 }
