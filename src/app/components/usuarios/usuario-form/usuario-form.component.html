@@ -1,0 +1,115 @@
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <form [formGroup]="userForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-6">
+                                <label for="name" class="form-label">Nombre:</label>
+                                <input [(ngModel)]="name" type="text" class="form-control" id="name"
+                                    formControlName="name" aria-describedby="notename">
+                                <div id="notename" class="form-text">Este campo es obligatorio</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-6">
+                                <label for="lastename" class="form-label">Apellidos:</label>
+                                <input [(ngModel)]="lastName" type="text" class="form-control" id="lastename"
+                                    formControlName="lastName">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="emailuser" class="form-label">Email</label>
+                            <input [(ngModel)]="email" type="email" class="form-control" id="emailuser"
+                                formControlName="email" aria-describedby="noteemail">
+                            <div id="noteemail" class="form-text">Este campo es obligatorio</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-6">
+                                <label for="mobileuser" class="form-label">Celular:</label>
+                                <input [(ngModel)]="mobile" type="number" class="form-control" id="mobileuser"
+                                    formControlName="mobile" aria-describedby="notemobile">
+                                <div id="notemobile" class="form-text">Este campo es obligatorio</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="form-label">Genero</label>
+                                <div class="col-6 col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="genero" id="masculino"
+                                            value="masculino">
+                                        <label class="form-check-label" for="masculino">
+                                            Masculino
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="genero" id="femenino"
+                                            value="femenino">
+                                        <label class="form-check-label" for="femenino">
+                                            Femenino
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12 col-md-12">
+                                    <label for="stateuser" class="form-label">Estado</label>
+                                    <select [(ngModel)]="state" id="stateuser" class="form-select"
+                                        formControlName="state" aria-describedby="notestate">
+                                        <option selected>Seleccionar...</option>
+                                        <option value="Guanajuato">Guanajuato</option>
+                                    </select>
+                                    <div id="notestate" class="form-text">Este campo es obligatorio</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-12">
+                                    <label for="cityuser" class="form-label">Ciudad:</label>
+                                    <input [(ngModel)]="city" type="text" class="form-control" id="cityuser"
+                                        formControlName="city" aria-describedby="notemobile">
+                                    <div id="notemobile" class="form-text">Este campo es obligatorio</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-12">
+                                    <div class="input-group mb-3">
+                                        <input [(ngModel)]="file" type="file" class="form-control" id="fileImg"
+                                            formControlName="file">
+                                        <label class="input-group-text" for="fileImg">Imagen</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-12 col-md-12 text-center">
+                                    <img src="../../../../assets/images/user_default.png" alt="Imagen"
+                                        class="custom-thumbnail">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -6,6 +6,8 @@ import { HomeComponent } from './home.component';
 import { MenuComponent } from '../menu/menu.component';
 import { PerfilFormComponent } from '../perfiles/perfil-form/perfil-form.component';
 import { ListaComponent } from '../perfiles/lista/lista.component';
+import { UsuarioFormComponent } from '../usuarios/usuario-form/usuario-form.component';
+import { ListaUsuariosComponent } from '../usuarios/lista-usuarios/lista-usuarios.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FiltroPerfilPipe } from '../../pipes/filtro-perfil.pipe';
@@ -16,6 +18,8 @@ import { FiltroPerfilPipe } from '../../pipes/filtro-perfil.pipe';
     MenuComponent,
     PerfilFormComponent,
     ListaComponent,
+    UsuarioFormComponent,
+    ListaUsuariosComponent,
     FiltroPerfilPipe
   ],
   imports: [
