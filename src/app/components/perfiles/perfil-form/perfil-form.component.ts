@@ -11,8 +11,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-perfil-form',
   templateUrl: './perfil-form.component.html',
-  styleUrls: ['./perfil-form.component.css'],
-
+  styleUrls: ['./perfil-form.component.css']
 })
 export class PerfilFormComponent implements OnInit {
   profileForm: FormGroup;
@@ -136,8 +135,7 @@ export class PerfilFormComponent implements OnInit {
           this.name = dataProfile.name;
           let menusData = dataProfile.modules;
           for (let index in menusData) {
-            let id = menusData[index].menu._id;
-            let nameModule = this.getNameMenu(id);
+            let nameModule = menusData[index].menu;
             let permissions = menusData[index].permissions[0];
             this.activeCheckboxesModules(nameModule, permissions);
           }
@@ -154,7 +152,7 @@ export class PerfilFormComponent implements OnInit {
       if (isValidForm) {
         if (this.isCreating) {
           this.setMutationInsert();
-          this.saveProfile();
+          this.saveProfile();          
         } else {
           this.setMutationUpdate();
           this.updateProfile();
@@ -171,8 +169,7 @@ export class PerfilFormComponent implements OnInit {
 
   async saveProfile() {
     let response = await this.graphqlService.post(this.mutation, this.variables);
-    let profileDocument = response.data.createProfile;
-
+    let profileDocument = response.data.createProfile;    
     const dialog = this.dialog.open(ConfirmDialogComponent, {
       width: '390px',
       data: {
@@ -184,7 +181,7 @@ export class PerfilFormComponent implements OnInit {
     });
 
     dialog.afterClosed().subscribe(result => {
-      if (result) {
+      if (result) {        
         this.cleanForm();
       } else {
         this.router.navigateByUrl('/home/perfiles');
@@ -250,9 +247,7 @@ export class PerfilFormComponent implements OnInit {
             _id,
             name,
             modules {
-              menu {
-                _id
-              },
+              menu,
               permissions
             }
         }
@@ -270,8 +265,22 @@ export class PerfilFormComponent implements OnInit {
     return (profileDocument) ? profileDocument : false;
   }
 
-  cleanForm() {
+  async cleanForm() {
     this.name = '';
+    let modules = await this.getMenu();
+    if (modules) {
+      for (let index in modules) {
+        let nameModule = modules[index].name;
+        let allControl = this.profileForm.get(`todos${nameModule}`);
+        allControl?.setValue(false);
+        let seeControl = this.profileForm.get(`ver${nameModule}`);
+        seeControl?.setValue(false);
+        let editControl = this.profileForm.get(`editar${nameModule}`);
+        editControl?.setValue(false);
+        let deleteControl = this.profileForm.get(`eliminar${nameModule}`);
+        deleteControl?.setValue(false);
+      }
+    }
   }
 
   toggleAllPermissions(event: any) {
@@ -334,7 +343,7 @@ export class PerfilFormComponent implements OnInit {
           let module: any = field.split("todos").pop();
           if (module !== 'Estadisticas') {
             this.permissions.push({
-              menu: this.idsMenus[module],
+              menu: module,
               permissions: {
                 see: valuesForm[`ver${module}`],
                 edit: valuesForm[`editar${module}`],
@@ -343,7 +352,7 @@ export class PerfilFormComponent implements OnInit {
             });
           } else {
             this.permissions.push({
-              menu: this.idsMenus[module],
+              menu: module,
               permissions: {
                 see: valuesForm[`ver${module}`]
               }
@@ -387,19 +396,11 @@ export class PerfilFormComponent implements OnInit {
     }
   }
 
-  getNameMenu(idMenu: any) {
-    for (let index in this.gruposPermisos) {
-      let id = String(this.gruposPermisos[index].id);
-      if (id === String(idMenu)) {
-        return this.gruposPermisos[index].name;
-      }
-    }
-  }
-
   activeCheckboxesModules(module: string, permission: any) {
     let seeControl;
     let editControl;
     let deleteControl;
+    let allControl;
     if (module !== 'Estadisticas') {
       seeControl = this.profileForm.get(`ver${module}`);
       seeControl?.setValue(permission.see);
@@ -407,9 +408,17 @@ export class PerfilFormComponent implements OnInit {
       editControl?.setValue(permission.edit);
       deleteControl = this.profileForm.get(`eliminar${module}`);
       deleteControl?.setValue(permission.delete);
+      if (permission.see || permission.edit || permission.delete) {
+        allControl = this.profileForm.get(`todos${module}`);
+        allControl?.setValue(true);
+      }
     } else {
       seeControl = this.profileForm.get(`ver${module}`);
       seeControl?.setValue(permission.see);
+      if (permission.see) {
+        allControl = this.profileForm.get(`todos${module}`);
+        allControl?.setValue(true);
+      }
     }
   }
 }
