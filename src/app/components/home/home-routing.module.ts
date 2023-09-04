@@ -13,6 +13,8 @@ import{TournamentformComponent}from '../Tournament/tournamentform/tournamentform
 import{TournamentlistComponent}from'../Tournament/tournamentlist/tournamentlist.component';
 import { TeamformComponent } from '../team/teamform/teamform.component';
 import { TeamlistComponent }from '../team/teamlist/teamlist.component';
+import {PlayerformComponent}from'../player/playerform/playerform.component';
+import {PlayerlistComponent}from'../player/playerlist/playerlist.component';
 
 const routes: Routes = [
     {
@@ -29,7 +31,9 @@ const routes: Routes = [
             { path: 'tournamentlist', component: TournamentlistComponent, canActivate: [authGuard] },
             { path: 'tournamentform', component: TournamentformComponent, canActivate: [authGuard] },
             { path: 'teamform', component: TeamformComponent, canActivate: [authGuard] },
-            { path: 'teamlist', component: TeamlistComponent, canActivate: [authGuard] }
+            { path: 'teamlist', component: TeamlistComponent, canActivate: [authGuard] },
+            {path:'playerlist', component: PlayerlistComponent, canActivate: [authGuard]},
+            {path:'playerform', component: PlayerformComponent, canActivate: [authGuard]},
         ]
     }
 ];

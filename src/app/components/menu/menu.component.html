@@ -113,5 +113,25 @@
                 <span class="hide-menu">Lista de Equipos</span>
             </a>
         </li>
+        <li class="nav-small-cap">
+            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+            <span class="hide-menu">Jugador</span>
+        </li>
+        <li class="sidebar-item">
+            <a class="sidebar-link" [routerLink]="['/home/playerform']" aria-expanded="false">
+                <span>
+                    <i class="ti ti-clipboard-plus"></i>
+                </span>
+                <span class="hide-menu">Nuevo Jugador</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a class="sidebar-link" [routerLink]="['/home/playerlist']" aria-expanded="false">
+                <span>
+                    <i class="ti ti-clipboard-check"></i>
+                </span>
+                <span class="hide-menu">Lista de Jugadores</span>
+            </a>
+        </li>
     </ul>
 </nav>

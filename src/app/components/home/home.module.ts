@@ -19,6 +19,8 @@ import{TournamentlistComponent}from'../Tournament/tournamentlist/tournamentlist.
 import {ReactiveFormsModule} from '@angular/forms';
 import { TeamformComponent } from '../team/teamform/teamform.component';
 import { TeamlistComponent }from '../team/teamlist/teamlist.component';
+import {PlayerformComponent}from'../player/playerform/playerform.component';
+import {PlayerlistComponent}from'../player/playerlist/playerlist.component';
 
 
 @NgModule({
@@ -36,7 +38,9 @@ import { TeamlistComponent }from '../team/teamlist/teamlist.component';
     TournamentlistComponent,
     TournamentformComponent,
     TeamformComponent,
-    TeamlistComponent
+    TeamlistComponent,
+    PlayerformComponent,
+    PlayerlistComponent,
   ],
   imports: [
     MaterialModule,
