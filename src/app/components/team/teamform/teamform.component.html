@@ -1,0 +1,35 @@
+<style>
+    .custom-border {
+        border-bottom: 2px solid #333; 
+    }
+    
+    .shadow-box {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave alrededor del cuadro */
+        border-radius: 5px; /* Bordes redondeados */
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="bg-white p-4 shadow-box">
+    <h2>Registro de Equipo</h2>
+    <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="cancha" class="form-label">Cancha</label>
+            <input type="text" formControlName="cancha" class="form-control" id="cancha" placeholder="Ingresa la cancha">
+        </div>
+        <div class="form-group">
+            <label for="torneo" class="form-label">Torneo</label>
+            <input type="text" formControlName="torneo" class="form-control" id="torneo" placeholder="Ingresa el torneo">
+        </div>
+        <div class="form-group">
+            <label for="nombreEquipo" class="form-label">Nombre del Equipo</label>
+            <input type="text" formControlName="nombreEquipo" class="form-control" id="nombreEquipo" placeholder="Ingresa el nombre del equipo">
+        
+            <div class="text-end mt-4">  <!-- Alineación a la derecha -->
+                <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+        </div>
+    </form>
+</div>
+</div>
+
