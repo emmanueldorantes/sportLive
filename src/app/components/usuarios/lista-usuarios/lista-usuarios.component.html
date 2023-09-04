@@ -1,1 +1,46 @@
-<p>lista-usuarios works!</p>
+<div class="container mt-4">
+    <!-- <input class="form-control mb-2" placeholder="Filtrar por nombre" [(ngModel)]="filtroNombre"> -->
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Email</th>
+                <th>Celular</th>
+                <th>Estado</th>
+                <th>Ciudad</th>
+                <th>Estatus</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr
+                *ngFor="let usuario of usuarios | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
+                <td>{{ usuario.autoincrement }}</td>
+                <td>{{ usuario.name }}</td>
+                <td>{{ usuario.lastName }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.mobile }}</td>
+                <td>{{ usuario.Estado }}</td>
+                <td>{{ usuario.Ciudad }}</td>
+                <td>{{ usuario.status }}</td>
+                <td>
+                    <button mat-icon-button (click)="editarUsuario(usuario._id)">
+                        <span>
+                            <i class="ti ti-edit"></i>
+                        </span>                        
+                    </button>
+                    <button mat-icon-button color="warn" (click)="eliminarUsuario(usuario._id, usuario.name)">
+                        <span>
+                            <i class="ti ti-trash"></i>
+                        </span>                        
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+</div>
