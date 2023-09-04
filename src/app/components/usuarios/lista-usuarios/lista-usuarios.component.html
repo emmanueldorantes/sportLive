@@ -17,22 +17,22 @@
         </thead>
         <tbody>
             <tr
-                *ngFor="let usuario of usuarios | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
-                <td>{{ usuario.autoincrement }}</td>
-                <td>{{ usuario.name }}</td>
-                <td>{{ usuario.lastName }}</td>
-                <td>{{ usuario.email }}</td>
-                <td>{{ usuario.mobile }}</td>
-                <td>{{ usuario.Estado }}</td>
-                <td>{{ usuario.Ciudad }}</td>
-                <td>{{ usuario.status }}</td>
+                *ngFor="let user of users | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
+                <td>{{ user.autoincrement }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.lastName }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.mobile }}</td>
+                <td>{{ user.Estado }}</td>
+                <td>{{ user.Ciudad }}</td>
+                <td>{{ user.status }}</td>
                 <td>
-                    <button mat-icon-button (click)="editarUsuario(usuario._id)">
+                    <button mat-icon-button (click)="editarUsuario(user._id)">
                         <span>
                             <i class="ti ti-edit"></i>
                         </span>                        
                     </button>
-                    <button mat-icon-button color="warn" (click)="eliminarUsuario(usuario._id, usuario.name)">
+                    <button mat-icon-button color="warn" (click)="eliminarUsuario(user._id, user.name)">
                         <span>
                             <i class="ti ti-trash"></i>
                         </span>                        

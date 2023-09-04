@@ -32,8 +32,8 @@ export class ListaUsuariosComponent {
 
   async ngOnInit() {
     this.setQuery();
-    const profilesRows = await this.getUsers();
-    this.users = profilesRows;
+    const usersRows = await this.getUsers();
+    this.users = usersRows;
   }
 
   async getUsers(): Promise<any> {
@@ -61,5 +61,13 @@ export class ListaUsuariosComponent {
     this.variables = {
       module: 'users'
     };
+  }
+
+  editarUsuario(id: string) {
+
+  }
+
+  eliminarUsuario(id: string, name: string) {
+
   }
 }
