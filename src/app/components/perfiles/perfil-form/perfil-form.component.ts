@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TitleService } from '../../../services/title.service';
 import { GraphqlService } from '../../../services/graphql.service';
 import { Profile } from '../../../models/profile';

@@ -11,6 +11,7 @@ import { ListaUsuariosComponent } from '../usuarios/lista-usuarios/lista-usuario
 import { FormsModule} from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FiltroPerfilPipe } from '../../pipes/filtro-perfil.pipe';
+import { FiltroUsuarioPipe } from '../../pipes/filtro-usuario.pipe';
 import { FieldformComponent } from '../field/fieldform/fieldform.component';
 import { FieldlistComponent } from '../field/fieldlist/fieldlist.component';
 import{TournamentformComponent}from '../Tournament/tournamentform/tournamentform.component';
@@ -29,6 +30,7 @@ import { TeamlistComponent }from '../team/teamlist/teamlist.component';
     UsuarioFormComponent,
     ListaUsuariosComponent,
     FiltroPerfilPipe,
+    FiltroUsuarioPipe,
     FieldformComponent,
     FieldlistComponent,
     TournamentlistComponent,

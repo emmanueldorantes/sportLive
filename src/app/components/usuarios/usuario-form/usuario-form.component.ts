@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TitleService } from '../../../services/title.service';
+import { UploadService } from '../../../services/upload.service';
 import { GraphqlService } from '../../../services/graphql.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
@@ -23,6 +24,7 @@ export class UsuarioFormComponent implements OnInit {
   state: string;
   gender: string;
   file: any;
+  selectedFile: File | null = null;
   srcImage: string;
   listProfiles: any;
   listStates: any;
@@ -32,10 +34,10 @@ export class UsuarioFormComponent implements OnInit {
   isCreating: boolean = true;
   userId: any = '';
 
-
   constructor(
     private fb: FormBuilder,
     private titleService: TitleService,
+    private uploadService: UploadService,
     private graphqlService: GraphqlService,
     private dialog: MatDialog,
     private snakBar: MatSnackBar,
@@ -77,7 +79,15 @@ export class UsuarioFormComponent implements OnInit {
       this.isCreating = (this.userId !== undefined) ? false : true;
       if (!this.isCreating) {
         this.titleService.setTitle('Usuarios / Editar Usuario');
-
+        let dataUser = await this.getUser();
+        this.profile = dataUser.profile._id;
+        this.name = dataUser.name;
+        this.lastName = dataUser.lastName;
+        this.email = dataUser.email;
+        this.mobile = dataUser.mobile;
+        this.state = dataUser.state._id;
+        this.city = dataUser.city;
+        this.gender = dataUser.gender;
       }
     });
   }
@@ -89,10 +99,9 @@ export class UsuarioFormComponent implements OnInit {
         this.setMutationInsert();
         this.saveUser();
       } else {
-        // this.setMutationUpdate();
-        // this.updateProfile();
+        this.setMutationUpdate();
+        this.updateUser();
       }
-      console.log(this)
     } else {
       this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
         duration: 5000,
@@ -115,28 +124,52 @@ export class UsuarioFormComponent implements OnInit {
   }
 
   async saveUser() {
-    let response = await this.graphqlService.post(this.mutation, this.variables);
-    let userDocument = response.data.createUser;
-    const dialog = this.dialog.open(ConfirmDialogComponent, {
-      width: '390px',
-      data: {
-        message: `El usuario ${userDocument.name} ha sido creado correctamente.`,
-        question: "¿Deseas agregar otro Usuario?",
-        ok: "Si",
-        cancel: "No"
-      }
-    });
+    // let response = await this.graphqlService.post(this.mutation, this.variables);
+    // let userDocument = response.data.createUser;
+    // const dialog = this.dialog.open(ConfirmDialogComponent, {
+    //   width: '390px',
+    //   data: {
+    //     message: `El usuario ${userDocument.name} ha sido creado correctamente.`,
+    //     question: "¿Deseas agregar otro Usuario?",
+    //     ok: "Si",
+    //     cancel: "No"
+    //   }
+    // });
 
-    dialog.afterClosed().subscribe(result => {
-      if (result) {
-        this.cleanForm();
-      } else {
-        this.router.navigateByUrl('/home/usuarios');
-      }
+    // dialog.afterClosed().subscribe(async result => {
+      // if (result) {
+        // this.cleanForm();
+        if (this.selectedFile) {
+          const formData = new FormData();
+          formData.append('image', this.selectedFile);
+          let responseUpload = await this.uploadService.post(formData);
+          console.log(responseUpload);
+        }
+      // } else {
+        // this.router.navigateByUrl('/home/usuarios');
+      // }
+    // });
+  }
+
+  async updateUser() {
+    let response = await this.graphqlService.post(this.mutation, this.variables);
+    const miSnackBar = this.snakBar.open("El usuario ha sido modificado correctamente.", "Aceptar", {
+      duration: 0,
+      horizontalPosition: "right",
+      verticalPosition: "top"
+    });
+    miSnackBar.onAction().subscribe(() => {
+      this.router.navigateByUrl('/home/usuarios');
     });
   }
 
-  cleanForm(){
+  async getUser() {
+    this.setQueryUser();
+    let response = await this.graphqlService.post(this.query, this.variables);
+    return response.data.getUser;
+  }
+
+  cleanForm() {
     this.name = "";
     this.lastName = "";
     this.profile = "";
@@ -217,5 +250,79 @@ export class UsuarioFormComponent implements OnInit {
       city: this.city,
       gender: this.gender
     };
+  }
+
+  setQueryUser() {
+    this.query = `
+    query($id: ID!) {
+      getUser(_id: $id, filters: {
+        inner: [
+          { path: "profile" }          
+        ]
+      }){
+          _id,
+          name,
+          profile {
+            _id
+          },
+          state {
+            _id
+          },
+          lastName,
+          email,
+          mobile,
+          gender,
+          city
+      }
+    }`;
+    this.variables = {
+      module: 'users',
+      id: this.userId
+    };
+  }
+
+  setMutationUpdate() {
+    this.mutation = `
+    mutation(
+      $id: ID!,
+      $profile: ID!, 
+      $name: String!, 
+      $lastName: String, 
+      $email: String!, 
+      $mobile: String!, 
+      $state: ID!, 
+      $city: String!,
+      $gender: String!
+    ) {
+      updateUser(_id: $id, input: {
+        profile: $profile, 
+        name: $name, 
+        lastName: $lastName, 
+        email: $email, 
+        mobile: $mobile, 
+        state: $state, 
+        city: $city,
+        gender: $gender        
+      }){
+          _id,
+          name
+      }
+  }`;
+    this.variables = {
+      module: 'users',
+      id: this.userId,
+      profile: this.profile,
+      name: this.name,
+      lastName: this.lastName,
+      email: this.email,
+      mobile: `${this.mobile}`,
+      state: this.state,
+      city: this.city,
+      gender: this.gender
+    };
+  }
+
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
   }
 }
