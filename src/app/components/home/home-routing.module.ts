@@ -9,6 +9,10 @@ import { authGuard } from '../../guards/auth.guard';
 import { authChildGuard } from '../../guards/auth-child.guard';
 import {FieldformComponent}from '../field/fieldform/fieldform.component';
 import {FieldlistComponent}from '../field/fieldlist/fieldlist.component';
+import{TournamentformComponent}from '../Tournament/tournamentform/tournamentform.component';
+import{TournamentlistComponent}from'../Tournament/tournamentlist/tournamentlist.component';
+import { TeamformComponent } from '../team/teamform/teamform.component';
+import { TeamlistComponent }from '../team/teamlist/teamlist.component';
 
 const routes: Routes = [
     {
@@ -21,7 +25,11 @@ const routes: Routes = [
             { path: 'usuario/:id', component: UsuarioFormComponent, canActivate: [authGuard] },
             { path: 'usuarios', component: ListaUsuariosComponent, canActivate: [authGuard] },
             { path: 'fieldlist', component: FieldlistComponent, canActivate: [authGuard] },
-            { path: 'fieldform', component: FieldformComponent, canActivate: [authGuard] }
+            { path: 'fieldform', component: FieldformComponent, canActivate: [authGuard] },
+            { path: 'tournamentlist', component: TournamentlistComponent, canActivate: [authGuard] },
+            { path: 'tournamentform', component: TournamentformComponent, canActivate: [authGuard] },
+            { path: 'teamform', component: TeamformComponent, canActivate: [authGuard] },
+            { path: 'teamlist', component: TeamlistComponent, canActivate: [authGuard] }
         ]
     }
 ];
