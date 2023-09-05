@@ -1,78 +1,116 @@
-    <style>
-        .shadow-box {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave alrededor del cuadro */
-            border-radius: 5px; /* Bordes redondeados */
-        }
-
-        .custom-thumbnail {
-            max-width: 100px; /* Puedes ajustar según necesites */
-        }
-    </style>
-
-<body>
+<style>
+    .custom-border {
+        border-bottom: 2px solid #333; 
+    }
+    
+    .shadow-box {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave alrededor del cuadro */
+        border-radius: 5px; /* Bordes redondeados */
+    }
+</style>
 
 <div class="container mt-5">
-    <!-- Contenedor con fondo blanco y sombra -->
     <div class="bg-white p-4 shadow-box">
-        <form>
-            <!-- Apartado para Cancha, Torneo y Equipo -->
-            <div class="mb-5">
-                <h4>Detalles del Partido</h4>
+    <form>
+        <div class="row mb-4">
+            <h3>Información de la Cancha</h3>
+            <div class="col-md-6">
                 <div class="mb-3">
-                    <label for="cancha" class="form-label">Cancha</label>
-                    <input type="text" class="form-control" id="cancha" placeholder="Nombre de la cancha">
-                </div>
-                <div class="mb-3">
-                    <label for="torneo" class="form-label">Torneo</label>
-                    <input type="text" class="form-control" id="torneo" placeholder="Nombre del torneo">
-                </div>
-                <div class="mb-3">
-                    <label for="equipo" class="form-label">Equipo</label>
-                    <input type="text" class="form-control" id="equipo" placeholder="Nombre del equipo">
+                    <label for="nombreCancha" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombreCancha">
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="telefonoCancha" class="form-label">Teléfono</label>
+                    <input type="tel" class="form-control" id="telefonoCancha">
+                </div>
+            </div>
+        </div>
 
-            <!-- Apartado para el resto de los campos en dos columnas -->
-            <h4>Información Personal</h4>
-            <div class="row">
-                <!-- Columna Izquierda -->
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" placeholder="Nombre">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="celular" class="form-label">Celular</label>
-                        <input type="tel" class="form-control" id="celular" placeholder="1234567890">
-                    </div>
-                    <div class="mb-3">
-                        <label for="imagen" class="form-label">Cargar Imagen</label>
-                        <input type="file" class="form-control" id="imagen">
-                    </div>
-                </div>
-            
-                <!-- Columna Derecha -->
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="apellidos" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" id="apellidos" placeholder="Apellidos">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="example@example.com">
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center mb-3">
-                        <img src="../../../../assets/images/user_default.png" alt="Imagen" class="custom-thumbnail">
-                    </div>
+        <div class="border-bottom mb-4 mt-4"></div>
+
+        <div class="row mb-4">
+            <h3>Contacto</h3>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="nombreContacto" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombreContacto">
                 </div>
             </div>
-            
-            <div class="d-flex justify-content-end mt-3">
-                <button type="submit" class="btn btn-primary">Guardar</button>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="apellidosContacto" class="form-label">Apellidos</label>
+                    <input type="text" class="form-control" id="apellidosContacto">
+                </div>
             </div>
-            
-        </form>
-    </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="celularContacto" class="form-label">Celular</label>
+                    <input type="tel" class="form-control" id="celularContacto">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="correoContacto" class="form-label">Correo</label>
+                    <input type="email" class="form-control" id="correoContacto">
+                </div>
+            </div>
+        </div>
+        
+        <div class="border-bottom mb-4 mt-4"></div>
+
+        <div class="row mb-4">
+            <h3>Propietario</h3>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="nombrePropietario" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombrePropietario">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="apellidosPropietario" class="form-label">Apellidos</label>
+                    <input type="text" class="form-control" id="apellidosPropietario">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="correoPropietario" class="form-label">Correo</label>
+                    <input type="email" class="form-control" id="correoPropietario">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="telefonoPropietario" class="form-label">Teléfono</label>
+                    <input type="tel" class="form-control" id="telefonoPropietario">
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="row justify-content-center mb-4">
+            <!-- Columna Izquierda: Cargado del logotipo -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="imagenLogotipo" class="form-label">Imagen de logotipo</label>
+                    <input type="file" class="form-control" id="imagenLogotipo">
+                </div>
+            </div>
+        
+            <!-- Columna Derecha: Imagen por defecto -->
+            <div class="col-md-6">
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <img src="../../../../assets/images/user_default.png" alt="Imagen" class="custom-thumbnail">
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-end mt-4">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+        
+    </form>
+</div>
 </div>
 
