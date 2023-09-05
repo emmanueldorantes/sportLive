@@ -48,6 +48,9 @@ export class ListaUsuariosComponent {
     this.query = `
       query {
         getUsers(filters: {
+          qry: {
+            remove: false
+          },
           inner: [
             { path: "state" },
             { path: "profile" }
@@ -92,11 +95,42 @@ export class ListaUsuariosComponent {
     };
   }
 
+  setMutationDelete(id: string) {
+    this.mutation = `
+      mutation($id: ID!) {
+        updateUser(_id: $id, input: {
+          remove: true
+        }){
+            _id
+        }
+    }`;
+    this.variables = {
+      module: 'users',
+      id
+    };
+  }
+
   editarUsuario(id: string) {
     this.router.navigate(['/home/usuario', id]);
   }
 
   eliminarUsuario(id: string, name: string) {
+    const dialog = this.dialog.open(ConfirmDialogComponent, {
+      width: '390px',
+      data: {
+        message: `¿Confirma que desea eliminar el usuario ${name}?`,
+        ok: "Si",
+        cancel: "No"
+      }
+    });
+
+    dialog.afterClosed().subscribe(async result => {
+      if (result) {
+        this.setMutationDelete(id);
+        await this.graphqlService.post(this.mutation, this.variables);
+        window.location.reload();
+      } 
+    });
   }
 
   changeStatus(id: string, status: boolean) {
@@ -119,7 +153,6 @@ export class ListaUsuariosComponent {
           horizontalPosition: "right",
           verticalPosition: "top"
         });
-        // return response.data.updateUser;
       } else {
         const user = this.users.find((user: any) => user._id === id);
         if (user)

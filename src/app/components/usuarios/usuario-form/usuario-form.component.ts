@@ -7,6 +7,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { Router, ActivatedRoute } from '@angular/router';
+import { NgxImageCompressService } from 'ngx-image-compress';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-usuario-form',
@@ -33,6 +35,7 @@ export class UsuarioFormComponent implements OnInit {
   variables: any;
   isCreating: boolean = true;
   userId: any = '';
+  displayedImageUrl: string;
 
   constructor(
     private fb: FormBuilder,
@@ -42,7 +45,8 @@ export class UsuarioFormComponent implements OnInit {
     private dialog: MatDialog,
     private snakBar: MatSnackBar,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private imageCompress: NgxImageCompressService
   ) {
     this.titleService.setTitle('Usuarios / Nuevo Usuario');
     this.srcImage = "../../../../assets/images/user_default.png";
@@ -88,6 +92,9 @@ export class UsuarioFormComponent implements OnInit {
         this.state = dataUser.state._id;
         this.city = dataUser.city;
         this.gender = dataUser.gender;
+        this.displayedImageUrl = `${environment.fileManager}/${dataUser.photo}`;
+      } else {
+        this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
       }
     });
   }
@@ -124,31 +131,40 @@ export class UsuarioFormComponent implements OnInit {
   }
 
   async saveUser() {
-    // let response = await this.graphqlService.post(this.mutation, this.variables);
-    // let userDocument = response.data.createUser;
-    // const dialog = this.dialog.open(ConfirmDialogComponent, {
-    //   width: '390px',
-    //   data: {
-    //     message: `El usuario ${userDocument.name} ha sido creado correctamente.`,
-    //     question: "¿Deseas agregar otro Usuario?",
-    //     ok: "Si",
-    //     cancel: "No"
-    //   }
-    // });
-
-    // dialog.afterClosed().subscribe(async result => {
-      // if (result) {
-        // this.cleanForm();
-        if (this.selectedFile) {
-          const formData = new FormData();
-          formData.append('image', this.selectedFile);
-          let responseUpload = await this.uploadService.post(formData);
-          console.log(responseUpload);
+    try {
+      let response = await this.graphqlService.post(this.mutation, this.variables);
+      let userDocument = response.data.createUser;
+      const dialog = this.dialog.open(ConfirmDialogComponent, {
+        width: '390px',
+        data: {
+          message: `El usuario ${userDocument.name} ha sido creado correctamente.`,
+          question: "¿Deseas agregar otro Usuario?",
+          ok: "Si",
+          cancel: "No"
         }
-      // } else {
-        // this.router.navigateByUrl('/home/usuarios');
-      // }
-    // });
+      });
+
+      dialog.afterClosed().subscribe(async result => {
+        if (result) {
+          this.cleanForm();
+          if (this.selectedFile) {
+            const resizedImage = await this.resizeImage(this.selectedFile);
+            const formData = new FormData();
+            formData.append('image', resizedImage, `${userDocument._id}_${this.selectedFile?.name}`);
+            let responseUpload = await this.uploadService.post(formData);
+            if (responseUpload && responseUpload.ok) {
+              this.displayedImageUrl = `${environment.fileManager}/image-${userDocument._id}_${this.selectedFile?.name}`;
+              this.setMutationUpdateImage(userDocument._id);
+              await this.graphqlService.post(this.mutation, this.variables);
+            }
+          }
+        } else {
+          this.router.navigateByUrl('/home/usuarios');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async updateUser() {
@@ -158,6 +174,17 @@ export class UsuarioFormComponent implements OnInit {
       horizontalPosition: "right",
       verticalPosition: "top"
     });
+    if (this.selectedFile) {
+      const resizedImage = await this.resizeImage(this.selectedFile);
+      const formData = new FormData();
+      formData.append('image', resizedImage, `${this.userId}_${this.selectedFile?.name}`);
+      let responseUpload = await this.uploadService.post(formData);
+      if (responseUpload && responseUpload.ok) {
+        this.displayedImageUrl = `${environment.fileManager}/image-${this.userId}_${this.selectedFile?.name}`;
+        this.setMutationUpdateImage();
+        await this.graphqlService.post(this.mutation, this.variables);
+      }
+    }
     miSnackBar.onAction().subscribe(() => {
       this.router.navigateByUrl('/home/usuarios');
     });
@@ -178,7 +205,7 @@ export class UsuarioFormComponent implements OnInit {
     this.gender = "";
     this.state = "";
     this.city = "";
-    this.file = "";
+    this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
   }
 
   setQueryStates() {
@@ -272,7 +299,8 @@ export class UsuarioFormComponent implements OnInit {
           email,
           mobile,
           gender,
-          city
+          city,
+          photo
       }
     }`;
     this.variables = {
@@ -322,7 +350,67 @@ export class UsuarioFormComponent implements OnInit {
     };
   }
 
+  setMutationUpdateImage(id?: any) {
+    this.mutation = `
+    mutation(
+      $id: ID!,
+      $photo: String!
+    ) {
+      updateUser(_id: $id, input: {
+        photo: $photo        
+      }){
+          _id
+      }
+  }`;
+    this.variables = {
+      module: 'users',
+      id: id || this.userId,
+      photo: `image-${this.userId}_${this.selectedFile?.name}`
+    };
+  }
+
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
+  }
+
+  async resizeImage(image: File): Promise<Blob> {
+    return new Promise<Blob>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const img = new Image();
+        img.src = event.target.result;
+
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx: any = canvas.getContext('2d');
+
+          // Define las dimensiones de redimensión
+          const maxWidth = 180;
+          const maxHeight = 180;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Convierte la imagen en un Blob redimensionado
+          canvas.toBlob((blob: any) => {
+            resolve(blob);
+          }, image.type);
+        };
+      };
+      reader.readAsDataURL(image);
+    });
   }
 }

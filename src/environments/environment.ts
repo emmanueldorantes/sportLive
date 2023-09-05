@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   api: 'http://localhost:3008/graphql',
-  fileManager: '',
+  fileManager: 'http://localhost:3005/images',
   encryption_key: 'SportLive2023',
   serverSocketProcess: '',
 };
