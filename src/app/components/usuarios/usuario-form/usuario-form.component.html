@@ -97,7 +97,7 @@
                                 <div class="col-12 col-md-12">
                                     <div class="input-group mb-3">
                                         <input [(ngModel)]="file" type="file" class="form-control" id="fileImg"
-                                            formControlName="file">
+                                            formControlName="file" accept=".jpg,.png" (change)="onFileSelected($event)">
                                         <label class="input-group-text" for="fileImg">Imagen</label>
                                     </div>
                                 </div>
@@ -107,6 +107,7 @@
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="col-12 col-md-12 text-center">
+                                    <!-- <img [src]="'http://localhost:3005/images/' + selectedImage?.name" *ngIf="selectedImage"> -->
                                     <img src="../../../../assets/images/user_default.png" alt="Imagen"
                                         class="custom-thumbnail">
                                 </div>

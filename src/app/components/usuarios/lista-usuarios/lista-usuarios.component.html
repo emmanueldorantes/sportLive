@@ -1,5 +1,5 @@
 <div class="container mt-4">
-    <!-- <input class="form-control mb-2" placeholder="Filtrar por nombre" [(ngModel)]="filtroNombre"> -->
+    <input class="form-control mb-2" placeholder="Filtrar por nombre, email, celular" [(ngModel)]="filtroNombre">
 
     <table class="table">
         <thead>
@@ -11,31 +11,38 @@
                 <th>Celular</th>
                 <th>Estado</th>
                 <th>Ciudad</th>
+                <th>Perfil</th>
                 <th>Estatus</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <tr
-                *ngFor="let usuario of usuarios | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
-                <td>{{ usuario.autoincrement }}</td>
-                <td>{{ usuario.name }}</td>
-                <td>{{ usuario.lastName }}</td>
-                <td>{{ usuario.email }}</td>
-                <td>{{ usuario.mobile }}</td>
-                <td>{{ usuario.Estado }}</td>
-                <td>{{ usuario.Ciudad }}</td>
-                <td>{{ usuario.status }}</td>
+            <tr *ngFor="let user of users | filtroUsuario:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
+                <td>{{ user.autoincrement }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.lastName }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.mobile }}</td>
+                <td>{{ user.state.name }}</td>
+                <td>{{ user.city }}</td>
+                <td>{{ user.profile.name }}</td>
                 <td>
-                    <button mat-icon-button (click)="editarUsuario(usuario._id)">
+                    <div class="form-check form-switch form-switch-lg">
+                        <input class="form-check-input" type="checkbox" role="switch" id="userStatus{{user._id}}" [(ngModel)]="user.status" (change)="changeStatus(user._id, user.status)" />
+                        <label class="form-check-label" for="userStatus" *ngIf="user.status">Activo</label>
+                        <label class="form-check-label" for="userStatus" *ngIf="!user.status">Inactivo</label>
+                    </div>
+                </td>
+                <td>
+                    <button mat-icon-button (click)="editarUsuario(user._id)">
                         <span>
                             <i class="ti ti-edit"></i>
-                        </span>                        
+                        </span>
                     </button>
-                    <button mat-icon-button color="warn" (click)="eliminarUsuario(usuario._id, usuario.name)">
+                    <button mat-icon-button color="warn" (click)="eliminarUsuario(user._id, user.name)" *ngIf="user.autoincrement !== 1">
                         <span>
                             <i class="ti ti-trash"></i>
-                        </span>                        
+                        </span>
                     </button>
                 </td>
             </tr>
