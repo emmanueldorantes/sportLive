@@ -11,106 +11,101 @@
 
 <div class="container mt-5">
     <div class="bg-white p-4 shadow-box">
-    <form>
-        <div class="row mb-4">
-            <h3>Información de la Cancha</h3>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="nombreCancha" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombreCancha">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="telefonoCancha" class="form-label">Teléfono</label>
-                    <input type="tel" class="form-control" id="telefonoCancha">
-                </div>
-            </div>
-        </div>
+        <form (ngSubmit)="onSubmit()">
 
-        <div class="border-bottom mb-4 mt-4"></div>
+            <!-- Sección Cancha -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="nombreCancha" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombreCancha" name="nombreCancha" [(ngModel)]="field.name">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="telefonoCancha" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="telefonoCancha" name="telefonoCancha" [(ngModel)]="field.telefono">
+                    </div>
+                </div>
+            </div>
 
-        <div class="row mb-4">
-            <h3>Contacto</h3>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="nombreContacto" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombreContacto">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="apellidosContacto" class="form-label">Apellidos</label>
-                    <input type="text" class="form-control" id="apellidosContacto">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="celularContacto" class="form-label">Celular</label>
-                    <input type="tel" class="form-control" id="celularContacto">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="correoContacto" class="form-label">Correo</label>
-                    <input type="email" class="form-control" id="correoContacto">
-                </div>
-            </div>
-        </div>
-        
-        <div class="border-bottom mb-4 mt-4"></div>
+            <div class="border-bottom mb-4 mt-4"></div>
 
-        <div class="row mb-4">
-            <h3>Propietario</h3>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="nombrePropietario" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombrePropietario">
+            <!-- Sección Contacto -->
+            <div class="row mb-4">
+                <h3>Contacto</h3>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="nombreContacto" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombreContacto" name="nombreContacto" [(ngModel)]="field.contacto.nombre">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="apellidosContacto" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" id="apellidosContacto" name="apellidosContacto" [(ngModel)]="field.contacto.apellidos">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="celularContacto" class="form-label">Celular</label>
+                        <input type="tel" class="form-control" id="celularContacto" name="celularContacto" [(ngModel)]="field.contacto.celular">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="correoContacto" class="form-label">Correo</label>
+                        <input type="email" class="form-control" id="correoContacto" name="correoContacto" [(ngModel)]="field.contacto.correo">
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="apellidosPropietario" class="form-label">Apellidos</label>
-                    <input type="text" class="form-control" id="apellidosPropietario">
+
+            <div class="border-bottom mb-4 mt-4"></div>
+
+            <!-- Sección Propietario -->
+            <div class="row mb-4">
+                <h3>Propietario</h3>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="nombrePropietario" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombrePropietario" name="nombrePropietario" [(ngModel)]="field.propietario.nombre">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="apellidosPropietario" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" id="apellidosPropietario" name="apellidosPropietario" [(ngModel)]="field.propietario.apellidos">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="correoPropietario" class="form-label">Correo</label>
+                        <input type="email" class="form-control" id="correoPropietario" name="correoPropietario" [(ngModel)]="field.propietario.correo">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="telefonoPropietario" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="telefonoPropietario" name="telefonoPropietario" [(ngModel)]="field.propietario.telefono">
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="correoPropietario" class="form-label">Correo</label>
-                    <input type="email" class="form-control" id="correoPropietario">
+
+            <!-- Sección Imagen de logotipo -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="imagenLogotipo" class="form-label">Imagen de logotipo</label>
+                        <input type="file" class="form-control" id="imagenLogotipo" (change)="onFileChange($event)">
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="telefonoPropietario" class="form-label">Teléfono</label>
-                    <input type="tel" class="form-control" id="telefonoPropietario">
-                </div>
-                
+
+            <div class="text-end mt-4">
+                <button type="submit" class="btn btn-primary">Guardar</button>
             </div>
-        </div>
-        
-        <div class="row justify-content-center mb-4">
-            <!-- Columna Izquierda: Cargado del logotipo -->
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="imagenLogotipo" class="form-label">Imagen de logotipo</label>
-                    <input type="file" class="form-control" id="imagenLogotipo">
-                </div>
-            </div>
-        
-            <!-- Columna Derecha: Imagen por defecto -->
-            <div class="col-md-6">
-                <div class="d-flex justify-content-center align-items-center mb-3">
-                    <img src="../../../../assets/images/user_default.png" alt="Imagen" class="custom-thumbnail">
-                </div>
-            </div>
-        </div>
-        
-        <div class="text-end mt-4">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-        </div>
-        
-    </form>
+        </form>
+    </div>
 </div>
-</div>
+
 

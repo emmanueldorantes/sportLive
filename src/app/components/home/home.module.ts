@@ -22,6 +22,7 @@ import { TeamlistComponent }from '../team/teamlist/teamlist.component';
 import {PlayerformComponent}from'../player/playerform/playerform.component';
 import {PlayerlistComponent}from'../player/playerlist/playerlist.component';
 
+
 @NgModule({
   declarations: [
     HomeComponent,
