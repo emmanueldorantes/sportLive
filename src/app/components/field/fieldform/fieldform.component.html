@@ -11,7 +11,7 @@
 
 <div class="container mt-5">
     <div class="bg-white p-4 shadow-box">
-        <form (ngSubmit)="onSubmit()">
+        <form form [formGroup]="fieldForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
 
             <!-- Sección Cancha -->
             <div class="row">
@@ -37,7 +37,7 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="nombreContacto" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombreContacto" name="nombreContacto" [(ngModel)]="field.contacto.nombre">
+                        <input type="text" class="form-control" id="nombreContacto" name="nombreContacto" [(ngModel)]="field.contacto.name">
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -68,7 +68,7 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="nombrePropietario" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombrePropietario" name="nombrePropietario" [(ngModel)]="field.propietario.nombre">
+                        <input type="text" class="form-control" id="nombrePropietario" name="nombrePropietario" [(ngModel)]="field.propietario.name">
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -92,18 +92,19 @@
             </div>
 
             <!-- Sección Imagen de logotipo -->
-            <div class="row justify-content-center mb-4">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="imagenLogotipo" class="form-label">Imagen de logotipo</label>
-                        <input type="file" class="form-control" id="imagenLogotipo" (change)="onFileChange($event)">
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <div class="input-group mb-3">
+                        <input [(ngModel)]="file" type="file" class="form-control" id="fileImg"
+                            formControlName="file" accept=".jpg,.png" (change)="onFileSelected($event)">
+                        <label class="input-group-text" for="fileImg">Imagen</label>
                     </div>
                 </div>
-            </div>
 
             <div class="text-end mt-4">
                 <button type="submit" class="btn btn-primary">Guardar</button>
             </div>
+        </div>  
         </form>
     </div>
 </div>
