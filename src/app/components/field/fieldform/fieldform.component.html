@@ -18,13 +18,13 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="nombreCancha" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombreCancha" name="nombreCancha" [(ngModel)]="field.name">
+                        <input formControlName="nombre" type="text" class="form-control" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="telefonoCancha" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" id="telefonoCancha" name="telefonoCancha" [(ngModel)]="field.telefono">
+                        <input formControlName="telefono" type="tel" class="form-control" id="telefonoCancha" name="telefonoCancha" [(ngModel)]="telefono">
                     </div>
                 </div>
             </div>
@@ -37,25 +37,25 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="nombreContacto" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombreContacto" name="nombreContacto" [(ngModel)]="field.contacto.name">
+                        <input  formControlName="contactonombre" type="text" class="form-control" id="contactoname" name="nombreContacto" [(ngModel)]="contactonombre">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="apellidosContacto" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" id="apellidosContacto" name="apellidosContacto" [(ngModel)]="field.contacto.apellidos">
+                        <input formControlName="contactoapellidos" type="text" class="form-control" id="contactoapellidos" name="contactoapellidos" [(ngModel)]="contactoapellidos">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="celularContacto" class="form-label">Celular</label>
-                        <input type="tel" class="form-control" id="celularContacto" name="celularContacto" [(ngModel)]="field.contacto.celular">
+                        <input formControlName ="contactocelular" type="tel" class="form-control" id="celularContacto" name="celularContacto" [(ngModel)]="contactocelular">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="correoContacto" class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="correoContacto" name="correoContacto" [(ngModel)]="field.contacto.correo">
+                        <input formControlName="contactocorreo" type="email" class="form-control" id="contactocorreo" name="correoContacto" [(ngModel)]="contactocorreo">
                     </div>
                 </div>
             </div>
@@ -68,25 +68,25 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="nombrePropietario" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombrePropietario" name="nombrePropietario" [(ngModel)]="field.propietario.name">
+                        <input formControlName="propietarionombre" type="text" class="form-control" id="nombrePropietario" name="nombrePropietario" [(ngModel)]="propietarionombre">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="apellidosPropietario" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" id="apellidosPropietario" name="apellidosPropietario" [(ngModel)]="field.propietario.apellidos">
+                        <input formControlName="propietarioapellidos" type="text" class="form-control" id="apellidosPropietario" name="apellidosPropietario" [(ngModel)]="propietarioapellidos">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="correoPropietario" class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="correoPropietario" name="correoPropietario" [(ngModel)]="field.propietario.correo">
+                        <input formControlName="propietariocorreo" type="email" class="form-control" id="correoPropietario" name="correoPropietario" [(ngModel)]="propietariocorreo">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="telefonoPropietario" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" id="telefonoPropietario" name="telefonoPropietario" [(ngModel)]="field.propietario.telefono">
+                        <input formControlName="propietariotelefono" type="tel" class="form-control" id="telefonoPropietario" name="telefonoPropietario" [(ngModel)]="propietariotelefono">
                     </div>
                 </div>
             </div>
