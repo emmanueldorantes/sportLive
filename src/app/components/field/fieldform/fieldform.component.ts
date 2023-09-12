@@ -23,7 +23,6 @@ export class FieldformComponent implements OnInit {
   query: string;
   mutation: string;
   variables: any;
-  onFileSelected: any= "";
   // Inforamcion de la Cancha
   nombre: string;
   telefono:  string;
@@ -91,12 +90,19 @@ export class FieldformComponent implements OnInit {
       this.isCreating = (this.fieldId !== undefined) ? false : true;
       if (!this.isCreating) {
         this.titleService.setTitle('Canchas  / Editar Usuario');
-       // let datafield = await this.getField();
-        // this.name = dataUser.name;
-        // this.lastName = dataUser.lastName;
-        // this.email = dataUser.email;
-        // this.mobile = dataUser.mobile;
-        // this.displayedImageUrl = `${environment.fileManager}/${datafield.photo}`;
+       let datafield = await this.getField();
+       console.log(datafield)
+        this.nombre = datafield.nombre;
+        this.telefono = datafield.telefono;
+        this.contactonombre = datafield.contactonombre;
+        this.contactoapellidos = datafield.contactoapellidos;
+        this.contactocelular = datafield.contactocelular;
+        this.contactocorreo = datafield.contactocorreo;
+        this.propietarionombre = datafield.propietarionombre;
+        this.propietarioapellidos = datafield.propietarioapellidos;
+        this.propietariocorreo = datafield.propietariocorreo;
+        this.propietariotelefono = datafield.propietariotelefono;
+        this.displayedImageUrl = `${environment.fileManager}/${datafield.photo}`;
       } else {
         this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
       }
@@ -110,8 +116,8 @@ export class FieldformComponent implements OnInit {
         this.setMutationInsert();
         this.saveField();
       } else {
-        //this.setMutationUpdate();
-       // this.updateField();
+        this.setMutationUpdate();
+        this.updateField();
       }
     } else {
       this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
@@ -121,6 +127,30 @@ export class FieldformComponent implements OnInit {
       });
     }
   }
+  
+  async updateField() {
+    let response = await this.graphqlService.post(this.mutation, this.variables);
+    const miSnackBar = this.snakBar.open("El usuario ha sido modificado correctamente.", "Aceptar", {
+      duration: 0,
+      horizontalPosition: "right",
+      verticalPosition: "top"
+    });
+    if (this.selectedFile) {
+      const resizedImage = await this.resizeImage(this.selectedFile);
+      const formData = new FormData();
+      formData.append('image', resizedImage, `${this.fieldId}_${this.selectedFile?.name}`);
+      let responseUpload = await this.uploadService.post(formData);
+      if (responseUpload && responseUpload.ok) {
+        this.displayedImageUrl = `${environment.fileManager}/image-${this.fieldId}_${this.selectedFile?.name}`;
+        //this.setMutationUpdateImage();
+        await this.graphqlService.post(this.mutation, this.variables);
+      }
+    }
+    miSnackBar.onAction().subscribe(() => {
+      this.router.navigateByUrl('/home/usuarios');
+    });
+  }
+
   async saveField() {
     try {
       let response = await this.graphqlService.post(this.mutation, this.variables);
@@ -134,35 +164,35 @@ export class FieldformComponent implements OnInit {
           cancel: "No"
         }
       });
-
       dialog.afterClosed().subscribe(async result => {
         if (result) {
           this.cleanForm();
-          //if (this.selectedFile) {
-            //const resizedImage = await this.resizeImage(this.selectedFile);
-           // const formData = new FormData();
-            //formData.append('image', resizedImage, `${fieldDocument._id}_${this.selectedFile?.name}`);
-            //let responseUpload = await this.uploadService.post(formData);
-            //if (responseUpload && responseUpload.ok) {
-            //this.displayedImageUrl = `${environment.fileManager}/image-${fieldDocument._id}_${this.selectedFile?.name}`;
+          if (this.selectedFile) {
+          const resizedImage = await this.resizeImage(this.selectedFile);
+           const formData = new FormData();
+           formData.append('image', resizedImage, `${fieldDocument._id}_${this.selectedFile?.name}`);
+           let responseUpload = await this.uploadService.post(formData);
+            if (responseUpload && responseUpload.ok) {
+            this.displayedImageUrl = `${environment.fileManager}/image-${fieldDocument._id}_${this.selectedFile?.name}`;
             //this.setMutationUpdateImage(fieldDocument._id);
-            //await this.graphqlService.post(this.mutation, this.variables);
-           // }
-          //}
+            await this.graphqlService.post(this.mutation, this.variables);
+            }
+          }
         } else {
-          this.router.navigateByUrl('/home/usuarios');
+          this.router.navigateByUrl('/home/fieldlist');
         }
       });
     } catch (error) {
       console.log(error);
     }
+    
   }
 
-  //async getField() {
-    //this.setQueryUser();
-    //let response = await this.graphqlService.post(this.query, this.variables);
-    //return response.data.getUser;
-  //}
+  async getField() {
+    this.setQueryField();
+    let response = await this.graphqlService.post(this.query, this.variables);
+    return response.data.getField;
+  }
 
   cleanForm() {
     this.nombre = '';
@@ -177,6 +207,8 @@ export class FieldformComponent implements OnInit {
     this.propietariotelefono = "";
     this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
   }
+
+
 
   setMutationInsert() {
     this.mutation = `
@@ -220,5 +252,127 @@ export class FieldformComponent implements OnInit {
       propietariocorreo: this.propietariocorreo,
       propietariotelefono: this.propietariotelefono
     };
-}  
+  
+  
+  
+  }
+
+
+    setQueryField() {
+      this.query = `
+      query($id: ID!) {
+        getField(_id: $id, filters: {}){
+              _id,
+              nombre,
+              telefono,
+              contactonombre,
+              contactoapellidos,
+              contactocelular,
+              contactocorreo,
+              propietarionombre,
+              propietarioapellidos,
+              propietariocorreo,
+              propietariotelefono
+              }
+      }`;
+      this.variables = {
+        module: 'field',
+        id: this.fieldId
+      };
+    } 
+
+    setMutationUpdate() {
+     this.mutation = `
+    mutation(
+    $nombre: String!,
+    $telefono: String!,
+    $contactonombre: String!,
+    $contactoapellidos: String!,
+    $contactocelular: String!,
+    $contactocorreo: String!,
+    $propietarionombre: String!,
+    $propietarioapellidos: String!,
+    $propietariocorreo: String!,
+    $propietariotelefono: String!) {
+      updateField(_id: $id, input: {
+      nombre: $nombre,
+      telefono: $telefono,
+      contactonombre: $contactonombre,
+      contactoapellidos: $contactoapellidos,
+      contactocelular: $contactocelular,
+      contactocorreo: $contactocorreo,
+      propietarionombre: $propietarionombre,
+      propietarioapellidos: $propietarioapellidos,
+      propietariocorreo: $propietariocorreo,
+      propietariotelefono: $propietariotelefono
+    }){
+      _id,
+      nombre
+    }
+  }`;
+this.variables = {
+  module: 'field',
+  nombre: this.nombre,
+  telefono: this.telefono,
+  contactonombre: this.contactonombre,
+  contactoapellidos: this.contactoapellidos,
+  contactocelular: this.contactocelular,
+  contactocorreo: this.contactocorreo,
+  propietarionombre: this.propietarionombre,
+  propietarioapellidos: this.propietarioapellidos,
+  propietariocorreo: this.propietariocorreo,
+  propietariotelefono: this.propietariotelefono
+};
+
 }
+
+onFileSelected(event: any) {
+  this.selectedFile = event.target.files[0];
+}
+async resizeImage(image: File): Promise<Blob> {
+  return new Promise<Blob>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      const img = new Image();
+      img.src = event.target.result;
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx: any = canvas.getContext('2d');
+
+        // Define las dimensiones de redimensión
+        const maxWidth = 180;
+        const maxHeight = 180;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+
+        if (height > maxHeight) {
+          width *= maxHeight / height;
+          height = maxHeight;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convierte la imagen en un Blob redimensionado
+        canvas.toBlob((blob: any) => {
+          resolve(blob);
+        }, image.type);
+      };
+    };
+    reader.readAsDataURL(image);
+  });
+}
+}
+
+
+
+
+
+
