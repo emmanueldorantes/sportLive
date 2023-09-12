@@ -56,12 +56,19 @@ export class FieldformComponent implements OnInit {
 
     //Para validar que son campos requeridos o no
 
-    this.titleService.setTitle('Usuarios / Nuevo Usuario');
+    this.titleService.setTitle('Cancha / Nueva Cancha');
     this.srcImage = "../../../../assets/images/user_default.png";
     this.fieldForm = this.fb.group({
       nombre: ['', Validators.required],
-      lastName: [''],
-      file: [null],
+      telefono:  ['', Validators.required],
+      contactonombre: ['', Validators.required],
+      contactoapellidos: ['', Validators.required],
+      contactocelular: ['', Validators.required],
+      contactocorreo : ['', Validators.required],
+      propietarionombre: ['', Validators.required],
+      propietarioapellidos:['', Validators.required],
+      propietariocorreo:['', Validators.required],
+      propietariotelefono:['', Validators.required],
     });
    
     this.nombre = '';
@@ -151,8 +158,6 @@ export class FieldformComponent implements OnInit {
     }
   }
 
-  
-
   //async getField() {
     //this.setQueryUser();
     //let response = await this.graphqlService.post(this.query, this.variables);
@@ -160,51 +165,60 @@ export class FieldformComponent implements OnInit {
   //}
 
   cleanForm() {
-    this.nombre = "";
-    this.nombre = "";
-    this.nombre = "";
-    this.nombre = "";
+    this.nombre = '';
+    this.telefono = '';
+    this.contactonombre = '';
+    this.contactoapellidos = ''; 
+    this.contactocelular = ''; 
+    this.contactocorreo = "";
+    this.propietarionombre = "";
+    this.propietarioapellidos = "";
+    this.propietariocorreo = "";
+    this.propietariotelefono = "";
     this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
   }
 
   setMutationInsert() {
     this.mutation = `
       mutation(
-  
-       $nombre: string!,
-       $telefono:  string!,
-       $contactonombre: string!,
-       $contactoapellidos: string!
-       $contactocelular: string!,
-       $contactocorreo : string!,
-       $propietarionombre: string!,
-       $propietarioapellidos:string!,
-       $propietariocorreo:string!,
-       $propietariotelefono:string!,
-       createField(input: {
-       nombre: $nombre,
-       telefono:  $telefono,
-       contactonombre: $contactonombre,
-       contactoapellidos: $contactoapellidos,
-       contactocelular: $contactocelular,
-       contactocorreo : $contactocorreo,
-       propietarionombre: $propietarionombre,
-       propietarioapellidos:$propietarioapellidos,
-       propietariocorreo:$propietariocorreo,
-       propietariotelefono:$propietariotelefono,
-      }){
+        $nombre: String!,
+        $telefono: String!,
+        $contactonombre: String!,
+        $contactoapellidos: String!,
+        $contactocelular: String!,
+        $contactocorreo: String!,
+        $propietarionombre: String!,
+        $propietarioapellidos: String!,
+        $propietariocorreo: String!,
+        $propietariotelefono: String!) {
+        createField(input: {
+          nombre: $nombre,
+          telefono: $telefono,
+          contactonombre: $contactonombre,
+          contactoapellidos: $contactoapellidos,
+          contactocelular: $contactocelular,
+          contactocorreo: $contactocorreo,
+          propietarionombre: $propietarionombre,
+          propietarioapellidos: $propietarioapellidos,
+          propietariocorreo: $propietariocorreo,
+          propietariotelefono: $propietariotelefono
+        }){
           _id,
-          name
-      }
-    }`;
+          nombre
+        }
+      }`;
     this.variables = {
       module: 'field',
-      name: this.nombre,
-      lastName: this.nombre,
-      email: this.nombre,
-      mobile: `${this.nombre}`,
+      nombre: this.nombre,
+      telefono: this.telefono,
+      contactonombre: this.contactonombre,
+      contactoapellidos: this.contactoapellidos,
+      contactocelular: this.contactocelular,
+      contactocorreo: this.contactocorreo,
+      propietarionombre: this.propietarionombre,
+      propietarioapellidos: this.propietarioapellidos,
+      propietariocorreo: this.propietariocorreo,
+      propietariotelefono: this.propietariotelefono
     };
-  }
-
-  
+}  
 }
