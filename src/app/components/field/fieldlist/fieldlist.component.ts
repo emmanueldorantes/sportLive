@@ -54,7 +54,9 @@ export class FieldlistComponent {
         }){
           _id,
           nombre,
-          autoincrement
+          autoincrement,
+          status
+      
         }
     }`;
     this.variables = {

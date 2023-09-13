@@ -103,7 +103,7 @@ export class FieldformComponent implements OnInit {
         this.propietarioapellidos = datafield.propietarioapellidos;
         this.propietariocorreo = datafield.propietariocorreo;
         this.propietariotelefono = datafield.propietariotelefono;
-        this.displayedImageUrl = `${environment.fileManager}/${datafield.photo}`;
+        this.displayedImageUrl =  datafield.photo ? `${environment.fileManager}/${datafield.photo}` : `${environment.fileManager}/user_default.png`;
       } else {
         this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
       }
@@ -143,7 +143,7 @@ export class FieldformComponent implements OnInit {
       let responseUpload = await this.uploadService.post(formData);
       if (responseUpload && responseUpload.ok) {
         this.displayedImageUrl = `${environment.fileManager}/image-${this.fieldId}_${this.selectedFile?.name}`;
-        //this.setMutationUpdateImage();
+        this.setMutationUpdateImage();
         await this.graphqlService.post(this.mutation, this.variables);
       }
     }
@@ -165,20 +165,22 @@ export class FieldformComponent implements OnInit {
           cancel: "No"
         }
       });
+      if (this.selectedFile) {
+        const resizedImage = await this.resizeImage(this.selectedFile);
+         const formData = new FormData();
+         console.log (`${fieldDocument._id}_${this.selectedFile?.name}`)
+         formData.append('image', resizedImage, `${fieldDocument._id}_${this.selectedFile?.name}`);
+         let responseUpload = await this.uploadService.post(formData);
+          if (responseUpload && responseUpload.ok) {
+          this.displayedImageUrl = `${environment.fileManager}/image-${fieldDocument._id}_${this.selectedFile?.name}`;
+          this.setMutationUpdateImage(fieldDocument._id);
+          await this.graphqlService.post(this.mutation, this.variables);
+          }
+        }
       dialog.afterClosed().subscribe(async result => {
         if (result) {
           this.cleanForm();
-          if (this.selectedFile) {
-          const resizedImage = await this.resizeImage(this.selectedFile);
-           const formData = new FormData();
-           formData.append('image', resizedImage, `${fieldDocument._id}_${this.selectedFile?.name}`);
-           let responseUpload = await this.uploadService.post(formData);
-            if (responseUpload && responseUpload.ok) {
-            this.displayedImageUrl = `${environment.fileManager}/image-${fieldDocument._id}_${this.selectedFile?.name}`;
-            //this.setMutationUpdateImage(fieldDocument._id);
-            await this.graphqlService.post(this.mutation, this.variables);
-            }
-          }
+          
         } else {
           this.router.navigateByUrl('/home/fieldlist');
         }
@@ -208,8 +210,6 @@ export class FieldformComponent implements OnInit {
     this.propietariotelefono = "";
     this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
   }
-
-
 
   setMutationInsert() {
     this.mutation = `
@@ -270,6 +270,7 @@ export class FieldformComponent implements OnInit {
               propietarionombre,
               propietarioapellidos,
               propietariocorreo,
+              photo,
               propietariotelefono
               }
       }`;
@@ -324,9 +325,28 @@ this.variables = {
   propietariocorreo: this.propietariocorreo,
   propietariotelefono: this.propietariotelefono
 };
- 
-}
 
+}
+setMutationUpdateImage(id?: any) {
+  this.mutation = `
+  mutation(
+    $id: ID!,
+    $photo: String!
+  ) {
+    updateField(_id: $id, input: {
+      photo: $photo        
+    }){
+        _id
+    }
+}`;
+let image = id ? `image-${id}_${this.selectedFile?.name}` : `image-${this.fieldId}_${this.selectedFile?.name}`;
+  this.variables = {
+    module: 'field',
+    id: id || this.fieldId,
+    photo: image
+  };
+
+}
 onFileSelected(event: any) {
   this.selectedFile = event.target.files[0];
 }
