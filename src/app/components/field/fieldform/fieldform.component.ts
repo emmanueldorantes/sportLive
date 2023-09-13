@@ -17,6 +17,7 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./fieldform.component.css']
 })
 export class FieldformComponent implements OnInit {
+
   fieldForm:FormGroup;
   isCreating: boolean = true;
   srcImage: string;
@@ -147,7 +148,7 @@ export class FieldformComponent implements OnInit {
       }
     }
     miSnackBar.onAction().subscribe(() => {
-      this.router.navigateByUrl('/home/usuarios');
+      this.router.navigateByUrl('/home/fieldlist');
     });
   }
 
@@ -252,11 +253,8 @@ export class FieldformComponent implements OnInit {
       propietariocorreo: this.propietariocorreo,
       propietariotelefono: this.propietariotelefono
     };
-  
-  
-  
-  }
 
+  }
 
     setQueryField() {
       this.query = `
@@ -284,6 +282,7 @@ export class FieldformComponent implements OnInit {
     setMutationUpdate() {
      this.mutation = `
     mutation(
+    $id: ID!,
     $nombre: String!,
     $telefono: String!,
     $contactonombre: String!,
@@ -311,7 +310,9 @@ export class FieldformComponent implements OnInit {
     }
   }`;
 this.variables = {
+  
   module: 'field',
+  id: this.fieldId,
   nombre: this.nombre,
   telefono: this.telefono,
   contactonombre: this.contactonombre,
@@ -323,7 +324,7 @@ this.variables = {
   propietariocorreo: this.propietariocorreo,
   propietariotelefono: this.propietariotelefono
 };
-
+ 
 }
 
 onFileSelected(event: any) {

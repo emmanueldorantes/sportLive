@@ -137,9 +137,9 @@ export class FieldlistComponent {
           verticalPosition: "top"
         });
       } else {
-        const fields = this.fields.find((fields: any) => fields._id === id);
-        if (fields)
-        fields.status = (!status) ? true : false;
+        const field = this.fields.find((field: any) => field._id === id);
+        if (field)
+        field.status = (!status) ? true : false;
       }
     });
   }
