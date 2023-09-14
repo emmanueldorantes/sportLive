@@ -17,7 +17,7 @@ export class TeamformComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.titleService.setTitle('Equipo / Nuevo Equipo');
+    // this.titleService.setTitle('Equipo / Nuevo Equipo');
     this.teamForm = this.fb.group({
       cancha: ['', Validators.required],
       torneo: ['', Validators.required],

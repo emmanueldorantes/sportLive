@@ -48,8 +48,7 @@ export class UsuarioFormComponent implements OnInit {
     private route: ActivatedRoute,
     private imageCompress: NgxImageCompressService
   ) {
-    this.titleService.setTitle('Usuarios / Nuevo Usuario');
-    this.srcImage = "../../../../assets/images/user_default.png";
+    this.titleService.setTitle('Usuarios / Alta de Usuario');
     this.userForm = this.fb.group({
       profile: ['', Validators.required],
       name: ['', Validators.required],
@@ -92,7 +91,7 @@ export class UsuarioFormComponent implements OnInit {
         this.state = dataUser.state._id;
         this.city = dataUser.city;
         this.gender = dataUser.gender;
-        this.displayedImageUrl = `${environment.fileManager}/${dataUser.photo}`;
+        this.displayedImageUrl = dataUser.photo ? `${environment.fileManager}/${dataUser.photo}` : `${environment.fileManager}/user_default.png`;
       } else {
         this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
       }
@@ -101,7 +100,6 @@ export class UsuarioFormComponent implements OnInit {
 
   onSubmit() {
     if (this.userForm.status === 'VALID') {
-      // let pathFile = this.userForm.get('file')?.value;
       if (this.isCreating) {
         this.setMutationInsert();
         this.saveUser();
@@ -144,20 +142,21 @@ export class UsuarioFormComponent implements OnInit {
         }
       });
 
+      if (userDocument && this.selectedFile) {
+        const resizedImage = await this.resizeImage(this.selectedFile);
+        const formData = new FormData();
+        formData.append('image', resizedImage, `${userDocument._id}_${this.selectedFile?.name}`);
+        let responseUpload = await this.uploadService.post(formData);
+        if (responseUpload && responseUpload.ok) {
+          this.displayedImageUrl = `${environment.fileManager}/image-${userDocument._id}_${this.selectedFile?.name}`;
+          this.setMutationUpdateImage(userDocument._id);
+          await this.graphqlService.post(this.mutation, this.variables);
+        }
+      }
+
       dialog.afterClosed().subscribe(async result => {
         if (result) {
           this.cleanForm();
-          if (this.selectedFile) {
-            const resizedImage = await this.resizeImage(this.selectedFile);
-            const formData = new FormData();
-            formData.append('image', resizedImage, `${userDocument._id}_${this.selectedFile?.name}`);
-            let responseUpload = await this.uploadService.post(formData);
-            if (responseUpload && responseUpload.ok) {
-              this.displayedImageUrl = `${environment.fileManager}/image-${userDocument._id}_${this.selectedFile?.name}`;
-              this.setMutationUpdateImage(userDocument._id);
-              await this.graphqlService.post(this.mutation, this.variables);
-            }
-          }
         } else {
           this.router.navigateByUrl('/home/usuarios');
         }
@@ -237,7 +236,7 @@ export class UsuarioFormComponent implements OnInit {
       }
     }`;
     this.variables = {
-      module: 'states'
+      module: 'profiles'
     };
   }
 
@@ -361,11 +360,12 @@ export class UsuarioFormComponent implements OnInit {
       }){
           _id
       }
-  }`;
+    }`;
+    let image = id ? `image-${id}_${this.selectedFile?.name}` : `image-${this.userId}_${this.selectedFile?.name}`;
     this.variables = {
       module: 'users',
       id: id || this.userId,
-      photo: `image-${this.userId}_${this.selectedFile?.name}`
+      photo: image
     };
   }
 

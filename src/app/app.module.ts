@@ -9,7 +9,6 @@ import { RouterModule } from '@angular/router';
 import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { MaterialModule } from './material.module';
 
-// HomeComponent,
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,12 +22,14 @@ import { MaterialModule } from './material.module';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    MaterialModule    
+    MaterialModule
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule { }

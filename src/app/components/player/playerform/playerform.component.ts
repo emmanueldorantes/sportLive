@@ -11,7 +11,7 @@ export class PlayerformComponent implements OnInit {
   constructor(private titleService: TitleService) {}
 
   ngOnInit(): void {
-    this.titleService.setTitle('Jugador / Nuevo Jugador');
+    // this.titleService.setTitle('Jugador / Nuevo Jugador');
   }
 
 }

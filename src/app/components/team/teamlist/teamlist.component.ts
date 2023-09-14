@@ -11,6 +11,6 @@ export class TeamlistComponent implements OnInit {
   constructor(private titleService: TitleService) {}
 
   ngOnInit(): void {
-    this.titleService.setTitle('Equipo / Lista Equipos');
+    // this.titleService.setTitle('Equipo / Lista Equipos');
   }
 }

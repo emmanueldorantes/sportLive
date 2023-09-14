@@ -12,6 +12,6 @@ export class TournamentformComponent implements OnInit {
   constructor(private titleService: TitleService) {}
 
   ngOnInit(): void {
-    this.titleService.setTitle('Torneo / Nuevo Torneo');
+    // this.titleService.setTitle('Torneo / Nuevo Torneo');
   }
 }

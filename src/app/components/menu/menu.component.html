@@ -1,137 +1,18 @@
-<nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-    <ul id="sidebarnav">
-        <li class="nav-small-cap">
-            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">Home</span>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" href="./index.html" aria-expanded="false">
-                <span>
-                    <i class="ti ti-layout-dashboard"></i>
-                </span>
-                <span class="hide-menu">Dashboard</span>
-            </a>
-        </li>
-        <li class="nav-small-cap">
-            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">PERFILES</span>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/perfil']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-clipboard-plus"></i>
-                </span>
-                <span class="hide-menu">Nuevo Perfil</span>
-            </a>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/perfiles']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-clipboard-check"></i>
-                </span>
-                <span class="hide-menu">Lista de Perfiles</span>
-            </a>
-        </li>
-        <li class="nav-small-cap">
-            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">USUARIOS</span>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/usuario']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-user-plus"></i>
-                </span>
-                <span class="hide-menu">Nuevo Usuario</span>
-            </a>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/usuarios']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-users"></i>
-                </span>
-                <span class="hide-menu">Lista de Usuarios</span>
-            </a>
-        </li>
-        
-        <li class="nav-small-cap">
-            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">CANCHAS</span>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/fieldform']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-clipboard-plus"></i>
-                </span>
-                <span class="hide-menu">Nueva Cancha</span>
-            </a>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/fieldlist']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-clipboard-check"></i>
-                </span>
-                <span class="hide-menu">Lista de Canchas</span>
-            </a>
-        </li>
-        <li class="nav-small-cap">
-            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">Torneos</span>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/tournamentform']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-clipboard-plus"></i>
-                </span>
-                <span class="hide-menu">Nuevo Torneo</span>
-            </a>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/tournamentlist']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-clipboard-check"></i>
-                </span>
-                <span class="hide-menu">Lista de Torneos</span>
-            </a>
-        </li>
-        <li class="nav-small-cap">
-            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">Equipo</span>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/teamform']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-clipboard-plus"></i>
-                </span>
-                <span class="hide-menu">Nuevo Equipo</span>
-            </a>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/teamlist']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-clipboard-check"></i>
-                </span>
-                <span class="hide-menu">Lista de Equipos</span>
-            </a>
-        </li>
-        <li class="nav-small-cap">
-            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">Jugador</span>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/playerform']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-clipboard-plus"></i>
-                </span>
-                <span class="hide-menu">Nuevo Jugador</span>
-            </a>
-        </li>
-        <li class="sidebar-item">
-            <a class="sidebar-link" [routerLink]="['/home/playerlist']" aria-expanded="false">
-                <span>
-                    <i class="ti ti-clipboard-check"></i>
-                </span>
-                <span class="hide-menu">Lista de Jugadores</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+<ul class="navigation navigation-main navigation-accordion">
+    <li class="navigation-header"><span>Main</span> <i class="icon-menu" title="Main pages"></i></li>
+    <li><a href="index.html"><i class="icon-home4"></i> <span>Estadisticas</span></a></li>
+    <li>
+        <a href="#"><i class=" icon-list"></i> <span>Perfiles</span></a>
+        <ul>
+            <li><a [routerLink]="['/home/perfil']"><i class="icon-profile"></i> Alta de Perfil</a></li>
+            <li><a [routerLink]="['/home/perfiles']"><i class=" icon-file-text"></i> Lista de Perfiles</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#"><i class=" icon-users4"></i> <span>Usuarios</span></a>
+        <ul>
+            <li><a [routerLink]="['/home/usuario']"><i class="icon-user-plus"></i> Alta de Usuario</a></li>
+            <li><a [routerLink]="['/home/usuarios']"><i class=" icon-user-check"></i> Lista de Usuarios</a></li>
+        </ul>
+    </li>    
+</ul>

@@ -1,0 +1,13 @@
+/* Estilo para las filas impares */
+.zebra-odd {
+    background-color: #f8f8f8;
+}
+
+/* Estilo para las filas pares */
+.zebra-even {
+    background-color: #ffffff;
+}
+
+.colorHead {
+    background-color: #4d515347;
+}

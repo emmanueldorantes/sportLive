@@ -11,6 +11,6 @@ export class TournamentlistComponent {
   constructor(private titleService: TitleService) {}
 
   ngOnInit(): void {
-    this.titleService.setTitle('Torneo / Lista de Torneo');
+    // this.titleService.setTitle('Torneo / Lista de Torneo');
   }
 }

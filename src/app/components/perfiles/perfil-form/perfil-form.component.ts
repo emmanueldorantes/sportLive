@@ -63,7 +63,7 @@ export class PerfilFormComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    this.titleService.setTitle('Perfiles / Nuevo Perfil');
+    this.titleService.setTitle('Perfiles / Alta de Usuario');
     this.gruposPermisos = [];
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
@@ -152,7 +152,7 @@ export class PerfilFormComponent implements OnInit {
       if (isValidForm) {
         if (this.isCreating) {
           this.setMutationInsert();
-          this.saveProfile();          
+          this.saveProfile();
         } else {
           this.setMutationUpdate();
           this.updateProfile();
@@ -161,15 +161,15 @@ export class PerfilFormComponent implements OnInit {
     } else {
       this.snakBar.open("Capture el nombre del prefil.", "Aceptar", {
         duration: 5000,
-        horizontalPosition: "right",
-        verticalPosition: "top"
+        horizontalPosition: "center",
+        verticalPosition: "bottom"
       });
     }
   }
 
   async saveProfile() {
     let response = await this.graphqlService.post(this.mutation, this.variables);
-    let profileDocument = response.data.createProfile;    
+    let profileDocument = response.data.createProfile;
     const dialog = this.dialog.open(ConfirmDialogComponent, {
       width: '390px',
       data: {
@@ -181,7 +181,7 @@ export class PerfilFormComponent implements OnInit {
     });
 
     dialog.afterClosed().subscribe(result => {
-      if (result) {        
+      if (result) {
         this.cleanForm();
       } else {
         this.router.navigateByUrl('/home/perfiles');
@@ -193,8 +193,8 @@ export class PerfilFormComponent implements OnInit {
     let response = await this.graphqlService.post(this.mutation, this.variables);
     const miSnackBar = this.snakBar.open("El perfil ha sido modificado correctamente.", "Aceptar", {
       duration: 0,
-      horizontalPosition: "right",
-      verticalPosition: "top"
+      horizontalPosition: "center",
+      verticalPosition: "bottom"
     });
     miSnackBar.onAction().subscribe(() => {
       this.router.navigateByUrl('/home/perfiles');
@@ -365,8 +365,8 @@ export class PerfilFormComponent implements OnInit {
 
     this.snakBar.open("Debe seleccionar al menos un módulo para guardar el perfil.", "Aceptar", {
       duration: 6000,
-      horizontalPosition: "right",
-      verticalPosition: "top"
+      horizontalPosition: "center",
+      verticalPosition:"bottom"
     });
     return false;
   }

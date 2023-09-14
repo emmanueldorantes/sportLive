@@ -1,3 +1,7 @@
+
+
+
+
 <div class="container-fluid">
     <div class="container-fluid">
         <div class="card">
@@ -7,9 +11,10 @@
                     <div class="row">
                         <div class="col-12 col-md-12">
                             <label for="profileuser" class="form-label">Perfil</label>
-                            <select [(ngModel)]="profile" id="profileuser" class="form-select"
-                                formControlName="profile" aria-describedby="noteprofile">
-                                <option *ngFor="let profile of listProfiles" value="{{profile._id}}">{{profile.name}}</option>
+                            <select [(ngModel)]="profile" id="profileuser" class="form-select" formControlName="profile"
+                                aria-describedby="noteprofile">
+                                <option *ngFor="let profile of listProfiles" value="{{profile._id}}">{{profile.name}}
+                                </option>
                             </select>
                             <div id="noteprofile" class="form-text">Este campo es obligatorio</div>
                         </div>
@@ -80,7 +85,8 @@
                                     <label for="stateuser" class="form-label">Estado</label>
                                     <select [(ngModel)]="state" id="stateuser" class="form-select"
                                         formControlName="state" aria-describedby="notestate">
-                                        <option *ngFor="let state of listStates" value="{{state._id}}">{{state.name}} {{state.abbreviation}}</option>
+                                        <option *ngFor="let state of listStates" value="{{state._id}}">{{state.name}}
+                                            {{state.abbreviation}}</option>
                                     </select>
                                     <div id="notestate" class="form-text">Este campo es obligatorio</div>
                                 </div>

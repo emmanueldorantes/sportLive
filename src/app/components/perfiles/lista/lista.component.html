@@ -1,34 +1,32 @@
-<div class="container mt-4">
-    <input class="form-control mb-2" placeholder="Filtrar por nombre" [(ngModel)]="filtroNombre">
+<div class="panel panel-flat">
+    <div class="table-responsive">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="icon-filter3"></i></span>
+            <input type="text" class="form-control" placeholder="Filtrar por nombre" [(ngModel)]="filtroNombre">
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr class="colorHead" >
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let profile of profiles | filtroPerfil:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }; let i = index" 
+                    [ngClass]="i % 2 === 0 ? 'zebra-even' : 'zebra-odd'">
+                    <td>{{ profile.autoincrement }}</td>
+                    <td>{{ profile.name }}</td>
+                    <td>
+                        <ul class="icons-list">
+                            <li class="text-primary-600"><a (click)="editarPerfil(profile._id)"><i class="icon-pencil7"></i></a></li>
+                        </ul>
+                    </td>
+                </tr>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr
-                *ngFor="let profile of profiles | filtroPerfil:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
-                <td>{{ profile.autoincrement }}</td>
-                <td>{{ profile.name }}</td>
-                <td>
-                    <button mat-icon-button (click)="editarPerfil(profile._id)">
-                        <span>
-                            <i class="ti ti-edit"></i>
-                        </span>                        
-                    </button>
-                    <button mat-icon-button color="warn" (click)="eliminarPerfil(profile._id, profile.name)">
-                        <span>
-                            <i class="ti ti-trash"></i>
-                        </span>                        
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+            </tbody>
+        </table>
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
 </div>

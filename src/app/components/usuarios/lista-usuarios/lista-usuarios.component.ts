@@ -37,6 +37,10 @@ export class ListaUsuariosComponent {
     this.setQuery();
     const usersRows = await this.getUsers();
     this.users = usersRows;
+
+    let scriptElement1 = document.createElement('script');
+    scriptElement1.src = "../../../assets/js/pages/form_checkboxes_radios.js";
+    document.body.appendChild(scriptElement1);
   }
 
   async getUsers(): Promise<any> {
@@ -149,9 +153,9 @@ export class ListaUsuariosComponent {
         this.setUpdateStatus(id, status);
         let response = await this.graphqlService.post(this.mutation, this.variables);
         this.snakBar.open("Se cambio el estatus correctamente.", "Aceptar", {
-          duration: 5000,
-          horizontalPosition: "right",
-          verticalPosition: "top"
+          duration: 0,
+          horizontalPosition: "center",
+          verticalPosition: "bottom"
         });
       } else {
         const user = this.users.find((user: any) => user._id === id);

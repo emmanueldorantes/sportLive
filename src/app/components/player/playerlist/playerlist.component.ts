@@ -10,7 +10,7 @@ export class PlayerlistComponent implements OnInit{
   constructor(private titleService: TitleService) {}
 
   ngOnInit(): void {
-    this.titleService.setTitle('Jugador / Lista de Jugadores');
+    // this.titleService.setTitle('Jugador / Lista de Jugadores');
   }
 
 
