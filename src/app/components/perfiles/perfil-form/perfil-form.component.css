@@ -1,6 +1,24 @@
 .form-check {
     padding-left: 60px !important;
 }
+
 .paddingLabel {
     padding-left: 10px;
+}
+
+.example-section {
+    margin: 12px 0;
+}
+
+.example-margin {
+    margin: 0 12px;
+}
+
+.fontSize {
+    font-size: 12px;
+}
+
+ul {
+    list-style-type: none;
+    margin-top: 4px;
 }

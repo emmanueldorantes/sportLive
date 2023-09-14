@@ -53,7 +53,7 @@ export class ListaUsuariosComponent {
       query {
         getUsers(filters: {
           qry: {
-            remove: false
+            delete: false
           },
           inner: [
             { path: "state" },
@@ -103,7 +103,7 @@ export class ListaUsuariosComponent {
     this.mutation = `
       mutation($id: ID!) {
         updateUser(_id: $id, input: {
-          remove: true
+          delete: true
         }){
             _id
         }
@@ -133,7 +133,7 @@ export class ListaUsuariosComponent {
         this.setMutationDelete(id);
         await this.graphqlService.post(this.mutation, this.variables);
         window.location.reload();
-      } 
+      }
     });
   }
 
@@ -150,17 +150,17 @@ export class ListaUsuariosComponent {
 
     dialog.afterClosed().subscribe(async (result) => {
       if (result) {
-        this.setUpdateStatus(id, status);
-        let response = await this.graphqlService.post(this.mutation, this.variables);
-        this.snakBar.open("Se cambio el estatus correctamente.", "Aceptar", {
-          duration: 0,
-          horizontalPosition: "center",
-          verticalPosition: "bottom"
-        });
+            this.setUpdateStatus(id, status);
+            let response = await this.graphqlService.post(this.mutation, this.variables);
+            this.snakBar.open("Se cambio el estatus correctamente.", "Aceptar", {
+              duration: 0,
+              horizontalPosition: "center",
+              verticalPosition: "bottom"
+            });
       } else {
         const user = this.users.find((user: any) => user._id === id);
         if (user)
-          user.status = (!status) ? true : false;
+          user.status = (status) ? false : true;
       }
     });
   }

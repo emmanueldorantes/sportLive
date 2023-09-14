@@ -21,7 +21,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let user of users | filtroPerfil:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }; let i = index"
+                <tr *ngFor="let user of users | filtroUsuario:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }; let i = index"
                     [ngClass]="i % 2 === 0 ? 'zebra-even' : 'zebra-odd'">
                     <td>{{ user.autoincrement }}</td>
                     <td>{{ user.name }}</td>
@@ -32,14 +32,11 @@
                     <td>{{ user.city }}</td>
                     <td>{{ user.profile.name }}</td>
                     <td>
-                        <div class="checkbox checkbox-switchery switchery-sm">
-                            <label>
-                                <input type="checkbox" class="switchery" checked="checked" id="userStatus{{user._id}}" 
-                                [(ngModel)]="user.status" (change)="changeStatus(user._id, user.status)">{{user.status}}
-                                <span class="form-check-label" for="userStatus" *ngIf="user.status">Activo</span>
-                                <span class="form-check-label" for="userStatus" *ngIf="!user.status">Inactivo</span>
-                            </label>
-                        </div>                        
+                        <mat-slide-toggle id="userStatus{{user._id}}" (change)="changeStatus(user._id, user.status)"
+                            [(ngModel)]="user.status">
+                            <span class="form-check-label" for="userStatus" *ngIf="user.status">Activo</span>
+                            <span class="form-check-label" for="userStatus" *ngIf="!user.status">Inactivo</span>
+                        </mat-slide-toggle>
                     </td>
                     <td>
                         <ul class="icons-list">

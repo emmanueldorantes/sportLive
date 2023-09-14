@@ -11,6 +11,7 @@ export class FiltroUsuarioPipe implements PipeTransform {
     }
 
     filterText = filterText.toLowerCase();
+    console.log(filterText)
     return items.filter(item =>
       item.name.toLowerCase().includes(filterText) || item.email.toLowerCase().includes(filterText) || item.mobile.toLowerCase().includes(filterText)
     );
