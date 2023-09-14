@@ -24,8 +24,8 @@ export class PerfilFormComponent implements OnInit {
   isCreating: boolean = true;
   modules: any;
   permissions: any;
-  idsMenus: any;
 
+  idsMenus: any;
   todosPerfiles: boolean = false;
   verPerfiles: boolean = false;
   editarPerfiles: boolean = false;
@@ -53,6 +53,7 @@ export class PerfilFormComponent implements OnInit {
   todosEstadisticas: boolean = false;
   verEstadisticas: boolean = false;
   gruposPermisos: any;
+
 
   constructor(
     private fb: FormBuilder,
@@ -110,17 +111,19 @@ export class PerfilFormComponent implements OnInit {
         id: menuData._id,
         name: menuData.name,
         label: `todos${menuData.name}`,
+        complete: false,
+        someComplete: false,
         permisos: []
       });
       if (menuData.name == "Estadisticas") {
         this.gruposPermisos[index].permisos.push(
-          { label: 'Ver', controlName: `ver${menuData.name}` }
+          { label: 'Ver', controlName: `ver${menuData.name}`, completed: false }
         );
       } else {
         this.gruposPermisos[index].permisos.push(
-          { label: 'Ver', controlName: `ver${menuData.name}` },
-          { label: 'Editar', controlName: `editar${menuData.name}` },
-          { label: 'Eliminar', controlName: `eliminar${menuData.name}` }
+          { label: 'Ver', controlName: `ver${menuData.name}`, completed: false },
+          { label: 'Editar', controlName: `editar${menuData.name}`, completed: false },
+          { label: 'Eliminar', controlName: `eliminar${menuData.name}`, completed: false }
         );
       }
     });
@@ -284,91 +287,73 @@ export class PerfilFormComponent implements OnInit {
   }
 
   toggleAllPermissions(event: any) {
-    let checkbox = event.target;
-    const isChecked = event.target.checked;
-    let seeControl;
-    let editControl;
-    let deleteControl;
-    if (checkbox.id !== 'Estadisticas') {
-      seeControl = this.profileForm.get(`ver${checkbox.id}`);
-      seeControl?.setValue(isChecked);
-      editControl = this.profileForm.get(`editar${checkbox.id}`);
-      editControl?.setValue(isChecked);
-      deleteControl = this.profileForm.get(`eliminar${checkbox.id}`);
-      deleteControl?.setValue(isChecked);
-    } else {
-      seeControl = this.profileForm.get(`ver${checkbox.id}`);
-      seeControl?.setValue(isChecked);
-    }
-    this.setIdsMenuModule();
+    let isChecked = event.checked;
+    let checkbox = event.source;
+    this.gruposPermisos.forEach((module: any) => {
+      if (module.name === checkbox.id) {
+        module.complete = isChecked;
+        module.someComplete = false;
+        module.permisos.forEach((permission: any) => (permission.completed = isChecked));
+      }
+    });
   }
 
-  togglePermission(event: any, module: string) {
-    let checkbox = event.target;
-    if (checkbox.id === `ver${module}` || checkbox.id === `editar${module}` || checkbox.id === `eliminar${module}`) {
-      let seeControl = this.profileForm.get(`ver${module}`);
-      let editControl = this.profileForm.get(`editar${module}`);
-      let deleteControl = this.profileForm.get(`eliminar${module}`);
-      let allControl = this.profileForm.get(`todos${module}`);
-
-      if (module !== "Estadisticas") {
-        if (seeControl?.value && !editControl?.value && !deleteControl?.value ||
-          !seeControl?.value && editControl?.value && !deleteControl?.value ||
-          !seeControl?.value && !editControl?.value && deleteControl?.value)
-          allControl?.setValue(true);
-        else if (!seeControl?.value && !editControl?.value && !deleteControl?.value)
-          allControl?.setValue(false);
-      } else {
-        if (seeControl?.value)
-          allControl?.setValue(true);
-        else if (!seeControl?.value)
-          allControl?.setValue(false);
+  togglePermission(nameModule: string) {
+    this.gruposPermisos.forEach((module: any) => {
+      if (module.name === nameModule) {
+        module.complete = module.permisos.every((permission: any) => permission.completed);
+        this.someComplete();
       }
-    }
+    });
+  }
+
+  someComplete() {
+    this.gruposPermisos.forEach((module: any) => {
+      module.someComplete = module.permisos.filter((permission: any) => permission.completed).length > 0 && !module.complete;
+    });
   }
 
   validationOfActiveModules(valuesForm: any) {
-    let hasActivePermissions = false;
+    let totalModules = this.gruposPermisos.length;
+    let response;
     this.permissions = [];
-    for (let field in valuesForm) {
-      if (field.indexOf("todos") !== -1 && valuesForm[field]) {
-        hasActivePermissions = true;
-        break;
-      }
-    }
-
-    if (hasActivePermissions) {
-      for (let field in valuesForm) {
-        if (field.indexOf("todos") !== -1) {
-          let module: any = field.split("todos").pop();
-          if (module !== 'Estadisticas') {
-            this.permissions.push({
-              menu: module,
-              permissions: {
-                see: valuesForm[`ver${module}`],
-                edit: valuesForm[`editar${module}`],
-                delete: valuesForm[`eliminar${module}`]
-              }
-            });
-          } else {
-            this.permissions.push({
-              menu: module,
-              permissions: {
-                see: valuesForm[`ver${module}`]
-              }
-            });
-          }
+    this.gruposPermisos.forEach((module: any) => {
+      if (module.complete || module.someComplete) {
+        response = true;
+        let permissionsValues: any = {};
+        if (module.name !== 'Estadisticas') {
+          module.permisos.forEach((permission: any) => {
+            permissionsValues['see'] = valuesForm[`ver${module.name}`];
+            permissionsValues['edit'] = valuesForm[`editar${module.name}`];
+            permissionsValues['delete'] = valuesForm[`eliminar${module.name}`];
+          });
+          this.permissions.push({
+            menu: module.name,
+            permissions: permissionsValues
+          });
+        } else {
+          module.permisos.forEach((permission: any) => {
+            permissionsValues['see'] = valuesForm[`ver${module.name}`];            
+          });
+          this.permissions.push({
+            menu: module.name,
+            permissions: permissionsValues
+          });
         }
-      }
-      return true;
-    }
-
-    this.snakBar.open("Debe seleccionar al menos un módulo para guardar el perfil.", "Aceptar", {
-      duration: 6000,
-      horizontalPosition: "center",
-      verticalPosition:"bottom"
+        totalModules++;
+      } else
+        totalModules--;
     });
-    return false;
+    if (totalModules === 0) {
+      response = false;
+      this.snakBar.open("Debe seleccionar al menos un módulo para guardar el perfil.", "Aceptar", {
+        duration: 6000,
+        horizontalPosition: "center",
+        verticalPosition: "bottom"
+      });
+    }
+    console.log(this.permissions)
+    return response;
   }
 
   setQueryMenu() {

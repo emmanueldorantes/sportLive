@@ -5,43 +5,39 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">Nombre del Perfil: *</label>
                     <div class="col-lg-10">
-                        <input type="text" class="form-control" [(ngModel)]="name" type="text" class="form-control"
+                        <input type="text" class="form-control" type="text" class="form-control"
                             id="nombreperfil" aria-describedby="nombreHelp" formControlName="name">
                     </div>
                 </div>
 
                 <fieldset class="content-group">
                     <legend class="text-bold">Modulos del Sistema</legend>
-                    <div class="row">                        
+                    <div class="row">
                         <div class="col-md-3" *ngFor="let group of gruposPermisos;">
-                            <div class="panel panel-white">
-								<div class="panel-heading">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" class=""  id="{{group.name}}" (change)="toggleAllPermissions($event)" [formControlName]="group.label">
-                                            <h6 class="panel-title">{{group.name}}</h6>
-                                        </label>
-                                    </div>									
-								</div>
-								
-								<div class="panel-body">
-									<div class="form-group pt-15">
-                                        <div class="checkbox" *ngFor="let permiso of group.permisos">
-                                            <label>
-                                                <input type="checkbox" class="" id="{{permiso.controlName}}" (change)="togglePermission($event, group.name)" [formControlName]="permiso.controlName">                                                
+                            <section class="example-section">
+                                <span class="example-list-section">
+                                    <mat-checkbox class="example-margin" color="primary" id="{{group.name}}" [indeterminate]="group.someComplete" [checked]="group.complete" (change)="toggleAllPermissions($event)" [formControlName]="group.label">
+                                        {{group.name}}
+                                    </mat-checkbox>
+                                </span>
+                                <span class="example-list-section">
+                                    <ul>
+                                        <li *ngFor="let permiso of group.permisos">
+                                            <mat-checkbox [(ngModel)]="permiso.completed" (ngModelChange)="togglePermission(group.name)" [formControlName]="permiso.controlName">
                                                 {{permiso.label}}
-                                            </label>
-                                        </div>
-                                    </div>
-								</div>
-							</div>
-                        </div>                        
+                                            </mat-checkbox>
+                                        </li>
+                                    </ul>
+                                </span>
+                            </section>
+                        </div>
                     </div>
                 </fieldset>
 
                 <div class="text-right">
-                    <button type="submit" class="btn bg-teal-400 btn-labeled"><b><i class="icon-floppy-disk"></i></b> Guardar</button>
-                </div>                
+                    <button type="submit" class="btn bg-teal-400 btn-labeled"><b><i class="icon-floppy-disk"></i></b>
+                        Guardar</button>
+                </div>
             </fieldset>
         </form>
     </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgForm, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TitleService } from '../../../services/title.service';
 import { UploadService } from '../../../services/upload.service';
 import { GraphqlService } from '../../../services/graphql.service';
@@ -12,11 +12,10 @@ import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-usuario-form',
-  templateUrl:'./usuario-form.component.html',
+  templateUrl: './usuario-form.component.html',
   styleUrls: ['./usuario-form.component.css']
 })
 export class UsuarioFormComponent implements OnInit {
-  userForm: FormGroup;
   profile: any;
   name: string;
   lastName: string;
@@ -38,7 +37,6 @@ export class UsuarioFormComponent implements OnInit {
   displayedImageUrl: string;
 
   constructor(
-    private fb: FormBuilder,
     private titleService: TitleService,
     private uploadService: UploadService,
     private graphqlService: GraphqlService,
@@ -46,20 +44,8 @@ export class UsuarioFormComponent implements OnInit {
     private snakBar: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute,
-    private imageCompress: NgxImageCompressService
   ) {
     this.titleService.setTitle('Usuarios / Alta de Usuario');
-    this.userForm = this.fb.group({
-      profile: ['', Validators.required],
-      name: ['', Validators.required],
-      email: ['', Validators.required],
-      mobile: ['', Validators.required],
-      state: ['', Validators.required],
-      gender: ['', Validators.required],
-      city: ['', Validators.required],
-      lastName: [''],
-      file: [null],
-    });
     this.profile = '';
     this.name = '';
     this.lastName = '';
@@ -98,22 +84,24 @@ export class UsuarioFormComponent implements OnInit {
     });
   }
 
-  onSubmit() {
-    if (this.userForm.status === 'VALID') {
-      if (this.isCreating) {
-        this.setMutationInsert();
-        this.saveUser();
-      } else {
-        this.setMutationUpdate();
-        this.updateUser();
-      }
-    } else {
-      this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
-        duration: 5000,
-        horizontalPosition: "right",
-        verticalPosition: "top"
-      });
+  onSubmit(f: NgForm) {
+    if (f.valid) {
+      console.log(this.name)
+      //   if (this.isCreating) {
+      //     this.setMutationInsert();
+      //     this.saveUser();
+      //   } else {
+      //     this.setMutationUpdate();
+      //     this.updateUser();
+      //   }
     }
+    // } else {
+    //   this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
+    //     duration: 5000,
+    //     horizontalPosition: "right",
+    //     verticalPosition: "top"
+    //   });
+    // }
   }
 
   async getProfiles() {
