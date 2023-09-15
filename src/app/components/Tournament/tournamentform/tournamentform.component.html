@@ -8,12 +8,11 @@
         padding: 2rem;
     }
 </style>
-<body>
     <div class="container-fluid mt-5">
         <div class="card">
             <div class="card-body">
                 <h2 class="mb-5">Torneo</h2>
-                <form>
+                <form form [formGroup]="tournamentform" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label for="cancha" class="form-label">Cancha</label>
                         <select class="form-select" id="cancha">
@@ -23,26 +22,26 @@
                     </div>
                     <div class="mb-4">
                         <label for="nombre" class="form-label">Nombre:</label>
-                        <input type="text" class="form-control" id="nombre" placeholder="Nombre del torneo">
+                        <input formControlName="nombre" type="text" class="form-control" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">
                     </div>
     
                     <div class="row mt-4 mb-5"> <!-- Añadimos mb-5 para más espacio después de los campos -->
                         <div class="col-md-6 mb-4">
                             <label for="dias" class="form-label">Días</label>
                             <select class="form-select" id="dias">
-                                <option value="">-- Selecciona una opción --</option>
-                                <option value="lv">L-V</option>
-                                <option value="sabado">Sábado</option>
-                                <option value="domingo">Domingo</option>
+                                <option value="" >-- Selecciona una opción --</option>
+                                <option value="lv" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">L-V</option>
+                                <option value="sabado" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">Sábado</option>
+                                <option value="domingo"id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">Domingo</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-4">
                             <label for="horario" class="form-label">Horario</label>
                             <select class="form-select" id="horario">
                                 <option value="">-- Selecciona una hora --</option>
-                                <option value="">7:00 pm </option>
-                                <option value="">8:00 pm</option>
-                                <option value="">9:00 pm</option>
+                                <option value=""id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">7:00 pm </option>
+                                <option value=""id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">8:00 pm</option>
+                                <option value=""id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">9:00 pm</option>
                             </select>
                         </div>
                     </div>
@@ -55,11 +54,4 @@
             </div>
         </div>
     </div>
-    
-
-<!-- Optional JavaScript; choose one of the two! -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgForm, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TitleService } from '../../../services/title.service';
 import { UploadService } from '../../../services/upload.service';
 import { GraphqlService } from '../../../services/graphql.service';
@@ -18,228 +18,376 @@ import { environment } from '../../../../environments/environment';
 
 export class TournamentformComponent implements OnInit {
 
-  tournamentForm:FormGroup;
-    isCreating: boolean = true;
-    query: string;
-    mutation: string;
-    variables: any;
-    // Inforamcion de la Cancha
-    nombre: string;
-    tournamentId: any = '';
-    file: any;
-    selectedFile: File | null = null;
+  tournamentform:FormGroup;
+  isCreating: boolean = true;
+  srcImage: string;
+  query: string;
+  mutation: string;
+  variables: any;
+  // Inforamcion de la Cancha
+  nombre: string;
+  telefono:  string;
+  // Informacion de Contacto
+  contactonombre: string;
+  contactoapellidos: string;
+  contactocelular: string;
+  contactocorreo : string;
+//Informacion de Propietario
+  propietarionombre: string;
+  propietarioapellidos:string;
+  propietariocorreo:string;
+  propietariotelefono:string;
+  displayedImageUrl: string;
+  fieldId: any = '';
+  file: any;
+  selectedFile: File | null = null;
+  
+  constructor(
+    private fb: FormBuilder,
+    private titleService: TitleService,
+    private uploadService: UploadService,
+    private graphqlService: GraphqlService,
+    private dialog: MatDialog,
+    private snakBar: MatSnackBar,
+    private router: Router,
+    private route: ActivatedRoute,
+    private imageCompress: NgxImageCompressService
+  ) {
+
+    //Para validar que son campos requeridos o no
+
+    this.titleService.setTitle('Cancha / Nueva Cancha');
+    this.srcImage = "../../../../assets/images/user_default.png";
+    this.tournamentform = this.fb.group({
+      nombre: ['', Validators.required],
+      telefono:  ['', Validators.required],
+      contactonombre: ['', Validators.required],
+  
+    });
+   
+    this.nombre = '';
+    this.telefono = '';
+    this.contactonombre = '';
+    this.contactoapellidos = ''; 
+    this.contactocelular = ''; 
+    this.contactocorreo = "";
+    this.propietarionombre = "";
+    this.propietarioapellidos = "";
+    this.propietariocorreo = "";
+    this.propietariotelefono = "";
+    this.mutation = "";
+  }
+
+  async ngOnInit() {
     
-    constructor(
-      private fb: FormBuilder,
-      private titleService: TitleService,
-      private uploadService: UploadService,
-      private graphqlService: GraphqlService,
-      private dialog: MatDialog,
-      private snakBar: MatSnackBar,
-      private router: Router,
-      private route: ActivatedRoute,
-      private imageCompress: NgxImageCompressService
-    ) {
-  
-      //Para validar que son campos requeridos o no
-  
-      this.titleService.setTitle('Torneos / Nuevo Torneo');
-      this.tournamentForm = this.fb.group({
-        nombre: ['', Validators.required],
-      });
-     
-      this.nombre = '';
-      this.mutation = "";
-    }
-  
-    async ngOnInit() {
-      
-      this.route.params.subscribe(async params => {
-        this.tournamentId = params['id'];
-        this.isCreating = (this.tournamentId !== undefined) ? false : true;
-        if (!this.isCreating) {
-          this.titleService.setTitle('Torneos  / Editar Torneos');
-         let datatournament = await this.getTournament();
-         console.log(datatournament)
-          this.nombre = datatournament.nombre;
-        }
-      });
-    }
-  
-    onSubmit() {
-      if (this.tournamentForm.status === 'VALID') {
-        // let pathFile = this.userForm.get('file')?.value;
-        if (this.isCreating) {
-          this.setMutationInsert();
-          this.saveTournament();
-        } else {
-          this.setMutationUpdate();
-          this.updateTournament();
-        }
+    this.route.params.subscribe(async params => {
+      this.fieldId = params['id'];
+      this.isCreating = (this.fieldId !== undefined) ? false : true;
+      if (!this.isCreating) {
+        this.titleService.setTitle('Canchas  / Editar Usuario');
+       let datafield = await this.getField();
+       console.log(datafield)
+        this.nombre = datafield.nombre;
+        this.telefono = datafield.telefono;
+        this.contactonombre = datafield.contactonombre;
+        this.contactoapellidos = datafield.contactoapellidos;
+        this.contactocelular = datafield.contactocelular;
+        this.contactocorreo = datafield.contactocorreo;
+        this.propietarionombre = datafield.propietarionombre;
+        this.propietarioapellidos = datafield.propietarioapellidos;
+        this.propietariocorreo = datafield.propietariocorreo;
+        this.propietariotelefono = datafield.propietariotelefono;
+        this.displayedImageUrl =  datafield.photo ? `${environment.fileManager}/${datafield.photo}` : `${environment.fileManager}/user_default.png`;
       } else {
-        this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
-          duration: 5000,
-          horizontalPosition: "right",
-          verticalPosition: "top"
-        });
+        this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
       }
-    }
-    
-    async updateTournament() {
-      let response = await this.graphqlService.post(this.mutation, this.variables);
-      const miSnackBar = this.snakBar.open("El usuario ha sido modificado correctamente.", "Aceptar", {
-        duration: 0,
+    });
+  }
+
+  onSubmit() {
+    if (this.tournamentform.status === 'VALID') {
+      // let pathFile = this.userForm.get('file')?.value;
+      if (this.isCreating) {
+        this.setMutationInsert();
+        this.saveField();
+      } else {
+        this.setMutationUpdate();
+        this.updateField();
+      }
+    } else {
+      this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
+        duration: 5000,
         horizontalPosition: "right",
         verticalPosition: "top"
       });
-      miSnackBar.onAction().subscribe(() => {
-        this.router.navigateByUrl('/home/tournamentlist');
-      });
     }
+  }
   
-    async saveTournament() {
-      try {
-        let response = await this.graphqlService.post(this.mutation, this.variables);
-        let tournamentDocument = response.data.createTournament;
-        const dialog = this.dialog.open(ConfirmDialogComponent, {
-          width: '390px',
-          data: {
-            message: `La cancha ${tournamentDocument.nombre} ha sido creado correctamente.`,
-            question: "¿Deseas agregar otro Usuario?",
-            ok: "Si",
-            cancel: "No"
-          }
-        });
-        if (this.selectedFile) {
-          }
-        dialog.afterClosed().subscribe(async result => {
-          if (result) {
-            this.cleanForm();
-            
-          } else {
-            this.router.navigateByUrl('/home/fieldlist');
-          }
-        });
-      } catch (error) {
-        console.log(error);
+  async updateField() {
+    let response = await this.graphqlService.post(this.mutation, this.variables);
+    const miSnackBar = this.snakBar.open("El usuario ha sido modificado correctamente.", "Aceptar", {
+      duration: 0,
+      horizontalPosition: "right",
+      verticalPosition: "top"
+    });
+    if (this.selectedFile) {
+      const resizedImage = await this.resizeImage(this.selectedFile);
+      const formData = new FormData();
+      formData.append('image', resizedImage, `${this.fieldId}_${this.selectedFile?.name}`);
+      let responseUpload = await this.uploadService.post(formData);
+      if (responseUpload && responseUpload.ok) {
+        this.displayedImageUrl = `${environment.fileManager}/image-${this.fieldId}_${this.selectedFile?.name}`;
+        this.setMutationUpdateImage();
+        await this.graphqlService.post(this.mutation, this.variables);
       }
-      
     }
-  
-    async getTournament() {
-      this.setQueryField();
-      let response = await this.graphqlService.post(this.query, this.variables);
-      return response.data.getField;
-    }
-  
-    cleanForm() {
-      this.nombre = '';
-    }
-  
-    setMutationInsert() {
-      this.mutation = `
-        mutation(
-          $nombre: String!,
-          $telefono: String!,
-          $contactonombre: String!,
-          $contactoapellidos: String!,
-          $contactocelular: String!,
-          $contactocorreo: String!,
-          $propietarionombre: String!,
-          $propietarioapellidos: String!,
-          $propietariocorreo: String!,
-          $propietariotelefono: String!) {
-          createField(input: {
-            nombre: $nombre,
-            telefono: $telefono,
-            contactonombre: $contactonombre,
-            contactoapellidos: $contactoapellidos,
-            contactocelular: $contactocelular,
-            contactocorreo: $contactocorreo,
-            propietarionombre: $propietarionombre,
-            propietarioapellidos: $propietarioapellidos,
-            propietariocorreo: $propietariocorreo,
-            propietariotelefono: $propietariotelefono
-          }){
-            _id,
-            nombre
-          }
-        }`;
-      this.variables = {
-        module: 'field',
-        nombre: this.nombre,
-      };
-  
-    }
-  
-      setQueryField() {
-        this.query = `
-        query($id: ID!) {
-          getField(_id: $id, filters: {}){
-                _id,
-                nombre,
-                telefono,
-                contactonombre,
-                contactoapellidos,
-                contactocelular,
-                contactocorreo,
-                propietarionombre,
-                propietarioapellidos,
-                propietariocorreo,
-                photo,
-                propietariotelefono
-                }
-        }`;
-        this.variables = {
-          module: 'field',
-          id: this.tournamentId
-        };
-      } 
-  
-      setMutationUpdate() {
-       this.mutation = `
-      mutation(
-      $id: ID!,
-      $nombre: String!,
-      $telefono: String!,
-      $contactonombre: String!,
-      $contactoapellidos: String!,
-      $contactocelular: String!,
-      $contactocorreo: String!,
-      $propietarionombre: String!,
-      $propietarioapellidos: String!,
-      $propietariocorreo: String!,
-      $propietariotelefono: String!) {
-        updateField(_id: $id, input: {
-        nombre: $nombre,
-        telefono: $telefono,
-        contactonombre: $contactonombre,
-        contactoapellidos: $contactoapellidos,
-        contactocelular: $contactocelular,
-        contactocorreo: $contactocorreo,
-        propietarionombre: $propietarionombre,
-        propietarioapellidos: $propietarioapellidos,
-        propietariocorreo: $propietariocorreo,
-        propietariotelefono: $propietariotelefono
-      }){
-        _id,
-        nombre
-      }
-    }`;
-  this.variables = {
-    
-    module: 'field',
-    id: this.tournamentId,
-    nombre: this.nombre,
-  };
-  }  
+    miSnackBar.onAction().subscribe(() => {
+      this.router.navigateByUrl('/home/fieldlist');
+    });
   }
 
+  async saveField() {
+    try {
+      let response = await this.graphqlService.post(this.mutation, this.variables);
+      let fieldDocument = response.data.createField;
+      const dialog = this.dialog.open(ConfirmDialogComponent, {
+        width: '390px',
+        data: {
+          message: `La cancha ${fieldDocument.nombre} ha sido creado correctamente.`,
+          question: "¿Deseas agregar otro Usuario?",
+          ok: "Si",
+          cancel: "No"
+        }
+      });
+      if (this.selectedFile) {
+        const resizedImage = await this.resizeImage(this.selectedFile);
+         const formData = new FormData();
+         console.log (`${fieldDocument._id}_${this.selectedFile?.name}`)
+         formData.append('image', resizedImage, `${fieldDocument._id}_${this.selectedFile?.name}`);
+         let responseUpload = await this.uploadService.post(formData);
+          if (responseUpload && responseUpload.ok) {
+          this.displayedImageUrl = `${environment.fileManager}/image-${fieldDocument._id}_${this.selectedFile?.name}`;
+          this.setMutationUpdateImage(fieldDocument._id);
+          await this.graphqlService.post(this.mutation, this.variables);
+          }
+        }
+      dialog.afterClosed().subscribe(async result => {
+        if (result) {
+          this.cleanForm();
+          
+        } else {
+          this.router.navigateByUrl('/home/fieldlist');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    
+  }
 
+  async getField() {
+    this.setQueryField();
+    let response = await this.graphqlService.post(this.query, this.variables);
+    return response.data.getField;
+  }
+
+  cleanForm() {
+    this.nombre = '';
+    this.telefono = '';
+    this.contactonombre = '';
+    this.contactoapellidos = ''; 
+    this.contactocelular = ''; 
+    this.contactocorreo = "";
+    this.propietarionombre = "";
+    this.propietarioapellidos = "";
+    this.propietariocorreo = "";
+    this.propietariotelefono = "";
+    this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
+  }
+
+  setMutationInsert() {
+    this.mutation = `
+      mutation(
+        $nombre: String!,
+        $telefono: String!,
+        $contactonombre: String!,
+        $contactoapellidos: String!,
+        $contactocelular: String!,
+        $contactocorreo: String!,
+        $propietarionombre: String!,
+        $propietarioapellidos: String!,
+        $propietariocorreo: String!,
+        $propietariotelefono: String!) {
+        createField(input: {
+          nombre: $nombre,
+          telefono: $telefono,
+          contactonombre: $contactonombre,
+          contactoapellidos: $contactoapellidos,
+          contactocelular: $contactocelular,
+          contactocorreo: $contactocorreo,
+          propietarionombre: $propietarionombre,
+          propietarioapellidos: $propietarioapellidos,
+          propietariocorreo: $propietariocorreo,
+          propietariotelefono: $propietariotelefono
+        }){
+          _id,
+          nombre
+        }
+      }`;
+    this.variables = {
+      module: 'field',
+      nombre: this.nombre,
+      telefono: this.telefono,
+      contactonombre: this.contactonombre,
+      contactoapellidos: this.contactoapellidos,
+      contactocelular: this.contactocelular,
+      contactocorreo: this.contactocorreo,
+      propietarionombre: this.propietarionombre,
+      propietarioapellidos: this.propietarioapellidos,
+      propietariocorreo: this.propietariocorreo,
+      propietariotelefono: this.propietariotelefono
+    };
+
+  }
+
+    setQueryField() {
+      this.query = `
+      query($id: ID!) {
+        getField(_id: $id, filters: {}){
+              _id,
+              nombre,
+              telefono,
+              contactonombre,
+              contactoapellidos,
+              contactocelular,
+              contactocorreo,
+              propietarionombre,
+              propietarioapellidos,
+              propietariocorreo,
+              photo,
+              propietariotelefono
+              }
+      }`;
+      this.variables = {
+        module: 'field',
+        id: this.fieldId
+      };
+    } 
+
+    setMutationUpdate() {
+     this.mutation = `
+    mutation(
+    $id: ID!,
+    $nombre: String!,
+    $telefono: String!,
+    $contactonombre: String!,
+    $contactoapellidos: String!,
+    $contactocelular: String!,
+    $contactocorreo: String!,
+    $propietarionombre: String!,
+    $propietarioapellidos: String!,
+    $propietariocorreo: String!,
+    $propietariotelefono: String!) {
+      updateField(_id: $id, input: {
+      nombre: $nombre,
+      telefono: $telefono,
+      contactonombre: $contactonombre,
+      contactoapellidos: $contactoapellidos,
+      contactocelular: $contactocelular,
+      contactocorreo: $contactocorreo,
+      propietarionombre: $propietarionombre,
+      propietarioapellidos: $propietarioapellidos,
+      propietariocorreo: $propietariocorreo,
+      propietariotelefono: $propietariotelefono
+    }){
+      _id,
+      nombre
+    }
+  }`;
+this.variables = {
   
-  
-  
-  
-  
-  
-  
+  module: 'field',
+  id: this.fieldId,
+  nombre: this.nombre,
+  telefono: this.telefono,
+  contactonombre: this.contactonombre,
+  contactoapellidos: this.contactoapellidos,
+  contactocelular: this.contactocelular,
+  contactocorreo: this.contactocorreo,
+  propietarionombre: this.propietarionombre,
+  propietarioapellidos: this.propietarioapellidos,
+  propietariocorreo: this.propietariocorreo,
+  propietariotelefono: this.propietariotelefono
+};
+
+}
+setMutationUpdateImage(id?: any) {
+  this.mutation = `
+  mutation(
+    $id: ID!,
+    $photo: String!
+  ) {
+    updateField(_id: $id, input: {
+      photo: $photo        
+    }){
+        _id
+    }
+}`;
+let image = id ? `image-${id}_${this.selectedFile?.name}` : `image-${this.fieldId}_${this.selectedFile?.name}`;
+  this.variables = {
+    module: 'field',
+    id: id || this.fieldId,
+    photo: image
+  };
+
+}
+onFileSelected(event: any) {
+  this.selectedFile = event.target.files[0];
+}
+async resizeImage(image: File): Promise<Blob> {
+  return new Promise<Blob>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event: any) => {
+      const img = new Image();
+      img.src = event.target.result;
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx: any = canvas.getContext('2d');
+
+        // Define las dimensiones de redimensión
+        const maxWidth = 180;
+        const maxHeight = 180;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+
+        if (height > maxHeight) {
+          width *= maxHeight / height;
+          height = maxHeight;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convierte la imagen en un Blob redimensionado
+        canvas.toBlob((blob: any) => {
+          resolve(blob);
+        }, image.type);
+      };
+    };
+    reader.readAsDataURL(image);
+  });
+}
+}
+
+
+
+
+
+
