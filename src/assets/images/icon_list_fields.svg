@@ -1,0 +1,11 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 49" width="24" height="36">
+	<title>icon_field-svg</title>
+	<defs>
+		<image  width="29" height="44" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAsCAMAAACua0M1AAAAAXNSR0IB2cksfwAAAQtQTFRFiYmJfn5+x8rLfn5+AAAAfn5+f39/fn5+gICAfX19fn5+f39/f39/fn5+gICAfHx8f39/f39/fX19fn5+fn5+fn5+f39/gYGBgICAfX19hISEfn5+fn5+f39/hoaGf39/f39/gICAfn5+fn5+fn5+fHx8fn5+fn5+fn5+f39/fn5+fn5+fn5+f39/fn5+fX19fn5+f39/fX19gICAfn5+fX19gICAf39/fn5+fn5+fn5+fn5+fn5+x8rLx8rLx8rLx8rLx8rLx8rLx8rLx8rLx8rLx8rLfn5+x8rLx8rLx8rLx8rLx8rLx8rLx8rLfn5+fn5+x8rLf39/fX19fn5+gICAfX19fn5+f39/mdzhFAAAAFl0Uk5TB4j/dwDHOIkaZ7uAnEESI2jXMS1seFQMBCETsVpeCM1ZBXal0iRMcTzCqkAzm61jL4EyHqwiA11ikoejAAB/gKYs++nqAnxEKm3VfYMnBHTE2Ec2pBlleUT8pcqRAAABK0lEQVR4nNWU2VbCMBCGQzqKuwhKARVXFNz3PbgjLrhv7/8kJiUdYjLplTfOOT35m+/Mn2mnU8ZSXEUAHEPrrm5gae6jnPcwe8fUvYk0+Btqhk37+s2wKRn/ng4MDrHhzAhNs5AbHcuHhTRFi6XxaJ2AlEsny1NaTc+4tDCLLmHGpnMwjzRfQQpJwXTPFmAR+5cNtajGzjVYQufcslNVcQUprDp0Dda1Km0Qb2MTtpR5UN7mBOU7u6rMvf3OzsGvHtUOj47N+5OkDgqiv0LEgsiVrH4q1zNB5AqdXj+X0qUXsb1wvqtLxJGJde6VvK4RNm7oGYzqbt4aE9qZwCqIdrZ/upt3Xtrg9+qZPfSh9ajEE3smnV8i8crePOfKeAcGH5/tOvGHofXXN8APFaMjvsuVKB4AAAAASUVORK5CYII="/>
+		<image  width="19" height="13" id="img2" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAANCAMAAAB8UqUVAAAAAXNSR0IB2cksfwAAAMNQTFRFAAAA39/fkJCQx8rLnp6etbW16enpXV1dfHx9eHh42traubm5kpKSbW1t2tranp6eycnJ4uLioaGhd3d339/fd3d3uLi4x8rLgoKC4uLiZGRln5+frq6uVFRU3NzcXV1dsrKyeXl5a2tsiYmJfHx8ZmZmt7e3eHh42traubm5ampqent7bm5ubW1t4uLioaGhiIiId3d3uLi4ZGRlbGxsgICAVFRU3NzceXl5a2tsdnZ2ZmZmt7e3ampqWlpaj4+Pbm5ul4z+ngAAAEF0Uk5TABt3/8a+UP9g43Fxcf85ABQIv5814zkAMxfzVaP/OQApOepxXP9VAAAA7NnoAAAAHAAAAP//AAAAAOMAAAAcxgAPOCBHAAAAl0lEQVR4nF2OhQ7CYAyEy35chnO4DBs23PX9n4prRki2JpX70msqEoiIZaISipgxJoTiRImgMUmUSuuYyf6YRZSz8wUplowpK6koqtaAujSaHFtkbfZOF+j1RQYOxVBGrOMJMHXVNJtTLphLG1gp8tbY6CbP89Z2p1veHsCB6Ejj6ex/cLkSOuZG4/3x//UJvN40flxffwGrWgwPadiWBAAAAABJRU5ErkJggg=="/>
+	</defs>
+	<style>
+	</style>
+	<use id="img1" href="#img1" x="0" y="3"/>
+	<use id="ok" href="#img2" x="15" y="30"/>
+</svg>

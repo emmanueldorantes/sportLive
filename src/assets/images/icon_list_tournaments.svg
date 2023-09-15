@@ -1,0 +1,9 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 106 103" width="24" height="23">
+	<title>torneo1</title>
+	<defs>
+		<image  width="96" height="96" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgAgMAAACf9p+rAAAAAXNSR0IB2cksfwAAAAxQTFRF/////Pz8+/v7x8rLO8HeYgAAAAR0Uk5TAAAA/56RiRcAAAF2SURBVHic7VOxjcMwDDw336r+Kqt4Ay+RPqt4A6+oAEGAVP+ieCIpKc03Rop3IYs4HskjKeBrxVWO20/5HmYC31h2OQ4BsplQvBybAs0kXo5UATMt5lUBMy3mroCZFnNVwExYzArczYTFrMDTTFjMiwAvM/GvfDxc+XDgrXunfDyC05YjJzile+QEp/SMeYJTeoUUCE7pEVIgOKUcUsDG7d/DlB89kE35NgJNeRoAU94LuGVT3glYjmzKOwGtZZMAtqwqT3luWVV+ycvUsrNmLm1wd7GoXK7uWd1UuVw9egVUuVw9egVUuVy9ImYU5XL1ipgRoQ7lMCNCHcphRoQ6lMOMoQ5yWsaPVX7KO//AbW9P0udXu+WAz692ywGfX52PdtP3pFlFOcfNPWnEopzj5p40YlHOcU/EneMeiVibgIEINAED8ZSZs69cX+69/NhXri/3ngB3fCCyrxMRfA0TEXx/ExGhjo6IUEdHxCxAiW8EkPhn5b/aQQyIDiurqgAAAABJRU5ErkJggg=="/>
+	</defs>
+	<style>
+	</style>
+	<use id="Background" href="#img1" x="6" y="5"/>
+</svg>
