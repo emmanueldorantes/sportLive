@@ -50,7 +50,7 @@ export class FieldlistComponent {
     this.query = `
       query {
         getFields(filters: {
-            remove: false   
+            delete: false   
         }){
           _id,
           nombre,
@@ -84,7 +84,7 @@ export class FieldlistComponent {
     this.mutation = `
       mutation($id: ID!) {
         updateField(_id: $id, input: {
-          remove: true
+          delete: true
         }){
             _id
         }

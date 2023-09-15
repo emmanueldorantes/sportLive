@@ -1,129 +1,103 @@
-<<<<<<< HEAD
+<div class="panel panel-flat">
+    <div class="panel-body">
+        <form #formUser="ngForm" (ngSubmit)="onSubmit(formUser)" enctype="multipart/form-data" novalidate>
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <label for="profileuser" class="form-label">Perfil</label>
+                    <select [(ngModel)]="profile" id="profileuser" name="profile" class="form-control" required>
+                        <option *ngFor="let profile of listProfiles" value="{{profile._id}}">{{profile.name}}
+                        </option>
+                    </select>
+                    <div *ngIf="!profile" class="error">Este campo es obligatorio.</div>
+                </div>
+            </div>
 
-=======
->>>>>>> 4726ad1e62527fb178041b7822137e0896533dca
-<div class="container-fluid">
-    <div class="container-fluid">
-        <div class="card">
-            <div class="card-body">
-                <form #f="ngForm" (ngSubmit)="onSubmit(f)" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-6">
+                        <label for="name" class="form-label">Nombre:</label>
+                        <input [(ngModel)]="name" type="text" class="form-control" id="name" name="name" required>
+                        <div *ngIf="!name" class="error">Este campo es obligatorio.</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-6">
+                        <label for="lastename" class="form-label">Apellidos:</label>
+                        <input [(ngModel)]="lastName" type="text" class="form-control" id="lastename" name="lastName">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="emailuser" class="form-label">Email</label>
+                    <input [(ngModel)]="email" type="email" class="form-control" id="emailuser" name="email" required>
+                    <div *ngIf="!email" class="error">Este campo es obligatorio.</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-6">
+                        <label for="mobileuser" class="form-label">Celular:</label>
+                        <input [(ngModel)]="mobile" type="number" class="form-control" id="mobileuser" name="mobile"
+                            required>
+                        <div *ngIf="!mobile" class="error">Este campo es obligatorio.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="row">
+                        <label class="form-label">Genero</label>
+                        <mat-radio-group aria-label="Select an option" color="primary" [(ngModel)]="gender" name="gender">
+                            <mat-radio-button value="masculino">Masculino</mat-radio-button>
+                            <mat-radio-button value="femenino">Femenino</mat-radio-button>
+                        </mat-radio-group>
+                        <div *ngIf="!gender" class="error">Este campo es obligatorio.</div>
+                    </div>
+
                     <div class="row">
                         <div class="col-12 col-md-12">
-                            <label for="profileuser" class="form-label">Perfil</label>
-                            <select [(ngModel)]="profile" id="profileuser" name="profile" class="form-select"
-                                aria-describedby="noteprofile" required>
-                                <option *ngFor="let profile of listProfiles" value="{{profile._id}}">{{profile.name}}
-                                </option>
+                            <label for="stateuser" class="form-label">Estado</label>
+                            <select [(ngModel)]="state" id="stateuser" class="form-control" name="state" required>
+                                <option *ngFor="let state of listStates" value="{{state._id}}">{{state.name}}
+                                    {{state.abbreviation}}</option>
                             </select>
-                            <div id="noteprofile" class="form-text">Este campo es obligatorio</div>
+                            <div *ngIf="!state" class="error">Este campo es obligatorio.</div>
                         </div>
                     </div>
-
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-6">
-                                <label for="name" class="form-label">Nombre:</label>
-                                <input [(ngModel)]="name" type="text" class="form-control" id="name" name="name"
-                                    aria-describedby="notename" required>
-                                <div id="notename" class="form-text">Este campo es obligatorio</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-6">
-                                <label for="lastename" class="form-label">Apellidos:</label>
-                                <input [(ngModel)]="lastName" type="text" class="form-control" id="lastename" name="lastName">
-                            </div>
+                        <div class="col-12 col-md-12">
+                            <label for="cityuser" class="form-label">Ciudad:</label>
+                            <input [(ngModel)]="city" type="text" class="form-control" id="cityuser" name="city"
+                                required>
+                            <div *ngIf="!city" class="error">Este campo es obligatorio.</div>
                         </div>
                     </div>
-
                     <div class="row">
-                        <div class="col-md-6">
-                            <label for="emailuser" class="form-label">Email</label>
-                            <input [(ngModel)]="email" type="email" class="form-control" id="emailuser"
-                                aria-describedby="noteemail" name="email" required>
-                            <div id="noteemail" class="form-text">Este campo es obligatorio</div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-6">
-                                <label for="mobileuser" class="form-label">Celular:</label>
-                                <input [(ngModel)]="mobile" type="number" class="form-control" id="mobileuser"
-                                    aria-describedby="notemobile" name="mobile" required>
-                                <div id="notemobile" class="form-text">Este campo es obligatorio</div>
+                        <div class="col-12 col-md-12">
+                            <div class="input-group mb-3">
+                                <input [(ngModel)]="file" type="file" class="form-control" id="fileImg"
+                                    accept=".jpg,.png" (change)="onFileSelected($event)" name="file">
+                                <label class="input-group-text" for="fileImg">Imagen</label>
                             </div>
                         </div>
                     </div>
+                </div>
 
+                <div class="col-md-6">
                     <div class="row">
-
-                        <div class="col-md-6">
-                            <div class="row">
-                                <label class="form-label">Genero</label>
-                                <div class="col-6 col-md-6">
-                                    <div class="form-check">
-                                        <input [(ngModel)]="gender" class="form-check-input" type="radio" id="masculino"
-                                            value="masculino" name="gender[]">
-                                        <label class="form-check-label" for="masculino">
-                                            Masculino
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-6">
-                                    <div class="form-check">
-                                        <input [(ngModel)]="gender" class="form-check-input" type="radio" id="femenino"
-                                            value="femenino" name="gender[]">
-                                        <label class="form-check-label" for="femenino">
-                                            Femenino
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-12 col-md-12">
-                                    <label for="stateuser" class="form-label">Estado</label>
-                                    <select [(ngModel)]="state" id="stateuser" class="form-select"
-                                        aria-describedby="notestate" name="state" required>
-                                        <option *ngFor="let state of listStates" value="{{state._id}}">{{state.name}}
-                                            {{state.abbreviation}}</option>
-                                    </select>
-                                    <div id="notestate" class="form-text">Este campo es obligatorio</div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 col-md-12">
-                                    <label for="cityuser" class="form-label">Ciudad:</label>
-                                    <input [(ngModel)]="city" type="text" class="form-control" id="cityuser"
-                                        aria-describedby="notemobile" name="city" required>
-                                    <div id="notemobile" class="form-text">Este campo es obligatorio</div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 col-md-12">
-                                    <div class="input-group mb-3">
-                                        <input [(ngModel)]="file" type="file" class="form-control" id="fileImg"
-                                            accept=".jpg,.png" (change)="onFileSelected($event)" name="file">
-                                        <label class="input-group-text" for="fileImg">Imagen</label>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-12 col-md-12 text-center">
+                            <img [src]="displayedImageUrl" alt="Imagen" class="custom-thumbnail">
                         </div>
-
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-12 col-md-12 text-center">
-                                    <img [src]="displayedImageUrl" alt="Imagen" class="custom-thumbnail">
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
-
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-
-                </form>
+                </div>
             </div>
-        </div>
+
+            <div class="text-right">
+                <button type="submit" class="btn bg-teal-400 btn-labeled"><b><i class="icon-floppy-disk"></i></b>
+                    Guardar</button>
+            </div>
+        </form>
     </div>
 </div>

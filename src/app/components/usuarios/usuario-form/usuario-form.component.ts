@@ -84,24 +84,22 @@ export class UsuarioFormComponent implements OnInit {
     });
   }
 
-  onSubmit(f: NgForm) {
-    if (f.valid) {
-      console.log(this.name)
-      //   if (this.isCreating) {
-      //     this.setMutationInsert();
-      //     this.saveUser();
-      //   } else {
-      //     this.setMutationUpdate();
-      //     this.updateUser();
-      //   }
+  onSubmit(formUser: NgForm) {
+    if (formUser.valid) {
+      if (this.isCreating) {
+        this.setMutationInsert();
+        this.saveUser();
+      } else {
+        this.setMutationUpdate();
+        this.updateUser();
+      }
+    } else {
+      this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
+        duration: 5000,
+        horizontalPosition: "center",
+        verticalPosition: "bottom"
+      });
     }
-    // } else {
-    //   this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
-    //     duration: 5000,
-    //     horizontalPosition: "right",
-    //     verticalPosition: "top"
-    //   });
-    // }
   }
 
   async getProfiles() {
