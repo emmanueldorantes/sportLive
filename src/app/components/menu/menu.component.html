@@ -14,19 +14,49 @@
             <li><a [routerLink]="['/home/usuario']"><i class="icon-user-plus"></i> Alta de Usuario</a></li>
             <li><a [routerLink]="['/home/usuarios']"><i class=" icon-user-check"></i> Lista de Usuarios</a></li>
         </ul>
-    </li>    
+    </li>
     <li>
-        <a href="#"><i class=" icon-users4"></i> <span>Canchas</span></a>
+        <a href="#"><img src="../../../assets/images/icon_fields.svg" style="width: 19px;"> <span
+                style="margin-left: 17px">Canchas</span></a>
         <ul>
-            <li><a [routerLink]="['/home/fieldform']"><i class="icon-user-plus"></i> Alta de Cancha</a></li>
-            <li><a [routerLink]="['/home/fieldlist']"><i class=" icon-user-check"></i> Lista de Canchas</a></li>
+            <li><a [routerLink]="['/home/fieldform']"><img src="../../../assets/images/icon_field.svg"
+                        style="width: 24px; margin-left: -4px"><span style="margin-left: 9px;">Alta de Cancha</span></a>
+            </li>
+            <li><a [routerLink]="['/home/fieldlist']"><img src="../../../assets/images/icon_list_fields.svg"
+                        style="width: 17px"><span style="margin-left: 12px;">Lista de Canchas</span></a></li>
         </ul>
-    </li>    
+    </li>
     <li>
-        <a href="#"><i class=" icon-users4"></i> <span>Torneos</span></a>
+        <a href="#"><img src="../../../assets/images/icon_tournaments.svg" style="width: 21px;"> <span
+                style="margin-left: 15px">Torneos</span></a>
         <ul>
-            <li><a [routerLink]="['/home/tournamentform']"><i class="icon-user-plus"></i> Alta de Torneo</a></li>
-            <li><a [routerLink]="['/home/tournamentlist']"><i class=" icon-user-check"></i> Lista de Torneos</a></li>
+            <li><a [routerLink]="['/home/tournamentform']"><img src="../../../assets/images/icon_tournament_plus.svg"
+                        style="width: 24px; margin-left: -4px"><span style="margin-left: 9px;">Alta de Torneo</span></a>
+            </li>
+            <li><a [routerLink]="['/home/tournamentlist']"><img src="../../../assets/images/icon_list_tournaments.svg"
+                        style="width: 23px; margin-left: -4px"><span style="margin-left: 11px;">Lista de
+                        Torneos</span></a></li>
         </ul>
-    </li>    
+    </li>
+    <li>
+        <a href="#"><img src="../../../assets/images/icon_players.svg" style="width: 36px; margin-left: -7px"> <span
+                style="margin-left: 9px">Jugadores</span></a>
+        <ul>
+            <li><a [routerLink]="['/home/tournamentform']"><img src="../../../assets/images/icon_player_plus.svg"
+                        style="width: 24px; margin-left: -4px"><span style="margin-left: 9px;">Alta de
+                        Jugador</span></a>
+            </li>
+            <li><a [routerLink]="['/home/tournamentlist']"><img src="../../../assets/images/icon_list_players.svg"
+                        style="width: 41px; margin-left: -11px"><span>Lista de Jugadores</span></a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#"><img src="../../../assets/images/icon_vs.svg" style="width: 34px; margin-left: -5px"> <span
+                style="margin-left: 9px">Programación de Jornadas</span></a>
+        <ul>
+            <li><a [routerLink]="['/home/tournamentform']"><img src="../../../assets/images/icon_vs_programmer.svg"
+                        style="width: 24px; margin-left: -4px"><span style="margin-left: 8px;">Generar
+                        Programación</span></a></li>
+        </ul>
+    </li>
 </ul>
