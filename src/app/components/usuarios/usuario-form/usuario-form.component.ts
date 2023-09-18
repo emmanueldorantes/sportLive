@@ -95,7 +95,7 @@ export class UsuarioFormComponent implements OnInit {
       }
     } else {
       this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
-        duration: 5000,
+        duration: 0,
         horizontalPosition: "center",
         verticalPosition: "bottom"
       });

@@ -1,7 +1,5 @@
-<div class="container-fluid">
-    <div class="container-fluid">
-        <div class="card">
-            <div class="card-body">
+<div class="panel panel-flat">
+    <div class="panel-body">
         <form form [formGroup]="fieldForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
             <!-- Sección Cancha -->
             <div class="row">
@@ -9,18 +7,17 @@
                     <div class="mb-3">
                         <label for="nombreCancha" class="form-label">Nombre</label>
                         <input formControlName="nombre" type="text" class="form-control" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">
+                        <div *ngIf="!nombre" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="telefonoCancha" class="form-label">Teléfono</label>
                         <input formControlName="telefono" type="tel" class="form-control" id="telefonoCancha" name="telefonoCancha" [(ngModel)]="telefono">
+                        <div *ngIf="!telefono" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
             </div>
-
-       
-
             <!-- Sección Contacto -->
             <div class="row mb-4">
                 <h3>Contacto</h3>
@@ -28,24 +25,28 @@
                     <div class="mb-3">
                         <label for="nombreContacto" class="form-label">Nombre</label>
                         <input  formControlName="contactonombre" type="text" class="form-control" id="contactoname" name="nombreContacto" [(ngModel)]="contactonombre">
+                        <div *ngIf="!contactonombre" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="apellidosContacto" class="form-label">Apellidos</label>
                         <input formControlName="contactoapellidos" type="text" class="form-control" id="contactoapellidos" name="contactoapellidos" [(ngModel)]="contactoapellidos">
+                        <div *ngIf="!contactoapellidos" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="celularContacto" class="form-label">Celular</label>
                         <input formControlName ="contactocelular" type="tel" class="form-control" id="celularContacto" name="celularContacto" [(ngModel)]="contactocelular">
+                        <div *ngIf="!contactocelular" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="correoContacto" class="form-label">Correo</label>
                         <input formControlName="contactocorreo" type="email" class="form-control" id="contactocorreo" name="correoContacto" [(ngModel)]="contactocorreo">
+                        <div *ngIf="!contactocorreo" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
             </div>
@@ -59,48 +60,53 @@
                     <div class="mb-3">
                         <label for="nombrePropietario" class="form-label">Nombre</label>
                         <input formControlName="propietarionombre" type="text" class="form-control" id="nombrePropietario" name="nombrePropietario" [(ngModel)]="propietarionombre">
+                        <div *ngIf="!propietarionombre" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="propietarioapellidos" class="form-label">Apellidos</label>
                         <input formControlName="propietarioapellidos" type="text" class="form-control" id="propietarioapellidos" name="propietarioapellidos" [(ngModel)]="propietarioapellidos">
+                        <div *ngIf="!propietarioapellidos" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="correoPropietario" class="form-label">Correo</label>
                         <input formControlName="propietariocorreo" type="email" class="form-control" id="correoPropietario" name="correoPropietario" [(ngModel)]="propietariocorreo">
+                        <div *ngIf="!propietariocorreo" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="telefonoPropietario" class="form-label">Teléfono</label>
                         <input formControlName="propietariotelefono" type="tel" class="form-control" id="telefonoPropietario" name="telefonoPropietario" [(ngModel)]="propietariotelefono">
+                        <div *ngIf="!propietariotelefono" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
             </div>
 
+  <br><br>          
             <!-- Sección Imagen de logotipo -->
-            <div class="row">
-                <div class="col-12 col-md-12">
-                    <div class="input-group mb-3">
-                        <input [(ngModel)]="file" type="file" class="form-control" id="fileImg"
-                            formControlName="file" accept=".jpg,.png" (change)="onFileSelected($event)">    
-                        <label class="input-group-text" for="fileImg">Imagen</label>
-                    </div>
-                </div>
-            </div>
-        <div class="col-md-6">
-            <div class="row">
-                <div class="col-12 col-md-12 text-center">
-                    <img [src]="displayedImageUrl" alt="Imagen" class="custom-thumbnail">
-                </div>
-            </div>
+<div class="row">
+    <!-- Control de carga -->
+    <div class="col-12 col-md-6">
+        <div class="input-group mb-3">
+            <input [(ngModel)]="file" type="file" class="form-control" id="fileImg"
+                formControlName="file" accept=".jpg,.png" (change)="onFileSelected($event)">    
+            <label class="input-group-text" for="fileImg">Imagen</label>
         </div>
-            <div class="text-end mt-4">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-            </div> 
+    </div>
+    <!-- Imagen cargada -->
+    <div class="col-12 col-md-6 text-center">
+        <img [src]="displayedImageUrl" alt="Imagen" class="custom-thumbnail">
+    </div>
+</div>
+<br><br>
+<div class="text-right">
+    <button type="submit" class="btn bg-teal-400 btn-labeled"><b><i class="icon-floppy-disk"></i></b>
+        Guardar</button>
+</div>       
         </form>
     </div>
 </div>

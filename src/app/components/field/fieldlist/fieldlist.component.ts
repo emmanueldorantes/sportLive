@@ -134,9 +134,9 @@ export class FieldlistComponent {
         this.setUpdateStatus(id, status);
         let response = await this.graphqlService.post(this.mutation, this.variables);
         this.snakBar.open("Se cambio el estatus correctamente.", "Aceptar", {
-          duration: 5000,
-          horizontalPosition: "right",
-          verticalPosition: "top"
+          duration: 0,
+          horizontalPosition: "center",
+          verticalPosition: "bottom"
         });
       } else {
         const field = this.fields.find((field: any) => field._id === id);

@@ -122,9 +122,9 @@ export class FieldformComponent implements OnInit {
       }
     } else {
       this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
-        duration: 5000,
-        horizontalPosition: "right",
-        verticalPosition: "top"
+        duration: 0,
+        horizontalPosition: "center",
+        verticalPosition: "bottom"
       });
     }
   }
@@ -133,8 +133,8 @@ export class FieldformComponent implements OnInit {
     let response = await this.graphqlService.post(this.mutation, this.variables);
     const miSnackBar = this.snakBar.open("El usuario ha sido modificado correctamente.", "Aceptar", {
       duration: 0,
-      horizontalPosition: "right",
-      verticalPosition: "top"
+      horizontalPosition: "center",
+      verticalPosition: "bottom"
     });
     if (this.selectedFile) {
       const resizedImage = await this.resizeImage(this.selectedFile);

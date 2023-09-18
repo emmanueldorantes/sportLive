@@ -1,57 +1,58 @@
-<style>
-    .card {
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        border-radius: 8px;
-    }
-
-    .card-body {
-        padding: 2rem;
-    }
-</style>
-    <div class="container-fluid mt-5">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="mb-5">Torneo</h2>
-                <form form [formGroup]="tournamentform" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-                    <div class="mb-4">
-                        <label for="cancha" class="form-label">Cancha</label>
-                        <select class="form-select" id="cancha">
-                            <option value="">-- Selecciona la cancha que pertenece el torneo --</option>
-                            <!-- ... (opciones de canchas) ... -->
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="nombre" class="form-label">Nombre:</label>
-                        <input formControlName="nombre" type="text" class="form-control" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">
-                    </div>
-    
-                    <div class="row mt-4 mb-5"> <!-- Añadimos mb-5 para más espacio después de los campos -->
-                        <div class="col-md-6 mb-4">
-                            <label for="dias" class="form-label">Días</label>
-                            <select class="form-select" id="dias">
-                                <option value="" >-- Selecciona una opción --</option>
-                                <option value="lv" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">L-V</option>
-                                <option value="sabado" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">Sábado</option>
-                                <option value="domingo"id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">Domingo</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <label for="horario" class="form-label">Horario</label>
-                            <select class="form-select" id="horario">
-                                <option value="">-- Selecciona una hora --</option>
-                                <option value=""id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">7:00 pm </option>
-                                <option value=""id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">8:00 pm</option>
-                                <option value=""id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">9:00 pm</option>
-                            </select>
-                        </div>
-                    </div>
-    
-                    <div class="text-right"> <!-- Añadimos la clase text-right aquí -->
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-    
-                </form>
+<div class="panel panel-flat">
+    <div class="panel-body">
+        <form #formTournament="ngForm" (ngSubmit)="onSubmit(formTournament)" enctype="multipart/form-data" novalidate>
+            <div class="mb-4">
+                <!-- Etiqueta del campo de selección -->
+                <label for="fielduser" class="form-label">Cancha:</label>
+            
+                <!-- Campo de selección (desplegable) -->
+                <select [(ngModel)]="field" id="fielduser" name="fielduser" class="form-control" required>
+                    <option *ngFor="let fieldItem of listfield" value="{{fieldItem._id}}">{{fieldItem.name}}</option>
+                </select>
+            
+                <!-- Mensaje de error que se mostrará si el campo está vacío -->
+                <div *ngIf="!field" class="error">Este campo es obligatorio.</div>
             </div>
-        </div>
-    </div>
+            
 
+            <div class="mb-4">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input formControlName="nombre" type="text" class="form-control" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">
+                <div *ngIf="!nombre" class="error">Este campo es obligatorio.</div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row">
+                    <label class="form-label">Dia de juego:</label>
+                    <mat-radio-group aria-label="Select an option" color="primary" [(ngModel)]="dia" name="dia">>
+                        <mat-radio-button value="lav">Lunes a Viernes</mat-radio-button>
+                        <mat-radio-button value="sabado">sabado</mat-radio-button>
+                        <mat-radio-button value="domingo">domingo</mat-radio-button>
+                    </mat-radio-group>
+                    <div *ngIf="!dia" class="error">Este campo es obligatorio.</div>
+                </div>
+                <br><br>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6 mb-4">
+                    <label for="horario" class="form-label">Horario</label>
+                    <select class="form-select" id="horario">
+                        <option value="">-- Selecciona una hora --</option>
+                        <option value="" id="nombreCancha" name="nombreCancha">7:00 pm</option>
+                        <option value="" id="nombreCancha" name="nombreCancha">8:00 pm</option>
+                        <option value="" id="nombreCancha" name="nombreCancha">9:00 pm</option>
+                    </select>
+                    <div class="error">Este campo es obligatorio.</div>
+                </div>
+
+                <div class="col-md-6 text-right">
+                    <button type="submit" class="btn bg-teal-400 btn-labeled">
+                        <b><i class="icon-floppy-disk"></i></b> Guardar
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

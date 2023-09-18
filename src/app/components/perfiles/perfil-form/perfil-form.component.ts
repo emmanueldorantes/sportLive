@@ -163,7 +163,7 @@ export class PerfilFormComponent implements OnInit {
       }
     } else {
       this.snakBar.open("Capture el nombre del prefil.", "Aceptar", {
-        duration: 5000,
+        duration: 0,
         horizontalPosition: "center",
         verticalPosition: "bottom"
       });

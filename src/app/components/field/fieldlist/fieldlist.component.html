@@ -15,18 +15,17 @@
                 <td>{{ field.autoincrement }}</td>
                 <td>{{ field.nombre }}</td>
                 <td>
-                    <div class="form-check form-switch form-switch-lg">
-                        <input class="form-check-input" type="checkbox" role="switch" id="fieldStatus{{field._id}}" [(ngModel)]="field.status" (change)="changeStatus(field._id, field.status)" />
-                        <label class="form-check-label" for="fieldStatus" *ngIf="field.status">Activo</label>
-                        <label class="form-check-label" for="fieldStatus" *ngIf="!field.status">Inactivo</label>
-                    </div>
+                    <mat-slide-toggle id="fieldStatus{{field._id}}" (change)="changeStatus(field._id, field.status)"
+                        [(ngModel)]="field.status">
+                        <span class="form-check-label" for="fieldStatus" *ngIf="field.status">Activo</span>
+                        <span class="form-check-label" for="fieldStatus" *ngIf="!field.status">Inactivo</span>
+                    </mat-slide-toggle>
                 </td>
                 <td>
-                    <button mat-icon-button (click)="editarCancha(field._id)">
-                        <span>
-                            <i class="ti ti-edit"></i>
-                        </span>
-                    </button>
+                    <ul class="icons-list">
+                        <li class="text-primary-600"><a (click)="editarCancha(field._id)"><i
+                                    class="icon-pencil7"></i></a></li>
+                    </ul>
                 </td>
             </tr>
         </tbody>
