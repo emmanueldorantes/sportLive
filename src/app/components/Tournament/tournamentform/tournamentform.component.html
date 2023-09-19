@@ -7,7 +7,7 @@
             
                 <!-- Campo de selección (desplegable) -->
                 <select [(ngModel)]="field" id="fielduser" name="fielduser" class="form-control" required>
-                    <option *ngFor="let fieldItem of listfield" value="{{fieldItem._id}}">{{fieldItem.name}}</option>
+                    <option *ngFor="let fieldItem of listfields" value="{{fieldItem._id}}">{{fieldItem.name}}></option>
                 </select>
             
                 <!-- Mensaje de error que se mostrará si el campo está vacío -->
@@ -17,14 +17,14 @@
 
             <div class="mb-4">
                 <label for="nombre" class="form-label">Nombre:</label>
-                <input formControlName="nombre" type="text" class="form-control" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">
+                <input formControlName="nombre" type="text" class="form-control" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre" required>
                 <div *ngIf="!nombre" class="error">Este campo es obligatorio.</div>
             </div>
 
             <div class="col-md-6">
                 <div class="row">
                     <label class="form-label">Dia de juego:</label>
-                    <mat-radio-group aria-label="Select an option" color="primary" [(ngModel)]="dia" name="dia">>
+                    <mat-radio-group aria-label="Select an option" color="primary" [(ngModel)]="dia" name="dia" required>
                         <mat-radio-button value="lav">Lunes a Viernes</mat-radio-button>
                         <mat-radio-button value="sabado">sabado</mat-radio-button>
                         <mat-radio-button value="domingo">domingo</mat-radio-button>
@@ -37,13 +37,13 @@
             <div class="row mt-4">
                 <div class="col-md-6 mb-4">
                     <label for="horario" class="form-label">Horario</label>
-                    <select class="form-select" id="horario">
+                    <select class="form-select" id="horario" [(ngModel)]="horario" required>
                         <option value="">-- Selecciona una hora --</option>
                         <option value="" id="nombreCancha" name="nombreCancha">7:00 pm</option>
                         <option value="" id="nombreCancha" name="nombreCancha">8:00 pm</option>
                         <option value="" id="nombreCancha" name="nombreCancha">9:00 pm</option>
                     </select>
-                    <div class="error">Este campo es obligatorio.</div>
+                    <div *ngIf="!horario" class="error">Este campo es obligatorio.</div>
                 </div>
 
                 <div class="col-md-6 text-right">

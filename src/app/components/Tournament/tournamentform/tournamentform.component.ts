@@ -20,13 +20,14 @@ export class TournamentformComponent implements OnInit {
 
   field: any;
   dia: string;
-  listfield: any;
+  listfields: any;
   tournamentform:FormGroup;
   isCreating: boolean = true;
   query: string;
   mutation: string;
   variables: any;
   nombre: string;
+  horario:string;
   tournamentId: any = '';
   file: any;
   selectedFile: File | null = null;
@@ -49,16 +50,18 @@ export class TournamentformComponent implements OnInit {
       nombre: ['', Validators.required],
       field:['', Validators.required],
       dia:['', Validators.required],
+      horario: ['', Validators.required],
     });
    
     this.nombre = '';
     this.mutation = '';
     this.field='';
     this.dia='';
+    this.horario;
   }
 
   async ngOnInit() {
-    this.listfield = await this.getField();
+    this.listfields = await this.getFields();
     this.route.params.subscribe(async params => {
       this.tournamentId = params['id'];
       this.isCreating = (this.tournamentId !== undefined) ? false : true;
@@ -69,6 +72,8 @@ export class TournamentformComponent implements OnInit {
         this.nombre = datatournament.nombre;
         this.field = datatournament.field._id;
         this.dia = datatournament.dia;
+        this.horario = datatournament.horario;
+
       }
     });
   }
@@ -89,8 +94,8 @@ export class TournamentformComponent implements OnInit {
       });
     }
   }
-  async getField() {
-    this.setQueryField();
+  async getFields() {
+    this.setQueryFields();
     let response = await this.graphqlService.post(this.query, this.variables);
     return response.data.getFields;
   }
@@ -143,20 +148,23 @@ export class TournamentformComponent implements OnInit {
   cleanForm() {
     this.nombre = '';
     this.field='';
-    this.dia = "";
+    this.dia = '';
+    this.horario='';
   }
 
   setMutationInsert() {
     this.mutation = `
       mutation(
         $nombre: String!,
-        $field: String!,
+        $field: ID!,
         $dia: String!
+        $horario: String!,
          {
         createTournament(input: {
           nombre: $nombre,
           field : $field,
-          dia : $dia
+          dia : $dia,
+          horario : $horario
         }){
           _id,
           nombre
@@ -166,7 +174,8 @@ export class TournamentformComponent implements OnInit {
       module: 'tournaments',
       nombre: this.nombre,
       field:this.field,
-      dia : this.dia
+      dia : this.dia,
+      horario : this.horario,
     };
 
   }
@@ -184,8 +193,9 @@ export class TournamentformComponent implements OnInit {
               nombre,
               field{
                 _id
-              }
-              dia
+              },
+              dia,
+              horario
               }
       }`;
       this.variables = {
@@ -193,10 +203,10 @@ export class TournamentformComponent implements OnInit {
         id: this.tournamentId
       };
     } 
-    setQueryField() {
+    setQueryFields() {
       this.query = `
       query {
-        getField(filters: {
+        getFields(filters: {
           qry: {},
           sort: { autoincrement: 1 }
         }){
@@ -215,11 +225,14 @@ export class TournamentformComponent implements OnInit {
     $id: ID!,
     $field: ID!,
     $dia: String!,
-    $nombre: String!
+    $nombre: String!,
+    $horario: String!,
      {
       updateTournament(_id: $id, input: {
       nombre: $nombre,
-      dia : $dia
+      dia : $dia,
+      $field: $field,
+      horario: $horario
     }){
       _id,
       nombre
@@ -232,6 +245,7 @@ this.variables = {
   field:this.field,
   nombre: this.nombre,
   dia:this.dia,
+  horario:this.horario
 };
 }
 }
