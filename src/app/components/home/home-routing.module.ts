@@ -32,6 +32,7 @@ const routes: Routes = [
             { path: 'fieldform/:id', component: FieldformComponent, canActivate: [authGuard] },
             { path: 'tournamentlist', component: TournamentlistComponent, canActivate: [authGuard] },
             { path: 'tournamentform', component: TournamentformComponent, canActivate: [authGuard] },
+            { path: 'tournamentform/:id', component: TournamentformComponent, canActivate: [authGuard] },
             { path: 'teamform', component: TeamformComponent, canActivate: [authGuard] },
             { path: 'teamlist', component: TeamlistComponent, canActivate: [authGuard] },
             { path: 'playerlist', component: PlayerlistComponent, canActivate: [authGuard] },

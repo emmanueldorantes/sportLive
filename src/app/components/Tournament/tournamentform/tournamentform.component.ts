@@ -61,15 +61,17 @@ export class TournamentformComponent implements OnInit {
   }
 
   async ngOnInit() {
+    
     this.listfields = await this.getFields();
+
     this.route.params.subscribe(async params => {
       this.tournamentId = params['id'];
-      this.isCreating = (this.tournamentId !== undefined) ? false : true;
+      this.isCreating = !this.tournamentId; 
       if (!this.isCreating) {
         this.titleService.setTitle('Torneo  / Editar Torneo');
-       let datatournament = await this.getTournament();
-       console.log(datatournament)
-        this.nombre = datatournament.nombre;
+        let datatournament = await this.getTournament();
+         console.log(datatournament)
+       this.nombre = datatournament.nombre;
         this.field = datatournament.field._id;
         this.dia = datatournament.dia;
         this.horario = datatournament.horario;
@@ -108,7 +110,7 @@ export class TournamentformComponent implements OnInit {
       verticalPosition: "bottom"
     });
     miSnackBar.onAction().subscribe(() => {
-      this.router.navigateByUrl('/home/perfiles');
+      this.router.navigateByUrl('/home/tournamentlist');
     });
   }
 
@@ -130,7 +132,7 @@ export class TournamentformComponent implements OnInit {
           this.cleanForm();
           
         } else {
-          this.router.navigateByUrl('/home/fieldlist');
+          this.router.navigateByUrl('/home/tournamentlist');
         }
       });
     } catch (error) {
@@ -154,49 +156,48 @@ export class TournamentformComponent implements OnInit {
 
   setMutationInsert() {
     this.mutation = `
-      mutation(
-        $nombre: String!,
-        $field: ID!,
-        $dia: String!
-        $horario: String!,
-         {
-        createTournament(input: {
-          nombre: $nombre,
-          field : $field,
-          dia : $dia,
-          horario : $horario
-        }){
-          _id,
-          nombre
-        }
-      }`;
+    mutation CreateTournament(
+      $nombre: String!,
+      $field: ID!,
+      $dia: String!,
+      $horario: String!
+    ) {
+      createTournament(input: {
+        nombre: $nombre,
+        field: $field,
+        dia: $dia,
+        horario: $horario
+      }) {
+        _id,
+        nombre
+      }
+    }`;
     this.variables = {
       module: 'tournaments',
       nombre: this.nombre,
-      field:this.field,
+      field: this.field,
       dia : this.dia,
       horario : this.horario,
     };
 
   }
- 
+
     setQueryTournament() {
       this.query = `
-      query($id: ID!) {
+      query GetTournament($id: ID!) {
         getTournament(_id: $id, filters: {
           inner: [
-            { path: "field" }          
+            { path: "field" }
           ]
-        }){
-        getTournament(_id: $id, filters: {}){
-              _id,
-              nombre,
-              field{
-                _id
-              },
-              dia,
-              horario
-              }
+        }) {
+          _id
+          nombre
+          field {
+            _id
+          }
+          dia
+          horario
+        }
       }`;
       this.variables = {
         module: 'tournaments',
@@ -207,47 +208,45 @@ export class TournamentformComponent implements OnInit {
       this.query = `
       query {
         getFields(filters: {
-          qry: {},
-          sort: { autoincrement: 1 }
         }){
             _id,
-            name          
+            nombre          
         }
       }`;
       this.variables = {
-        module: 'profiles'
+        module: 'field'
       };
     }
 
     setMutationUpdate() {
-     this.mutation = `
-    mutation(
-    $id: ID!,
-    $field: ID!,
-    $dia: String!,
-    $nombre: String!,
-    $horario: String!,
-     {
-      updateTournament(_id: $id, input: {
-      nombre: $nombre,
-      dia : $dia,
-      $field: $field,
-      horario: $horario
-    }){
-      _id,
-      nombre
+      this.mutation = `
+        mutation UpdateTournament(
+          $id: ID!,
+          $field: ID!,
+          $dia: String!,
+          $nombre: String!,
+          $horario: String!
+        ) {
+          updateTournament(_id: $id, input: {
+            nombre: $nombre,
+            dia: $dia,
+            field: $field,
+            horario: $horario
+          }) {
+            _id,
+            nombre
+          }
+        }
+      `;
+      this.variables = {
+        module: 'tournaments',
+        id: this.tournamentId,
+        field: this.field,
+        nombre: this.nombre,
+        dia: this.dia,
+        horario: this.horario
+      };
     }
-  }`;
-this.variables = {
-  
-  module: 'tournaments',
-  id: this.tournamentId,
-  field:this.field,
-  nombre: this.nombre,
-  dia:this.dia,
-  horario:this.horario
-};
-}
 }
 
 
