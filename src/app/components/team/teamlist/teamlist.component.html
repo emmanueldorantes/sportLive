@@ -1,53 +1,53 @@
-<div class="container mt-4">
-    <!-- Campo de búsqueda -->
-    <input class="form-control mb-2" placeholder="Filtrar por nombre">
+<div class="panel panel-flat">
+    <div class="table-responsive">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="icon-filter3"></i></span>
+            <input type="text" class="form-control" placeholder="Filtrar los torneos"
+                [(ngModel)]="filtroNombre">
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr class="colorHead">
+                    <th>#</th>
+                    <th>Cancha</th>
+                    <th>Torneo</th>
+                    <th>Equipo</th>
+                    <th>status</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let team of teams | filtroUsuario:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }; let i = index"
+                    [ngClass]="i % 2 === 0 ? 'zebra-even' : 'zebra-odd'">
+                    <td>{{ team.autoincrement }}</td>
+                    <td>{{ team.field.nombre}}</td>
+                    <td>{{ team.tournament.nombre}}</td>
+                    <td>{{ team.nombre}}</td>
+                    <td>{{ team.status}}</td>
+                    <td>
+                        <mat-slide-toggle id="tournamentStatus{{team._id}}" (change)="changeStatus(team._id, team.status)"
+                            [(ngModel)]="team.status">
+                            <span class="form-check-label" for="tournamentStatus" *ngIf="team.status">Activo</span>
+                            <span class="form-check-label" for="tournamentStatus" *ngIf="!team.status">Inactivo</span>
+                        </mat-slide-toggle>
+                    </td>
+                    <td>
+                        <ul class="icons-list">
+                            <li class="text-primary-600"><a (click)="editarUsuario(team._id)"><i
+                                        class="icon-pencil7"></i></a></li>
+                            <li class="text-danger-600"><a (click)="eliminarUsuario(team._id, team.name)"><i
+                                        class="icon-trash"></i></a></li>
+                        </ul>
+                    </td>
+                </tr>
 
-    <!-- Tabla -->
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Cancha</th>
-                <th>Torneo</th>
-                <th>Equipo</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Fila de ejemplo -->
-            <tr>
-                <td>1</td>
-                <td>Oviedo</td>
-                <td>Veteranos</td>
-                <td>Chivas</td>
-                <td>
-                    <button class="btn btn-primary btn-sm">
-                        <i class="bi bi-pencil-fill"></i> Editar
-                    </button>
-                    <button class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash-fill"></i> Eliminar
-                    </button>
-                </td>
-            </tr>
-            <!-- Puedes agregar más filas aquí -->
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
 </div>
-<!-- ... (resto del código anterior) ... -->
 
-<!-- Paginación -->
-<nav aria-label="Table pagination" class="mt-3">
-    <ul class="pagination">
-        <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-            <a class="page-link" href="#">Siguiente</a>
-        </li>
-    </ul>
-</nav>
+
+
 <!-- ... (cierre del contenedor y otros códigos) ... -->
 

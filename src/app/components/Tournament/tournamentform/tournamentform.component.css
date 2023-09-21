@@ -1,5 +1,9 @@
+.form-check {
+    padding-left: 60px !important;
+}
+.paddingLabel {
+    padding-left: 10px;
+}
 .error {
     color: red;
-    font-size: 14px;
-    margin-top: 4px;
 }
