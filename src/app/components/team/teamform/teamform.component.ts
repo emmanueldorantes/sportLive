@@ -76,7 +76,7 @@ export class TeamformComponent implements OnInit {
          console.log(datateam)
        this.nombre = datateam.nombre;
         this.field = datateam.field._id;
-        this.tournament=datateam.tournament_id;
+        this.tournament = datateam.tournament._id;
         this.displayedImageUrl =  datateam.photo ? `${environment.fileManager}/${datateam.photo}` : `${environment.fileManager}/user_default.png`;
       } else {
         this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
