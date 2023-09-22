@@ -28,5 +28,9 @@ export class HomeComponent implements OnInit {
     let scriptElement = document.createElement('script');
     scriptElement.src = "../../../assets/js/core/app.js";
     document.body.appendChild(scriptElement);
+    
+    // let scriptElement2 = document.createElement('script');
+    // scriptElement2.src = "../../../assets/js/pages/extra_fullcalendar.js";
+    // document.body.appendChild(scriptElement2);
   }
 }

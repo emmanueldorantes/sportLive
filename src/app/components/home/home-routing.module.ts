@@ -15,6 +15,8 @@ import { TeamformComponent } from '../team/teamform/teamform.component';
 import { TeamlistComponent } from '../team/teamlist/teamlist.component';
 import { PlayerformComponent } from '../player/playerform/playerform.component';
 import { PlayerlistComponent } from '../player/playerlist/playerlist.component';
+import { JornadasComponent } from '../programar/jornadas/jornadas.component';
+import { CalendarioComponent } from '../programar/calendario/calendario.component';
 
 const routes: Routes = [
     {
@@ -38,6 +40,8 @@ const routes: Routes = [
             { path: 'teamlist', component: TeamlistComponent, canActivate: [authGuard] },
             { path: 'playerlist', component: PlayerlistComponent, canActivate: [authGuard] },
             { path: 'playerform', component: PlayerformComponent, canActivate: [authGuard] },
+            { path: 'jornadas', component: JornadasComponent, canActivate: [authGuard] },
+            { path: 'calendario', component: CalendarioComponent, canActivate: [authGuard] }
         ]
     }
 ];
