@@ -25,7 +25,6 @@
                     <td>{{ tournament.nombre}}</td>
                     <td>{{ tournament.dia}}</td>
                     <td>{{ tournament.horario}}</td>
-                    <td>{{ tournament.status}}</td>
                     <td>
                         <mat-slide-toggle id="tournamentStatus{{tournament._id}}" (change)="changeStatus(tournament._id, tournament.status)"
                             [(ngModel)]="tournament.status">
@@ -37,8 +36,6 @@
                         <ul class="icons-list">
                             <li class="text-primary-600"><a (click)="editarUsuario(tournament._id)"><i
                                         class="icon-pencil7"></i></a></li>
-                            <li class="text-danger-600"><a (click)="eliminarUsuario(tournament._id, tournament.name)"><i
-                                        class="icon-trash"></i></a></li>
                         </ul>
                     </td>
                 </tr>

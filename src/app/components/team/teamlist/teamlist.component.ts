@@ -72,7 +72,8 @@ export class TeamlistComponent implements OnInit {
         },
         _id,
         nombre, 
-        status
+        status,
+        autoincrement
       }
     }`;
       this.variables = {
@@ -139,7 +140,7 @@ export class TeamlistComponent implements OnInit {
       const dialog = this.dialog.open(ConfirmDialogComponent, {
         width: '390px',
         data: {
-          message: `¿Confirma que desea ${textStatus} al usuario?`,
+          message: `¿Confirma que desea ${textStatus} al equipo?`,
           ok: "Si",
           cancel: "No"
         }
