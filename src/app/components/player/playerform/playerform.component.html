@@ -54,13 +54,13 @@
             <div class="row">
                 <div class="col-md-6">
                     <label for="correouser" class="form-label">Correo</label>
-                    <input [(ngModel)]="correo" type="email" class="form-control" id="correouser" name="correo" required>
+                    <input [(ngModel)]="correo" type="email" class="form-control" id="correo" name="correo" required>
                     <div *ngIf="!correo" class="error">Este campo es obligatorio.</div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-6">
                         <label for="celularuser" class="form-label">Celular:</label>
-                        <input [(ngModel)]="celular" type="number" class="form-control" id="celular" name="celular"
+                        <input [(ngModel)]="celular" type="text" class="form-control" id="celular" name="celular"
                             required>
                         <div *ngIf="!celular" class="error">Este campo es obligatorio.</div>
                     </div>

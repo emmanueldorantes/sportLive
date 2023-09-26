@@ -142,13 +142,14 @@ export class PlayerformComponent implements OnInit {
     }
   
     async savePlayer() {
+      console.log(this.mutation, this.variables)
       try {
         let response = await this.graphqlService.post(this.mutation, this.variables);
-        let playerDocument = response.data.createUser;
+        let playerDocument = response.data.createPlayer;
         const dialog = this.dialog.open(ConfirmDialogComponent, {
           width: '390px',
           data: {
-            message: `El usuario ${playerDocument.name} ha sido creado correctamente.`,
+            message: `El jugador ${playerDocument.nombre} ha sido creado correctamente.`,
             question: "¿Deseas agregar otro Usuario?",
             ok: "Si",
             cancel: "No"
@@ -181,7 +182,7 @@ export class PlayerformComponent implements OnInit {
   
     async updatePlayer() {
       let response = await this.graphqlService.post(this.mutation, this.variables);
-      const miSnackBar = this.snakBar.open("El usuario ha sido modificado correctamente.", "Aceptar", {
+      const miSnackBar = this.snakBar.open("El jugador ha sido modificado correctamente.", "Aceptar", {
         duration: 0,
         horizontalPosition: "right",
         verticalPosition: "top"
@@ -198,7 +199,7 @@ export class PlayerformComponent implements OnInit {
         }
       }
       miSnackBar.onAction().subscribe(() => {
-        this.router.navigateByUrl('/home/usuarios');
+        this.router.navigateByUrl('/home/jugadores');
       });
     }
   
@@ -214,7 +215,7 @@ export class PlayerformComponent implements OnInit {
       this.correo = "";
       this.celular = "";
       this.gender = "";
-      this.field=''
+      this.field='';
       this.tournament='';
       this.team='';
       this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
@@ -268,11 +269,11 @@ export class PlayerformComponent implements OnInit {
           $field: ID!, 
           $team: ID!,
           $tournament: ID!,
-          $nombre: String!, 
+          $nombre: String, 
           $apellidos: String, 
-          $correo: String!, 
-          $celular: String!, 
-          $gender: String!) {
+          $correo: String, 
+          $celular: String, 
+          $gender: String) {
           createPlayer(input: {
             field: $field, 
             team: $team,
@@ -289,12 +290,14 @@ export class PlayerformComponent implements OnInit {
       }`;
       this.variables = {
         module: 'players',
-        
-        name: this.nombre,
-        lastName: this.apellidos,
-        email: this.correo,
-        mobile: `${this.celular}`,
-        gender: this.gender
+        nombre: this.nombre,
+        apellidos: this.apellidos,
+        correo: this.correo,
+        celular: `${this.celular}`,
+        gender: this.gender,
+        field: this.field,
+        team: this.team,
+        tournament: this.tournament
       };
     }
   
@@ -310,6 +313,11 @@ export class PlayerformComponent implements OnInit {
         }){
             _id,
             nombre,
+            apellidos,
+            correo,
+            celular,
+            gender,
+            photo,
             field {
               _id
             },
@@ -318,11 +326,7 @@ export class PlayerformComponent implements OnInit {
             },
             tournament {
               _id
-            },
-            apellidos,
-            correo,
-            celular,
-            gender,
+            }
         }
       }`;
       this.variables = {
@@ -339,12 +343,12 @@ export class PlayerformComponent implements OnInit {
         $team: ID!,
         $tournament: ID!,
         $nombre: String!, 
-        $apellidos: String, 
+        $apellidos: String!, 
         $correo: String!, 
         $celular: String!, 
         $gender: String!) {
         updatePlayer(_id: $id, input: {
-          field: $field, 
+            field: $field, 
             team: $team,
             tournament: $tournament,
             nombre: $nombre, 
@@ -360,7 +364,9 @@ export class PlayerformComponent implements OnInit {
       this.variables = {
         module: 'players',
         id: this.playerId,
-        
+        field: this.field,
+        team: this.team,
+        tournament: this.tournament,
         nombre: this.nombre,
         apellidos: this.apellidos,
         correo: this.correo,
@@ -383,7 +389,7 @@ export class PlayerformComponent implements OnInit {
       }`;
       let image = id ? `image-${id}_${this.selectedFile?.name}` : `image-${this.playerId}_${this.selectedFile?.name}`;
       this.variables = {
-        module: 'users',
+        module: 'players',
         id: id || this.playerId,
         photo: image
       };
