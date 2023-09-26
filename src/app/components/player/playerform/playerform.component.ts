@@ -18,29 +18,26 @@ import { environment } from '../../../../environments/environment';
 })
 export class PlayerformComponent implements OnInit {
 
-  playerform:FormGroup;
+  playerForm:FormGroup;
   team: any;
-  listfields: any;
   tournament: any;
-  profile: any;
   field: any;
-  name: string;
-  lastName: string;
-  email: string;
-  mobile: string;
-  city: string;
-  state: string;
+  nombre: string;
+  apellidos: string;
+  correo: string;
+  celular: string;
   gender: string;
   file: any;
   selectedFile: File | null = null;
   srcImage: string;
-  listProfiles: any;
-  listStates: any;
+  listfields: any;
+  listtournaments: any;
+  listteams: any;
   query: string;
   mutation: string;
   variables: any;
   isCreating: boolean = true;
-  userId: any = '';
+  playerId: any = '';
   displayedImageUrl: string;
 
   constructor(
@@ -55,63 +52,67 @@ export class PlayerformComponent implements OnInit {
     private fb: FormBuilder,
     ) {
 
-      this.titleService.setTitle('Equipo  / Nuevo Equipo');
+      this.titleService.setTitle('Jugador  / Nuevo Jugador');
     this.srcImage = "../../../../assets/images/user_default.png";
-    this.playerform = this.fb.group({
+    this.playerForm = this.fb.group({
       nombre: ['', Validators.required],
       field:['', Validators.required],
       tournament:['', Validators.required],
+      team:['', Validators.required],
+      apellidos:['', Validators.required],
+      correo:['', Validators.required],
+      celular:['', Validators.required],
+      gender:['', Validators.required],
     });
 
-    this.titleService.setTitle('Usuarios / Alta de Usuario');
+    this.titleService.setTitle('Juagador / Alta de Jugador');
     this.team= '';
     this.tournament= '';
     this.field= '';
-    this.name = '';
-    this.lastName = '';
-    this.email = '';
-    this.mobile = '';
+    this.nombre = '';
+    this.apellidos  = '';
+    this.correo = '';
+    this.celular = '';
     this.gender = '';
-    this.state = '';
-    this.city = '';
-    this.file = '';
-    this.listStates = [];
-    this.query = "";
     this.mutation = "";
-
     }
 
     async ngOnInit() {
-      this.listStates = await this.getStates();
-      this.listProfiles = await this.getProfiles();
+
+      this.listfields = await this.getFields();
+      this.listteams = await this.getTeams();
+      this.listtournaments = await this.getTournaments();
+
       this.route.params.subscribe(async params => {
-        this.userId = params['id'];
-        this.isCreating = (this.userId !== undefined) ? false : true;
+        this.playerId = params['id'];
+        this.isCreating = (this.playerId !== undefined) ? false : true;
         if (!this.isCreating) {
           this.titleService.setTitle('Usuarios / Editar Usuario');
-          let dataUser = await this.getUser();
-          this.name = dataUser.name;
-          this.lastName = dataUser.lastName;
-          this.email = dataUser.email;
-          this.mobile = dataUser.mobile;
-          this.state = dataUser.state._id;
-          this.city = dataUser.city;
-          this.gender = dataUser.gender;
-          this.displayedImageUrl = dataUser.photo ? `${environment.fileManager}/${dataUser.photo}` : `${environment.fileManager}/user_default.png`;
+          let dataPlayer = await this.getPlayer();
+          this.field = dataPlayer.field._id;
+          this.tournament = dataPlayer.tournament._id;
+          this.team = dataPlayer.team._id;
+          this.nombre = dataPlayer.nombre;
+          this.apellidos = dataPlayer.apellidos;
+          this.correo = dataPlayer.correo;
+          this.celular = dataPlayer.celular;
+          this.gender = dataPlayer.gender;
+          this.displayedImageUrl = dataPlayer.photo ? `${environment.fileManager}/${dataPlayer.photo}` : `${environment.fileManager}/user_default.png`;
         } else {
           this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
         }
       });
     }
   
-    onSubmit(formUser: NgForm) {
-      if (formUser.valid) {
+    onSubmit(formplayer: NgForm) {
+      if (formplayer.valid) {
+        // let pathFile = this.userForm.get('file')?.value; {
         if (this.isCreating) {
           this.setMutationInsert();
-          this.saveUser();
+          this.savePlayer();
         } else {
           this.setMutationUpdate();
-          this.updateUser();
+          this.updatePlayer();
         }
       } else {
         this.snakBar.open("Verifique que los campo obligatorios esten capturados.", "Aceptar", {
@@ -122,40 +123,46 @@ export class PlayerformComponent implements OnInit {
       }
     }
   
-    async getProfiles() {
-      this.setQueryProfiles();
+    async getFields() {
+      this.setQueryFields();
       let response = await this.graphqlService.post(this.query, this.variables);
-      return response.data.getProfiles;
+      return response.data.getFields;
     }
   
-    async getStates() {
-      this.setQueryStates();
+    async getTeams() {
+      this.setQueryTeams();
       let response = await this.graphqlService.post(this.query, this.variables);
-      return response.data.getStates;
+      return response.data.getTeams;
+    }
+
+    async getTournaments() {
+      this.setQueryTournaments();
+      let response = await this.graphqlService.post(this.query, this.variables);
+      return response.data.getTournaments;
     }
   
-    async saveUser() {
+    async savePlayer() {
       try {
         let response = await this.graphqlService.post(this.mutation, this.variables);
-        let userDocument = response.data.createUser;
+        let playerDocument = response.data.createUser;
         const dialog = this.dialog.open(ConfirmDialogComponent, {
           width: '390px',
           data: {
-            message: `El usuario ${userDocument.name} ha sido creado correctamente.`,
+            message: `El usuario ${playerDocument.name} ha sido creado correctamente.`,
             question: "¿Deseas agregar otro Usuario?",
             ok: "Si",
             cancel: "No"
           }
         });
   
-        if (userDocument && this.selectedFile) {
+        if (playerDocument && this.selectedFile) {
           const resizedImage = await this.resizeImage(this.selectedFile);
           const formData = new FormData();
-          formData.append('image', resizedImage, `${userDocument._id}_${this.selectedFile?.name}`);
+          formData.append('image', resizedImage, `${playerDocument._id}_${this.selectedFile?.name}`);
           let responseUpload = await this.uploadService.post(formData);
           if (responseUpload && responseUpload.ok) {
-            this.displayedImageUrl = `${environment.fileManager}/image-${userDocument._id}_${this.selectedFile?.name}`;
-            this.setMutationUpdateImage(userDocument._id);
+            this.displayedImageUrl = `${environment.fileManager}/image-${playerDocument._id}_${this.selectedFile?.name}`;
+            this.setMutationUpdateImage(playerDocument._id);
             await this.graphqlService.post(this.mutation, this.variables);
           }
         }
@@ -172,7 +179,7 @@ export class PlayerformComponent implements OnInit {
       }
     }
   
-    async updateUser() {
+    async updatePlayer() {
       let response = await this.graphqlService.post(this.mutation, this.variables);
       const miSnackBar = this.snakBar.open("El usuario ha sido modificado correctamente.", "Aceptar", {
         duration: 0,
@@ -182,10 +189,10 @@ export class PlayerformComponent implements OnInit {
       if (this.selectedFile) {
         const resizedImage = await this.resizeImage(this.selectedFile);
         const formData = new FormData();
-        formData.append('image', resizedImage, `${this.userId}_${this.selectedFile?.name}`);
+        formData.append('image', resizedImage, `${this.playerId}_${this.selectedFile?.name}`);
         let responseUpload = await this.uploadService.post(formData);
         if (responseUpload && responseUpload.ok) {
-          this.displayedImageUrl = `${environment.fileManager}/image-${this.userId}_${this.selectedFile?.name}`;
+          this.displayedImageUrl = `${environment.fileManager}/image-${this.playerId}_${this.selectedFile?.name}`;
           this.setMutationUpdateImage();
           await this.graphqlService.post(this.mutation, this.variables);
         }
@@ -195,122 +202,132 @@ export class PlayerformComponent implements OnInit {
       });
     }
   
-    async getUser() {
-      this.setQueryUser();
+    async getPlayer() {
+      this.setQueryPlayer();
       let response = await this.graphqlService.post(this.query, this.variables);
-      return response.data.getUser;
+      return response.data.getPlayer;
     }
   
     cleanForm() {
-      this.name = "";
-      this.lastName = "";
-      
-      this.email = "";
-      this.mobile = "";
+      this.nombre = "";
+      this.apellidos = "";
+      this.correo = "";
+      this.celular = "";
       this.gender = "";
-      this.state = "";
-      this.city = "";
+      this.field=''
+      this.tournament='';
+      this.team='';
       this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
     }
   
-    setQueryStates() {
+    setQueryFields() {
       this.query = `
       query {
-        getStates(filters: {
-          qry: {},
-          sort: { autoincrement: 1 }
+        getFields(filters: {
         }){
             _id,
-            name,
-            abbreviation
+            nombre,
         }
       }`;
       this.variables = {
-        module: 'states'
+        module: 'field'
       };
     }
   
-    setQueryProfiles() {
+    setQueryTeams() {
       this.query = `
       query {
-        getProfiles(filters: {
-          qry: {},
-          sort: { autoincrement: 1 }
+        getTeams(filters: {
         }){
             _id,
-            name          
+            nombre          
         }
       }`;
       this.variables = {
-        module: 'profiles'
+        module: 'teams'
+      };
+    }
+
+    setQueryTournaments() {
+      this.query = `
+      query {
+        getTournaments(filters: {
+        }){
+            _id,
+            nombre          
+        }
+      }`;
+      this.variables = {
+        module: 'tournaments'
       };
     }
   
     setMutationInsert() {
       this.mutation = `
         mutation(
-          $profile: ID!, 
-          $name: String!, 
-          $lastName: String, 
-          $email: String!, 
-          $mobile: String!, 
-          $state: ID!, 
-          $city: String!,
+          $field: ID!, 
+          $team: ID!,
+          $tournament: ID!,
+          $nombre: String!, 
+          $apellidos: String, 
+          $correo: String!, 
+          $celular: String!, 
           $gender: String!) {
-          createUser(input: {
-            profile: $profile, 
-            name: $name, 
-            lastName: $lastName, 
-            email: $email, 
-            mobile: $mobile, 
-            state: $state, 
-            city: $city,
+          createPlayer(input: {
+            field: $field, 
+            team: $team,
+            tournament: $tournament,
+            nombre: $nombre, 
+            apellidos: $apellidos, 
+            correo: $correo, 
+            celular: $celular, 
             gender: $gender
           }){
               _id,
-              name
+              nombre
           }
       }`;
       this.variables = {
-        module: 'users',
+        module: 'players',
         
-        name: this.name,
-        lastName: this.lastName,
-        email: this.email,
-        mobile: `${this.mobile}`,
-        state: this.state,
-        city: this.city,
+        name: this.nombre,
+        lastName: this.apellidos,
+        email: this.correo,
+        mobile: `${this.celular}`,
         gender: this.gender
       };
     }
   
-    setQueryUser() {
+    setQueryPlayer() {
       this.query = `
       query($id: ID!) {
-        getUser(_id: $id, filters: {
+        getPlayer(_id: $id, filters: {
           inner: [
-            { path: "profile" }          
+            { path: "field" }
+            { path: "team" } 
+            { path: "tournament" }           
           ]
         }){
             _id,
-            name,
-            profile {
+            nombre,
+            field {
               _id
             },
-            state {
+            team {
               _id
             },
-            lastName,
-            email,
-            mobile,
+            tournament {
+              _id
+            },
+            apellidos,
+            correo,
+            celular,
             gender,
-            city,
-            photo
         }
       }`;
       this.variables = {
-        module: 'users',
-        id: this.userId
+        module: 'players',
+        id: this.playerId
       };
     }
   
@@ -318,39 +335,36 @@ export class PlayerformComponent implements OnInit {
       this.mutation = `
       mutation(
         $id: ID!,
-        $profile: ID!, 
-        $name: String!, 
-        $lastName: String, 
-        $email: String!, 
-        $mobile: String!, 
-        $state: ID!, 
-        $city: String!,
-        $gender: String!
-      ) {
-        updateUser(_id: $id, input: {
-          profile: $profile, 
-          name: $name, 
-          lastName: $lastName, 
-          email: $email, 
-          mobile: $mobile, 
-          state: $state, 
-          city: $city,
-          gender: $gender        
+        $field: ID!, 
+        $team: ID!,
+        $tournament: ID!,
+        $nombre: String!, 
+        $apellidos: String, 
+        $correo: String!, 
+        $celular: String!, 
+        $gender: String!) {
+        updatePlayer(_id: $id, input: {
+          field: $field, 
+            team: $team,
+            tournament: $tournament,
+            nombre: $nombre, 
+            apellidos: $apellidos, 
+            correo: $correo, 
+            celular: $celular, 
+            gender: $gender       
         }){
             _id,
-            name
+            nombre
         }
     }`;
       this.variables = {
-        module: 'users',
-        id: this.userId,
+        module: 'players',
+        id: this.playerId,
         
-        name: this.name,
-        lastName: this.lastName,
-        email: this.email,
-        mobile: `${this.mobile}`,
-        state: this.state,
-        city: this.city,
+        nombre: this.nombre,
+        apellidos: this.apellidos,
+        correo: this.correo,
+        celular: `${this.celular}`,
         gender: this.gender
       };
     }
@@ -361,16 +375,16 @@ export class PlayerformComponent implements OnInit {
         $id: ID!,
         $photo: String!
       ) {
-        updateUser(_id: $id, input: {
+        updatePlayer(_id: $id, input: {
           photo: $photo        
         }){
             _id
         }
       }`;
-      let image = id ? `image-${id}_${this.selectedFile?.name}` : `image-${this.userId}_${this.selectedFile?.name}`;
+      let image = id ? `image-${id}_${this.selectedFile?.name}` : `image-${this.playerId}_${this.selectedFile?.name}`;
       this.variables = {
         module: 'users',
-        id: id || this.userId,
+        id: id || this.playerId,
         photo: image
       };
     }

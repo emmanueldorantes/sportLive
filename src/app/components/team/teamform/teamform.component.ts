@@ -66,7 +66,6 @@ export class TeamformComponent implements OnInit {
     
     this.listfields = await this.getFields();
     this.listtournaments = await this.getTournaments();
-
     this.route.params.subscribe(async params => {
       this.teamId = params['id'];
       this.isCreating = !this.teamId; 
@@ -74,7 +73,7 @@ export class TeamformComponent implements OnInit {
         this.titleService.setTitle('Equipo  / Editar Equipo');
         let datateam = await this.getTeam();
          console.log(datateam)
-       this.nombre = datateam.nombre;
+        this.nombre = datateam.nombre;
         this.field = datateam.field._id;
         this.tournament = datateam.tournament._id;
         this.displayedImageUrl =  datateam.photo ? `${environment.fileManager}/${datateam.photo}` : `${environment.fileManager}/user_default.png`;
@@ -174,7 +173,7 @@ export class TeamformComponent implements OnInit {
     
   }
   async getTeam() {
-    this.setQueryTeam();
+    this.setQueryTeams();
     let response = await this.graphqlService.post(this.query, this.variables);
     return response.data.getTeam;
   }
@@ -211,7 +210,7 @@ export class TeamformComponent implements OnInit {
 
   }
 
-    setQueryTeam() {
+    setQueryTeams() {
       this.query = `
       query($id: ID!) {
         getTeam(_id: $id, filters: {

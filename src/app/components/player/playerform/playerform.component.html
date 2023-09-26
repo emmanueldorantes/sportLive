@@ -1,36 +1,35 @@
 <div class="panel panel-flat">
     <div class="panel-body">
-        <form #formUser="ngForm" (ngSubmit)="onSubmit(formUser)" enctype="multipart/form-data" novalidate>
+        <form #formplayer="ngForm" (ngSubmit)="onSubmit(formplayer)" enctype="multipart/form-data" novalidate>
             <div class="row">
                 <div class="col-12 col-md-12">
-                    <label for="profileuser" class="form-label">Cancha:</label>
-                    <select [(ngModel)]="field" id="profileuser" name="profile" class="form-control" required>
-                        <option *ngFor="let field of listfields" value="{{field._id}}">{{field.name}}
-                        </option>
+                    <label for="fielduser" class="form-label">Cancha:</label>
+                    <select [(ngModel)]="field" id="fielduser" name="fielduser" class="form-control" required>
+                        <option *ngFor="let field of listfields" value="{{field._id}}">{{field.nombre}}</option>
                     </select>
-                    <div *ngIf="!field" class="error">Este campo es obligatorio.</div>
+                    <div *ngIf="!field" class="error">Este campo es obligatorio</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-12 col-md-12">
-                    <label for="profileuser" class="form-label">Torneo:</label>
-                    <select [(ngModel)]="profile" id="profileuser" name="profile" class="form-control" required>
-                        <option *ngFor="let profile of listProfiles" value="{{profile._id}}">{{profile.name}}
+                    <label for="tournamentuser" class="form-label">Torneo:</label>
+                    <select [(ngModel)]="tournament" id="tournamentuser" name="tournament" class="form-control" required>
+                        <option *ngFor="let tournament of listtournaments" value="{{tournament._id}}">{{tournament.nombre}}
                         </option>
                     </select>
-                    <div *ngIf="!profile" class="error">Este campo es obligatorio.</div>
+                    <div *ngIf="!tournament" class="error">Este campo es obligatorio.</div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-12 col-md-12">
-                    <label for="profileuser" class="form-label">Equipo:</label>
-                    <select [(ngModel)]="profile" id="profileuser" name="profile" class="form-control" required>
-                        <option *ngFor="let profile of listProfiles" value="{{profile._id}}">{{profile.name}}
+                    <label for="teamuser" class="form-label">Equipo:</label>
+                    <select [(ngModel)]="team" id="teamuser" name="team" class="form-control" required>
+                        <option *ngFor="let team of listteams" value="{{team._id}}">{{team.nombre}}
                         </option>
                     </select>
-                    <div *ngIf="!profile" class="error">Este campo es obligatorio.</div>
+                    <div *ngIf="!team" class="error">Este campo es obligatorio.</div>
                 </div>
             </div>
 
@@ -38,31 +37,32 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-6">
-                        <label for="name" class="form-label">Nombre:</label>
-                        <input [(ngModel)]="name" type="text" class="form-control" id="name" name="name" required>
-                        <div *ngIf="!name" class="error">Este campo es obligatorio.</div>
+                        <label for="nombre" class="form-label">Nombre:</label>
+                        <input [(ngModel)]="nombre" type="text" class="form-control" id="nombre" name="nombre" required>
+                        <div *ngIf="!nombre" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-6">
-                        <label for="lastename" class="form-label">Apellidos:</label>
-                        <input [(ngModel)]="lastName" type="text" class="form-control" id="lastename" name="lastName">
+                        <label for="apellidos" class="form-label">Apellidos:</label>
+                        <input [(ngModel)]="apellidos" type="text" class="form-control" id="apellidos" name="apellidos">
+                        <div *ngIf="!apellidos" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6">
-                    <label for="emailuser" class="form-label">Email</label>
-                    <input [(ngModel)]="email" type="email" class="form-control" id="emailuser" name="email" required>
-                    <div *ngIf="!email" class="error">Este campo es obligatorio.</div>
+                    <label for="correouser" class="form-label">Correo</label>
+                    <input [(ngModel)]="correo" type="email" class="form-control" id="correouser" name="correo" required>
+                    <div *ngIf="!correo" class="error">Este campo es obligatorio.</div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-6">
-                        <label for="mobileuser" class="form-label">Celular:</label>
-                        <input [(ngModel)]="mobile" type="number" class="form-control" id="mobileuser" name="mobile"
+                        <label for="celularuser" class="form-label">Celular:</label>
+                        <input [(ngModel)]="celular" type="number" class="form-control" id="celular" name="celular"
                             required>
-                        <div *ngIf="!mobile" class="error">Este campo es obligatorio.</div>
+                        <div *ngIf="!celular" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
             </div>
