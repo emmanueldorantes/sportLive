@@ -1,55 +1,61 @@
 <div class="panel panel-flat">
     <div class="panel-body">
         <form #formTeam="ngForm" (ngSubmit)="onSubmit(formTeam)" enctype="multipart/form-data" novalidate>
-            <div class="mb-4">
-                <!-- Etiqueta del campo de selección -->
-                <label for="fielduser" class="form-label">Cancha:</label>
-            
-                <!-- Campo de selección (desplegable) -->
-                <select [(ngModel)]="field" id="fielduser" name="fielduser" class="form-control" required>
-                    <option *ngFor="let fieldItem of listfields" value="{{fieldItem._id}}">{{fieldItem.nombre}}</option>
-                </select>
-            
-                <!-- Mensaje de error que se mostrará si el campo está vacío -->
-                <div *ngIf="!field" class="error">Este campo es obligatorio.</div>
-            </div>
-            <div class="mb-4">
-                <!-- Etiqueta del campo de selección -->
-                <label for="tournamentuser" class="form-label">Torneo:</label>
-            
-                <!-- Campo de selección (desplegable) -->
-                <select [(ngModel)]="tournament" id="tournamentuser" name="tournamentuser" class="form-control" required>
-                    <option *ngFor="let tournamentItem of listtournaments" value="{{tournamentItem._id}}">{{tournamentItem.nombre}}</option>
-                </select>
-            
-                <!-- Mensaje de error que se mostrará si el campo está vacío -->
-                <div *ngIf="!tournament" class="error">Este campo es obligatorio.</div>
-            </div>
-            <div class="mb-4">
-                <label for="nombre" class="form-label">Nombre:</label>
-                <input type="text" class="form-control" id="nombreCancha"  [(ngModel)]="nombre" name="nombre" required>
-                <div *ngIf="!nombre" class="error">Este campo es obligatorio.{{nombre}}</div>
-            </div>
             <div class="row">
-                <!-- Control de carga -->
-                <div class="col-12 col-md-6">
-                    <div class="input-group mb-3">
-                        <input [(ngModel)]="file" type="file" class="form-control" id="fileImg"
-                            formControlName="file" accept=".jpg,.png" (change)="onFileSelected($event)">    
-                        <label class="input-group-text" for="fileImg">Imagen</label>
+                <div class="col-md-6">
+                    <div class="row">
+                        <!-- Etiqueta del campo de selección -->
+                        <label for="fielduser" class="form-label">Cancha:</label>
+
+                        <!-- Campo de selección (desplegable) -->
+                        <select [(ngModel)]="field" id="fielduser" name="fielduser" class="form-control" required>
+                            <option *ngFor="let fieldItem of listfields" value="{{fieldItem._id}}">{{fieldItem.nombre}}
+                            </option>
+                        </select>
+
+                        <!-- Mensaje de error que se mostrará si el campo está vacío -->
+                        <div *ngIf="!field" class="error">Este campo es obligatorio.</div>
+                    </div>
+                    <div class="row">
+                        <!-- Etiqueta del campo de selección -->
+                        <label for="tournamentuser" class="form-label">Torneo:</label>
+
+                        <!-- Campo de selección (desplegable) -->
+                        <select [(ngModel)]="tournament" id="tournamentuser" name="tournamentuser" class="form-control"
+                            required>
+                            <option *ngFor="let tournamentItem of listtournaments" value="{{tournamentItem._id}}">
+                                {{tournamentItem.nombre}}</option>
+                        </select>
+
+                        <!-- Mensaje de error que se mostrará si el campo está vacío -->
+                        <div *ngIf="!tournament" class="error">Este campo es obligatorio.</div>
+                    </div>
+                    <div class="row">
+                        <label for="nombre" class="form-label">Nombre:</label>
+                        <input type="text" class="form-control" id="nombreCancha" [(ngModel)]="nombre" name="nombre"
+                            required>
+                        <div *ngIf="!nombre" class="error">Este campo es obligatorio.{{nombre}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="fileImg">Imagen:</label>
+                            <input [(ngModel)]="file" type="file" class="form-control" id="fileImg"
+                                formControlName="file" accept=".jpg,.png" (change)="onFileSelected($event)">
+                        </div>
                     </div>
                 </div>
-                <!-- Imagen cargada -->
-                <div class="col-12 col-md-6 text-center">
-                    <img [src]="displayedImageUrl" alt="Imagen" class="custom-thumbnail">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-12 col-md-12 text-center">
+                            <img [src]="displayedImageUrl" alt="Imagen" class="custom-thumbnail">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="text-right">
-            <button type="submit" class="btn bg-teal-400 btn-labeled">
-                <b><i class="icon-floppy-disk"></i></b> Guardar
-            </button>
-       
-        </div>
-</form>
-</div>
-
+                <button type="submit" class="btn bg-teal-400 btn-labeled">
+                    <b><i class="icon-floppy-disk"></i></b> Guardar
+                </button>
+            </div>
+        </form>
+    </div>

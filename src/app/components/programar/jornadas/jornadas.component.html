@@ -1,60 +1,72 @@
 <div class="panel panel-flat">
     <div class="panel-body">
-
-        <div class="panel panel-flat">
-            <div class="panel-body">
-                <form novalidate>
+        <form #formGrid="ngForm" (ngSubmit)="onSubmit(formGrid)" novalidate>
+            <div class="panel panel-flat">
+                <div class="panel-body">
                     <div class="row">
-                        <div class="col-4 col-md-4">
+                        <div class="col-3 col-md-3">
                             <label for="canchas" class="form-label">Cancha</label>
-                            <select id="canchas" name="cancha" class="form-control" required>
-                                <option></option>
+                            <select id="field" name="field" [(ngModel)]="field" class="form-control" required
+                                (change)="changeFields()">
+                                <option value="">Seleccionar un opción</option>
+                                <option *ngFor="let field of fields" [value]="field._id">{{field.nombre}}</option>
                             </select>
-                            <div class="error">Este campo es obligatorio.</div>
+                            <div class="error" *ngIf="!field">Este campo es obligatorio.</div>
                         </div>
 
-                        <div class="col-4 col-md-4">
+                        <div class="col-3 col-md-3">
                             <label for="torneo" class="form-label">Torneo</label>
-                            <select id="torneo" name="torneo" class="form-control" required>
-                                <option>Todos</option>
+                            <select id="tournament" name="tournament" [(ngModel)]="tournament" class="form-control"
+                                required [disabled]="disabledTournament" (change)="viewGridTeams()">
+                                <option value="">Seleccionar un opción</option>
+                                <option *ngFor="let tournament of tournaments" [value]="tournament._id">
+                                    {{tournament.nombre}}</option>
                             </select>
-                            <div class="error">Este campo es obligatorio.</div>
+                            <div class="error" *ngIf="!tournament">Este campo es obligatorio.</div>
                         </div>
 
-                        <div class="col-4 col-md-4">
-                            <label for="vueltas" class="form-label">Vueltas</label>
-                            <select id="vueltas" name="vueltas" class="form-control" required>
-                                <option>Ida</option>
-                                <option>Ida - Vuelta</option>
+                        <div class="col-3 col-md-3">
+                            <label fngor="vueltas" class="form-label">Vueltas</label>
+                            <select id="lap" name="lap" [(ngModel)]="lap" class="form-control" required>
+                                <option value="">Seleccionar un opción</option>
+                                <option *ngFor="let lap of laps" [value]="lap.value">{{lap.description}}</option>
                             </select>
-                            <div class="error">Este campo es obligatorio.</div>
+                            <div class="error" *ngIf="!lap">Este campo es obligatorio.</div>
                         </div>
-                    </div>
 
-                </form>
-            </div>
-        </div>
-
-        <div class="panel panel-flat">
-            <div class="panel-body">
-                <div class="row" *ngFor="let fila of teams; let i = index">
-                    <div class="col-md-2" *ngFor="let team of fila.fila">
-                        <div class="panel panel-body border-top-primary text-center">
-                            <h6 class="no-margin text-semibold" *ngIf="team.nombre.length <= 13">{{team.nombre}}</h6>
-                            <h6 data-popup="tooltip" class="no-margin text-semibold" *ngIf="team.nombre.length > 13">
-                                {{team.nombre.substr(0,12)}}...</h6>
-                            <button type="button" title="{{team.nombre}}" class="btn btn-float btn-float-lg"><img
-                                    src="../../../../assets/images/escudos/{{team.escudo}}.PNG"></button>
+                        <div class="col-3 col-md-3">
+                            <label fngor="vueltas" class="form-label">Programar Por</label>
+                            <select id="type" name="type" [(ngModel)]="type" class="form-control" required>
+                                <option value="">Seleccionar un opción</option>
+                                <option *ngFor="let type of types" [value]="type">{{type | titlecase}}</option>
+                            </select>
+                            <div class="error" *ngIf="!type">Este campo es obligatorio.</div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="text-right">
-            <button type="button" class="btn bg-teal-400 btn-labeled"><b><i class="icon-calendar2"></i></b>
-                Generar</button>
-        </div>
+            <div class="panel panel-flat">
+                <div class="panel-body">
+                    <div class="row" *ngFor="let rows of teams; let i = index">
+                        <div class="col-md-2" *ngFor="let team of rows.row">
+                            <div class="panel panel-body border-top-primary text-center">
+                                <h6 class="no-margin text-semibold" *ngIf="team.nombre.length <= 13">{{team.nombre}}
+                                </h6>
+                                <h6 data-popup="tooltip" class="no-margin text-semibold"
+                                    *ngIf="team.nombre.length > 13">
+                                    {{team.nombre.substr(0,10)}}...</h6>
+                                <button type="button" title="{{team.nombre}}" class="btn btn-float btn-float-lg"><img
+                                        src="{{team.escudo}}"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="text-right">
+                <button type="submit" class="btn bg-teal-400 btn-labeled"><b><i class="icon-calendar2"></i></b>Generar</button>
+            </div>
+        </form>
     </div>
 </div>
