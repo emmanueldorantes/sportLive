@@ -40,6 +40,7 @@ const routes: Routes = [
             { path: 'teamlist', component: TeamlistComponent, canActivate: [authGuard] },
             { path: 'playerlist', component: PlayerlistComponent, canActivate: [authGuard] },
             { path: 'playerform', component: PlayerformComponent, canActivate: [authGuard] },
+            { path: 'playerform/:id', component: PlayerformComponent, canActivate: [authGuard] },
             { path: 'jornadas', component: JornadasComponent, canActivate: [authGuard] },
             { path: 'calendario', component: CalendarioComponent, canActivate: [authGuard] }
         ]

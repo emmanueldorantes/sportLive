@@ -65,7 +65,7 @@ export class PlayerformComponent implements OnInit {
       gender:['', Validators.required],
     });
 
-    this.titleService.setTitle('Juagador / Alta de Jugador');
+    this.titleService.setTitle('Jugador / Alta de Jugador');
     this.team= '';
     this.tournament= '';
     this.field= '';
@@ -172,7 +172,7 @@ export class PlayerformComponent implements OnInit {
           if (result) {
             this.cleanForm();
           } else {
-            this.router.navigateByUrl('/home/usuarios');
+            this.router.navigateByUrl('/home/playerlist');
           }
         });
       } catch (error) {
@@ -184,8 +184,8 @@ export class PlayerformComponent implements OnInit {
       let response = await this.graphqlService.post(this.mutation, this.variables);
       const miSnackBar = this.snakBar.open("El jugador ha sido modificado correctamente.", "Aceptar", {
         duration: 0,
-        horizontalPosition: "right",
-        verticalPosition: "top"
+        horizontalPosition: "center",
+        verticalPosition: "bottom"
       });
       if (this.selectedFile) {
         const resizedImage = await this.resizeImage(this.selectedFile);
@@ -199,7 +199,7 @@ export class PlayerformComponent implements OnInit {
         }
       }
       miSnackBar.onAction().subscribe(() => {
-        this.router.navigateByUrl('/home/jugadores');
+        this.router.navigateByUrl('/home/playerlist');
       });
     }
   

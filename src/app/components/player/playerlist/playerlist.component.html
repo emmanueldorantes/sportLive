@@ -1,57 +1,79 @@
-<div class="container mt-4">
-    <!-- Campo de búsqueda -->
-    <input class="form-control mb-2" placeholder="Filtrar por nombre">
+<div class="panel panel-flat">
+    <div class="panel-body">
+        <!-- Renglón de Filtros -->
+        <div class="row mb-3">
+            <!-- Columna para Filtro de Cancha -->
+            <div class="col-md-4">
+                <label for="fielduser" class="form-label">Cancha:</label>
+                <select class="form-control" [(ngModel)]="selectedField" (change)="onFieldChange()">
+                    <option *ngFor="let field of fields" [value]="field._id">{{ field.nombre }}</option>
+                </select>
+            </div>
 
-    <!-- Tabla -->
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Cancha</th>
-                <th>Torneo</th>
-                <th>Equipo</th>
-                <th>jugador</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Fila de ejemplo -->
-            <tr>
-                <td>1</td>
-                <td>Oviedo</td>
-                <td>8:00 pm</td>
-                <td>Chivas</td>
-                <td>Luis Miguel Lopez</td>
-                <td>
-                    <button class="btn btn-primary btn-sm">
-                        <i class="bi bi-pencil-fill"></i> Editar
-                    </button>
-                    <button class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash-fill"></i> Eliminar
-                    </button>
-                </td>
-            </tr>
-            <!-- Puedes agregar más filas aquí -->
-        </tbody>
-    </table>
+            <!-- Columna para Filtro de Torneo -->
+            <div class="col-md-4">
+                <label for="tournament" class="form-label">Torneo:</label>
+                <select class="form-control" [(ngModel)]="selectedTournament" (change)="onTournamentChange()">
+                    <option *ngFor="let tournament of tournaments" [value]="tournament._id">{{ tournament.nombre }}</option>
+                </select>
+            </div>
+
+            <!-- Columna para Filtro de Equipo -->
+            <div class="col-md-4">
+                <label for="team" class="form-label">Equipo:</label>
+                <select class="form-control" [(ngModel)]="selectedTeam" (change)="onTeamChange()">
+                    <option *ngFor="let team of teams" [value]="team._id">{{ team.nombre }}</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Filtro de Nombre -->
+        <br><br>
+
+        <!-- Tabla -->
+        <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cancha</th>
+                    <th>Torneo</th>
+                    <th>Equipo</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Status</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let player of players | filtroUsuario:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
+                    <td>{{ player.autoincrement }}</td>
+                    <td>{{ player.field.nombre }}</td>
+                    <td>{{ player.tournament.nombre}}</td>
+                    <td>{{ player.team.nombre }}</td>
+                    <td>{{ player.nombre}}</td>
+                    <td>{{ player.apellidos }}</td>
+                    <td>
+                        <mat-slide-toggle id="playerStatus{{player._id}}" (change)="changeStatus(player._id, player.status)"
+                            [(ngModel)]="player.status">
+                            <span class="form-check-label" for="playerStatus" *ngIf="player.status">Activo</span>
+                            <span class="form-check-label" for="playerStatus" *ngIf="!player.status">Inactivo</span>
+                        </mat-slide-toggle>
+                    </td>
+                    <td>
+                        <ul class="icons-list">
+                            <li class="text-primary-600"><a (click)="editarJugador(player._id)"><i
+                                        class="icon-pencil7"></i></a></li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
 </div>
-<!-- ... (resto del código anterior) ... -->
 
-<!-- Paginación -->
-<nav aria-label="Table pagination" class="mt-3">
-    <ul class="pagination">
-        <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-            <a class="page-link" href="#">Siguiente</a>
-        </li>
-    </ul>
-</nav>
 
-<!-- ... (cierre del contenedor y otros códigos) ... -->
 
 
