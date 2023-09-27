@@ -1,11 +1,27 @@
 <div class="panel panel-flat">
+    <div class="panel-body">
+        <div class="row mb-3">
+            <!-- Primera columna: para el select -->
+            <div class="col-md-6">
+                <label for="canchas" class="form-label">Cancha</label>
+                <select id="field" name="field" [(ngModel)]="field" class="form-control" required
+                    (change)="changeFields()">
+                    <option value="">Seleccionar un opción</option>
+                    <option *ngFor="let field of fields" [value]="field._id">{{field.nombre}}</option>
+                </select>
+            </div>
+            <!-- Segunda columna: para el input de búsqueda -->
+            <div class="col-md-6">
+                <label for="canchas" class="form-label">Filtro</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="icon-filter3"></i></span>
+                    <input type="text" class="form-control" placeholder="Filtrar por Torneo, Dia o Horario"
+                        [(ngModel)]="filtroNombre">
+                </div>
+            </div>
+         </div>
     <div class="table-responsive">
-        <div class="input-group">
-            <span class="input-group-addon"><i class="icon-filter3"></i></span>
-            <input type="text" class="form-control" placeholder="Filtrar los torneos"
-                [(ngModel)]="filtroNombre">
-        </div>
-        <table class="table table-striped">
+        <table class="table">
             <thead>
                 <tr class="colorHead">
                     <th>#</th>
@@ -18,7 +34,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let tournament of tournaments | filtroUsuario:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }; let i = index"
+                <tr *ngFor="let tournament of tournaments | filtroCancha:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }; let i = index"
                     [ngClass]="i % 2 === 0 ? 'zebra-even' : 'zebra-odd'">
                     <td>{{ tournament.autoincrement }}</td>
                     <td>{{ tournament.field.nombre}}</td>
@@ -42,8 +58,8 @@
 
             </tbody>
         </table>
-        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
     </div>
-</div>
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+
 
 

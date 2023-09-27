@@ -1,0 +1,9 @@
+.panel-flat .table-responsive {
+    width: 100%; /* Esto asegura que el contenedor de la tabla tenga todo el ancho disponible */
+    overflow-x: auto; /* Esto permite el desplazamiento horizontal en caso de que la tabla sea más ancha que el contenedor */
+}
+
+.panel-flat .table-responsive table {
+    width: 100%; /* Esto hace que la tabla ocupe todo el ancho del contenedor .table-responsive */
+    border-collapse: collapse; /* Para mejorar el aspecto de las celdas */
+}

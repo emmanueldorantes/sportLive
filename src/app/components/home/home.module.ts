@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FiltroPerfilPipe } from '../../pipes/filtro-perfil.pipe';
 import { FiltroUsuarioPipe } from '../../pipes/filtro-usuario.pipe';
+import { FiltroCanchaPipe } from '../../pipes/filtro-cancha.pipe';
 import { FieldformComponent } from '../field/fieldform/fieldform.component';
 import { FieldlistComponent } from '../field/fieldlist/fieldlist.component';
 import { TournamentformComponent } from '../Tournament/tournamentform/tournamentform.component';
@@ -24,6 +25,7 @@ import { PlayerlistComponent } from '../player/playerlist/playerlist.component';
 import { JornadasComponent } from '../programar/jornadas/jornadas.component';
 import { CalendarioComponent } from '../programar/calendario/calendario.component';
 
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -34,6 +36,7 @@ import { CalendarioComponent } from '../programar/calendario/calendario.componen
     ListaUsuariosComponent,
     FiltroPerfilPipe,
     FiltroUsuarioPipe,
+    FiltroCanchaPipe,
     FieldformComponent,
     FieldlistComponent,
     TournamentlistComponent,
