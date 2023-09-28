@@ -7,12 +7,15 @@ import { NgForm } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
+import 'moment-timezone';
 
 @Component({
   selector: 'app-jornadas',
   templateUrl: './jornadas.component.html',
   styleUrls: ['./jornadas.component.css']
 })
+
 export class JornadasComponent implements OnInit {
   teams: any = [];
   field: any;
@@ -29,6 +32,7 @@ export class JornadasComponent implements OnInit {
   ];
   qry: string;
   variables: any;
+  matches: any;
 
   constructor(
     private snakBar: MatSnackBar,
@@ -38,6 +42,7 @@ export class JornadasComponent implements OnInit {
     private graphqlService: GraphqlService
   ) {
     this.titleService.setTitle('Programación / Jornadas');
+    this.matches = [];
   }
 
   async ngOnInit() {
@@ -78,6 +83,8 @@ export class JornadasComponent implements OnInit {
     } else {
       this.disabledTournament = true;
       this.tournaments = [];
+      this.tournament = "";
+      this.teams = [];
     }
   }
 
@@ -107,6 +114,7 @@ export class JornadasComponent implements OnInit {
 
   async viewGridTeams() {
     if (this.field && this.tournament) {
+      this.teams = [];
       let i = -1;
       const listTeams = await this.getTeams();
       listTeams.forEach((team: any, index: number) => {
@@ -174,27 +182,91 @@ export class JornadasComponent implements OnInit {
     }
   }
 
-  matchScheduling() {
+  async matchScheduling() {
     let teamsObjects: any = [];
     this.teams.forEach((rows: any) => {
       rows.row.forEach((team: any) => {
         teamsObjects.push(team);
       });
     });
-    const totalTeams = teamsObjects.length;
+    let totalTeams = teamsObjects.length;
     const isAnOddNumber = totalTeams % 2;
-    if (isAnOddNumber)
+    if (isAnOddNumber) {
       teamsObjects.push({ id: 0, "nombre": "descansa" });
+      totalTeams = teamsObjects.length;
+    }
 
+    const halfTeams = totalTeams / 2;
 
+    // let teamsBlock1 = teamsObjects.slice(0, halfTeams);
+    // let teamsBlock2 = teamsObjects.slice(halfTeams, totalTeams);
 
+    let matchday;
+    let date = moment.tz('America/Mexico_city').format();
+    for (let i = 0; i < totalTeams - 1; i++) {
+      matchday = i + 1;
+      for (let x = 0; x < halfTeams; x++) {
+        this.matches = [];
+        let matchTeam = await this.getLastMatchTeam(teamsObjects[x].id, "Sin Jugar");
+        
 
-
-
-      
-    console.log(teamsObjects);
-
+        this.matches.push(
+          {
+            homeTeam: teamsObjects[x].nombre,
+            awayTeam: teamsObjects[totalTeams - 1 - x].nombre,
+            matchday,
+            status: "Sin Jugar",
+            type: "Local",
+            date
+          },
+          {
+            team: teamsObjects[totalTeams - 1 - x].nombre,
+            teamVs: teamsObjects[x].nombre,
+            matchday,
+            status: "Sin Jugar",
+            type: "Visita",
+            date
+          });
+        this.saveGame();
+      }
+      teamsObjects.splice(1, 0, teamsObjects.pop()!);      
+    }
 
     // this.router.navigateByUrl('/home/calendario');
   }
+
+  async getLastMatchTeam(team: any, status: string): Promise<any> {
+    this.setQueryMatchTeam(team, status);
+    let response = await this.graphqlService.post(this.qry, this.variables);
+    return response.data.getMatchs;
+  }
+
+  setQueryMatchTeam(IdTeam: any, status: string) {
+    this.qry = `
+    query($idTeam: ID!, $status: String!) {
+      getMatchs(filters: {
+        qry: {
+          homeTeam: $idTeam,          
+          status: $status          
+        },
+        pagination: true,
+        limit: 1,
+        sort: { date: -1 }
+      }){
+          _id,
+          matchday,
+          type
+      }
+    }`;
+    this.variables = {
+      module: 'matchs',
+      idTeam: IdTeam,
+      status
+    };
+  }
+
+  saveGame(): void {
+    console.log(this.matches)
+  }
+
 }
