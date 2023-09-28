@@ -33,10 +33,8 @@ export class FieldformComponent implements OnInit {
   contactocelular: string;
   contactocorreo : string;
 //Informacion de Propietario
-  propietarionombre: string;
-  propietarioapellidos:string;
-  propietariocorreo:string;
-  propietariotelefono:string;
+  profile: any;
+  listProfiles: any;
   displayedImageUrl: string;
   fieldId: any = '';
   file: any;
@@ -77,10 +75,6 @@ export class FieldformComponent implements OnInit {
     this.contactoapellidos = ''; 
     this.contactocelular = ''; 
     this.contactocorreo = "";
-    this.propietarionombre = "";
-    this.propietarioapellidos = "";
-    this.propietariocorreo = "";
-    this.propietariotelefono = "";
     this.mutation = "";
   }
 
@@ -99,10 +93,6 @@ export class FieldformComponent implements OnInit {
         this.contactoapellidos = datafield.contactoapellidos;
         this.contactocelular = datafield.contactocelular;
         this.contactocorreo = datafield.contactocorreo;
-        this.propietarionombre = datafield.propietarionombre;
-        this.propietarioapellidos = datafield.propietarioapellidos;
-        this.propietariocorreo = datafield.propietariocorreo;
-        this.propietariotelefono = datafield.propietariotelefono;
         this.displayedImageUrl =  datafield.photo ? `${environment.fileManager}/${datafield.photo}` : `${environment.fileManager}/user_default.png`;
       } else {
         this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
@@ -204,10 +194,6 @@ export class FieldformComponent implements OnInit {
     this.contactoapellidos = ''; 
     this.contactocelular = ''; 
     this.contactocorreo = "";
-    this.propietarionombre = "";
-    this.propietarioapellidos = "";
-    this.propietariocorreo = "";
-    this.propietariotelefono = "";
     this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
   }
 
@@ -231,10 +217,6 @@ export class FieldformComponent implements OnInit {
           contactoapellidos: $contactoapellidos,
           contactocelular: $contactocelular,
           contactocorreo: $contactocorreo,
-          propietarionombre: $propietarionombre,
-          propietarioapellidos: $propietarioapellidos,
-          propietariocorreo: $propietariocorreo,
-          propietariotelefono: $propietariotelefono
         }){
           _id,
           nombre
@@ -248,10 +230,6 @@ export class FieldformComponent implements OnInit {
       contactoapellidos: this.contactoapellidos,
       contactocelular: this.contactocelular,
       contactocorreo: this.contactocorreo,
-      propietarionombre: this.propietarionombre,
-      propietarioapellidos: this.propietarioapellidos,
-      propietariocorreo: this.propietariocorreo,
-      propietariotelefono: this.propietariotelefono
     };
 
   }
@@ -320,10 +298,6 @@ this.variables = {
   contactoapellidos: this.contactoapellidos,
   contactocelular: this.contactocelular,
   contactocorreo: this.contactocorreo,
-  propietarionombre: this.propietarionombre,
-  propietarioapellidos: this.propietarioapellidos,
-  propietariocorreo: this.propietariocorreo,
-  propietariotelefono: this.propietariotelefono
 };
 
 }

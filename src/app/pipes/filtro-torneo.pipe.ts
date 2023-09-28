@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'filtroCancha'
+  name: 'filtroTorneo'
 })
-export class FiltroCanchaPipe implements PipeTransform {
+export class FiltroTorneoPipe implements PipeTransform {
 
   transform(items: any[], filterText: string): any[] {
     if (!items || !filterText) {
@@ -13,7 +13,7 @@ export class FiltroCanchaPipe implements PipeTransform {
     filterText = filterText.toLowerCase();
     console.log(filterText)
     return items.filter(item =>
-      item.nombre.toLowerCase().includes(filterText) 
+      item.nombre.toLowerCase().includes(filterText) || item.dia.toLowerCase().includes(filterText) || item.horario.toLowerCase().includes(filterText)
     );
   }
 }
