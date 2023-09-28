@@ -201,35 +201,22 @@ export class JornadasComponent implements OnInit {
     // let teamsBlock1 = teamsObjects.slice(0, halfTeams);
     // let teamsBlock2 = teamsObjects.slice(halfTeams, totalTeams);
 
-    let matchday;
-    let date = moment.tz('America/Mexico_city').format();
+    let matchday;    
     for (let i = 0; i < totalTeams - 1; i++) {
       matchday = i + 1;
       for (let x = 0; x < halfTeams; x++) {
         this.matches = [];
         let matchTeam = await this.getLastMatchTeam(teamsObjects[x].id, "Sin Jugar");
-        
+        if (matchTeam.length) {
 
-        this.matches.push(
-          {
-            homeTeam: teamsObjects[x].nombre,
-            awayTeam: teamsObjects[totalTeams - 1 - x].nombre,
-            matchday,
-            status: "Sin Jugar",
-            type: "Local",
-            date
-          },
-          {
-            team: teamsObjects[totalTeams - 1 - x].nombre,
-            teamVs: teamsObjects[x].nombre,
-            matchday,
-            status: "Sin Jugar",
-            type: "Visita",
-            date
-          });
+        } else {
+
+        }
+
+
         this.saveGame();
       }
-      teamsObjects.splice(1, 0, teamsObjects.pop()!);      
+      teamsObjects.splice(1, 0, teamsObjects.pop()!);
     }
 
     // this.router.navigateByUrl('/home/calendario');
@@ -263,6 +250,29 @@ export class JornadasComponent implements OnInit {
       idTeam: IdTeam,
       status
     };
+  }
+
+  addMatchObject(teams: any, index: number, lastIndex: number, matchday: number) {
+    let homeTeam = teams[index];
+    let awayTeam = teams[lastIndex];
+    let date = moment.tz('America/Mexico_city').format();
+    this.matches.push(
+      {
+        homeTeam: teams[index],
+        awayTeam: teams[lastIndex],
+        matchday,
+        status: "Sin Jugar",
+        type: "Local",
+        date
+      },
+      {
+        team: teams[lastIndex],
+        teamVs: teams[index],
+        matchday,
+        status: "Sin Jugar",
+        type: "Visita",
+        date
+      });
   }
 
   saveGame(): void {
