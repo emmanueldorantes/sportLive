@@ -33,8 +33,8 @@ export class FieldformComponent implements OnInit {
   contactocelular: string;
   contactocorreo : string;
 //Informacion de Propietario
-  profile: any;
-  listProfiles: any;
+  user: any;
+  listUsers: any;
   displayedImageUrl: string;
   fieldId: any = '';
   file: any;
@@ -76,10 +76,12 @@ export class FieldformComponent implements OnInit {
     this.contactocelular = ''; 
     this.contactocorreo = "";
     this.mutation = "";
+    this.user='';
   }
 
   async ngOnInit() {
-    
+    console.log(this.user);
+    this.listUsers = await this.getUsers();
     this.route.params.subscribe(async params => {
       this.fieldId = params['id'];
       this.isCreating = (this.fieldId !== undefined) ? false : true;
@@ -88,6 +90,7 @@ export class FieldformComponent implements OnInit {
        let datafield = await this.getField();
        console.log(datafield)
         this.nombre = datafield.nombre;
+        this.user = datafield.user._id;
         this.telefono = datafield.telefono;
         this.contactonombre = datafield.contactonombre;
         this.contactoapellidos = datafield.contactoapellidos;
@@ -118,7 +121,12 @@ export class FieldformComponent implements OnInit {
       });
     }
   }
-  
+  async getUsers() {
+    this.setQueryUsers();
+    let response = await this.graphqlService.post(this.query, this.variables);
+    return response.data.getUsers;
+  }
+
   async updateField() {
     let response = await this.graphqlService.post(this.mutation, this.variables);
     const miSnackBar = this.snakBar.open("El usuario ha sido modificado correctamente.", "Aceptar", {
@@ -188,6 +196,7 @@ export class FieldformComponent implements OnInit {
   }
 
   cleanForm() {
+    this.user='';
     this.nombre = '';
     this.telefono = '';
     this.contactonombre = '';
@@ -232,6 +241,27 @@ export class FieldformComponent implements OnInit {
       contactocorreo: this.contactocorreo,
     };
 
+  }
+  setQueryUsers() {
+    this.query = `
+    query getUsersByProfileId($profileId: ID!) {
+      getUsers(filters: {
+        qry: { profile: $profileId },
+      inner: [
+            { path: "profile" }
+          ]
+        }){
+            profile {
+              _id
+            },
+            _id,
+            name,
+        }
+    }`;
+    this.variables = {
+      profileId:'64f20c5400ac95c034f70517',
+      module: 'users'
+    };
   }
 
     setQueryField() {
