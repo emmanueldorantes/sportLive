@@ -1,6 +1,6 @@
 <div class="panel panel-flat">
     <div class="panel-body">
-    <input class="form-control mb-2" placeholder="Filtrar por nombre, email, celular" [(ngModel)]="filtroNombre">
+    <input class="form-control mb-2" placeholder="Filtrar por Torneo" [(ngModel)]="filtroNombre">
     <div class="table-responsive">
     <table class="table">
         <thead>
@@ -12,7 +12,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let field of fields | filtroUsuario:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
+            <tr *ngFor="let field of fields | filtroCancha:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
                 <td>{{ field.autoincrement }}</td>
                 <td>{{ field.nombre }}</td>
                 <td>

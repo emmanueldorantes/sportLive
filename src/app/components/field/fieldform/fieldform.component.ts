@@ -33,10 +33,8 @@ export class FieldformComponent implements OnInit {
   contactocelular: string;
   contactocorreo : string;
 //Informacion de Propietario
-  propietarionombre: string;
-  propietarioapellidos:string;
-  propietariocorreo:string;
-  propietariotelefono:string;
+  user: any;
+  listUsers: any;
   displayedImageUrl: string;
   fieldId: any = '';
   file: any;
@@ -77,15 +75,13 @@ export class FieldformComponent implements OnInit {
     this.contactoapellidos = ''; 
     this.contactocelular = ''; 
     this.contactocorreo = "";
-    this.propietarionombre = "";
-    this.propietarioapellidos = "";
-    this.propietariocorreo = "";
-    this.propietariotelefono = "";
     this.mutation = "";
+    this.user='';
   }
 
   async ngOnInit() {
-    
+    console.log(this.user);
+    this.listUsers = await this.getUsers();
     this.route.params.subscribe(async params => {
       this.fieldId = params['id'];
       this.isCreating = (this.fieldId !== undefined) ? false : true;
@@ -94,15 +90,12 @@ export class FieldformComponent implements OnInit {
        let datafield = await this.getField();
        console.log(datafield)
         this.nombre = datafield.nombre;
+        this.user = datafield.user._id;
         this.telefono = datafield.telefono;
         this.contactonombre = datafield.contactonombre;
         this.contactoapellidos = datafield.contactoapellidos;
         this.contactocelular = datafield.contactocelular;
         this.contactocorreo = datafield.contactocorreo;
-        this.propietarionombre = datafield.propietarionombre;
-        this.propietarioapellidos = datafield.propietarioapellidos;
-        this.propietariocorreo = datafield.propietariocorreo;
-        this.propietariotelefono = datafield.propietariotelefono;
         this.displayedImageUrl =  datafield.photo ? `${environment.fileManager}/${datafield.photo}` : `${environment.fileManager}/user_default.png`;
       } else {
         this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
@@ -128,7 +121,12 @@ export class FieldformComponent implements OnInit {
       });
     }
   }
-  
+  async getUsers() {
+    this.setQueryUsers();
+    let response = await this.graphqlService.post(this.query, this.variables);
+    return response.data.getUsers;
+  }
+
   async updateField() {
     let response = await this.graphqlService.post(this.mutation, this.variables);
     const miSnackBar = this.snakBar.open("El usuario ha sido modificado correctamente.", "Aceptar", {
@@ -198,16 +196,13 @@ export class FieldformComponent implements OnInit {
   }
 
   cleanForm() {
+    this.user='';
     this.nombre = '';
     this.telefono = '';
     this.contactonombre = '';
     this.contactoapellidos = ''; 
     this.contactocelular = ''; 
     this.contactocorreo = "";
-    this.propietarionombre = "";
-    this.propietarioapellidos = "";
-    this.propietariocorreo = "";
-    this.propietariotelefono = "";
     this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
   }
 
@@ -231,10 +226,6 @@ export class FieldformComponent implements OnInit {
           contactoapellidos: $contactoapellidos,
           contactocelular: $contactocelular,
           contactocorreo: $contactocorreo,
-          propietarionombre: $propietarionombre,
-          propietarioapellidos: $propietarioapellidos,
-          propietariocorreo: $propietariocorreo,
-          propietariotelefono: $propietariotelefono
         }){
           _id,
           nombre
@@ -248,12 +239,29 @@ export class FieldformComponent implements OnInit {
       contactoapellidos: this.contactoapellidos,
       contactocelular: this.contactocelular,
       contactocorreo: this.contactocorreo,
-      propietarionombre: this.propietarionombre,
-      propietarioapellidos: this.propietarioapellidos,
-      propietariocorreo: this.propietariocorreo,
-      propietariotelefono: this.propietariotelefono
     };
 
+  }
+  setQueryUsers() {
+    this.query = `
+    query getUsersByProfileId($profileId: ID!) {
+      getUsers(filters: {
+        qry: { profile: $profileId },
+      inner: [
+            { path: "profile" }
+          ]
+        }){
+            profile {
+              _id
+            },
+            _id,
+            name,
+        }
+    }`;
+    this.variables = {
+      profileId:'64f20c5400ac95c034f70517',
+      module: 'users'
+    };
   }
 
     setQueryField() {
@@ -320,10 +328,6 @@ this.variables = {
   contactoapellidos: this.contactoapellidos,
   contactocelular: this.contactocelular,
   contactocorreo: this.contactocorreo,
-  propietarionombre: this.propietarionombre,
-  propietarioapellidos: this.propietarioapellidos,
-  propietariocorreo: this.propietariocorreo,
-  propietariotelefono: this.propietariotelefono
 };
 
 }
