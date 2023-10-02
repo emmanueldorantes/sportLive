@@ -1,30 +1,30 @@
 <div class="panel panel-flat">
     <div class="panel-body">
-        <form [formGroup]="fieldForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+        <form (ngSubmit)="onSubmit()" enctype="multipart/form-data" [formGroup]="fieldForm">
             <div class="row">
                 <!-- Sección de campos en la izquierda -->
                 <div class="col-12 col-md-6">
+
                     <label for="user" class="form-label">Contacto</label>
-                <select [(ngModel)]="user" id="user" name="user" class="form-control" required>
-                    <option value="" disabled selected>Seleccione un usuario</option>
-                    <option *ngFor="let user of listUsers" value="{{user._id}}">{{user.name}}</option>
-                </select>
-                    <div *ngIf="!user" class="error">Este campo es obligatorio.</div>
+                    <select [(ngModel)]="user" formControlName="user" id="user" class="form-control" required>
+                        <option *ngFor="let userItem of listUsers" [value]="userItem._id">{{userItem.name}}</option>
+                    </select>
+                    <div *ngIf="fieldForm.controls['user'].invalid && fieldForm.controls['user'].touched" class="error">Este campo es obligatorio.</div>
 
                     <!-- Sección Cancha -->
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="nombreCancha" class="form-label">Nombre</label>
-                                <input formControlName="nombre" type="text" class="form-control" id="nombreCancha" name="nombreCancha" [(ngModel)]="nombre">
-                                <div *ngIf="!nombre" class="error">Este campo es obligatorio.</div>
+                                <input [(ngModel)]="nombre" formControlName="nombre" type="text" class="form-control" id="nombreCancha" required>
+                                <div *ngIf="fieldForm.controls['nombre'].invalid && fieldForm.controls['nombre'].touched" class="error">Este campo es obligatorio.</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="telefonoCancha" class="form-label">Teléfono</label>
-                                <input formControlName="telefono" type="tel" class="form-control" id="telefonoCancha" name="telefonoCancha" [(ngModel)]="telefono">
-                                <div *ngIf="!telefono" class="error">Este campo es obligatorio.</div>
+                                <input [(ngModel)]="telefono" formControlName="telefono" type="tel" class="form-control" id="telefonoCancha" required>
+                                <div *ngIf="fieldForm.controls['telefono'].invalid && fieldForm.controls['telefono'].touched" class="error">Este campo es obligatorio.</div>
                             </div>
                         </div>
                     </div>
@@ -35,51 +35,51 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="nombreContacto" class="form-label">Nombre</label>
-                                <input formControlName="contactonombre" type="text" class="form-control" id="contactoname" name="nombreContacto" [(ngModel)]="contactonombre">
-                                <div *ngIf="!contactonombre" class="error">Este campo es obligatorio.</div>
+                                <input [(ngModel)]="contactonombre" formControlName="contactonombre" type="text" class="form-control" id="contactoname" required>
+                                <div *ngIf="fieldForm.controls['contactonombre'].invalid && fieldForm.controls['contactonombre'].touched" class="error">Este campo es obligatorio.</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="apellidosContacto" class="form-label">Apellidos</label>
-                                <input formControlName="contactoapellidos" type="text" class="form-control" id="contactoapellidos" name="contactoapellidos" [(ngModel)]="contactoapellidos">
-                                <div *ngIf="!contactoapellidos" class="error">Este campo es obligatorio.</div>
+                                <input [(ngModel)]="contactoapellidos" formControlName="contactoapellidos" type="text" class="form-control" id="contactoapellidos" required>
+                                <div *ngIf="fieldForm.controls['contactoapellidos'].invalid && fieldForm.controls['contactoapellidos'].touched" class="error">Este campo es obligatorio.</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="celularContacto" class="form-label">Celular</label>
-                                <input formControlName="contactocelular" type="tel" class="form-control" id="celularContacto" name="celularContacto" [(ngModel)]="contactocelular">
-                                <div *ngIf="!contactocelular" class="error">Este campo es obligatorio.</div>
+                                <input [(ngModel)]="contactocelular" formControlName="contactocelular" type="tel" class="form-control" id="celularContacto" required>
+                                <div *ngIf="fieldForm.controls['contactocelular'].invalid && fieldForm.controls['contactocelular'].touched" class="error">Este campo es obligatorio.</div>
                             </div>
                         </div>
-                        <div class="col-md-6 position-relative">
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="correoContacto" class="form-label">Correo</label>
-                                <input formControlName="contactocorreo" type="email" class="form-control" id="contactocorreo" name="correoContacto" [(ngModel)]="contactocorreo">
-                                <div *ngIf="!contactocorreo" class="error">Este campo es obligatorio.</div>
+                                <input [(ngModel)]="contactocorreo" formControlName="contactocorreo" type="email" class="form-control" id="contactocorreo" required>
+                                <div *ngIf="fieldForm.controls['contactocorreo'].invalid && fieldForm.controls['contactocorreo'].touched" class="error">Este campo es obligatorio.</div>
                             </div>
                         </div>
                     </div>
+
                 </div>
-                <div class="text-center">
+
                 <!-- Sección de Imagen y botón de carga en la derecha -->
-                <div class="col-12 col-md-6 d-flex flex-column align-items-end justify-content-center">
+                <div class="col-12 col-md-6 d-flex flex-column align-items-center justify-content-center">
                     <!-- Imagen -->
                     <img [src]="displayedImageUrl" alt="Imagen" class="custom-thumbnail mb-3">
-                    
-                    
+
                     <!-- Botón de carga de imagen -->
                     <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-                    <input [(ngModel)]="file" type="file" class="form-control" id="fileImg" formControlName="file" accept=".jpg,.png" (change)="onFileSelected($event)">
+                        <input [(ngModel)]="file" name="file" type="file" class="form-control" id="fileImg" accept=".jpg,.png">
                     </div>
                 </div>
+
+                <div class="col-12 text-right mt-3">
+                    <button type="submit" class="btn bg-teal-400 btn-labeled">
+                        <b><i class="icon-floppy-disk"></i></b>Guardar
+                    </button>
                 </div>
-                </div>
-            <div class="text-right">
-                <button type="submit" class="btn bg-teal-400 btn-labeled position-absolute end-0 bottom-0 mb-3">
-                    <b><i class="icon-floppy-disk"></i></b>Guardar
-                </button>
             </div>
         </form>
     </div>

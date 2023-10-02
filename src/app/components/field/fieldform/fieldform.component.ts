@@ -37,7 +37,7 @@ export class FieldformComponent implements OnInit {
   listUsers: any;
   displayedImageUrl: string;
   fieldId: any = '';
-  file: any;
+  file: any = '';
   selectedFile: File | null = null;
   
   constructor(
@@ -57,26 +57,24 @@ export class FieldformComponent implements OnInit {
     this.titleService.setTitle('Cancha / Nueva Cancha');
     this.srcImage = "../../../../assets/images/user_default.png";
     this.fieldForm = this.fb.group({
+      user: ['', Validators.required],
       nombre: ['', Validators.required],
-      telefono:  ['', Validators.required],
+      telefono: ['', Validators.required],
       contactonombre: ['', Validators.required],
       contactoapellidos: ['', Validators.required],
       contactocelular: ['', Validators.required],
-      contactocorreo : ['', Validators.required],
-      propietarionombre: ['', Validators.required],
-      propietarioapellidos:['', Validators.required],
-      propietariocorreo:['', Validators.required],
-      propietariotelefono:['', Validators.required],
+      contactocorreo: ['', Validators.required],
+
     });
    
     this.nombre = '';
     this.telefono = '';
     this.contactonombre = '';
-    this.contactoapellidos = ''; 
-    this.contactocelular = ''; 
-    this.contactocorreo = "";
-    this.mutation = "";
-    this.user='';
+    this.contactoapellidos = '';
+    this.contactocelular = '';
+    this.contactocorreo = '';
+    this.mutation = '';
+    this.user = '';
   }
 
   async ngOnInit() {
