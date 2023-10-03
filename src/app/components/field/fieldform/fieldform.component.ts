@@ -16,6 +16,7 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './fieldform.component.html',
   styleUrls: ['./fieldform.component.css']
 })
+
 export class FieldformComponent implements OnInit {
 
   fieldForm:FormGroup;
@@ -207,17 +208,16 @@ export class FieldformComponent implements OnInit {
   setMutationInsert() {
     this.mutation = `
       mutation(
+        $user: ID!,
         $nombre: String!,
         $telefono: String!,
         $contactonombre: String!,
         $contactoapellidos: String!,
         $contactocelular: String!,
         $contactocorreo: String!,
-        $propietarionombre: String!,
-        $propietarioapellidos: String!,
-        $propietariocorreo: String!,
-        $propietariotelefono: String!) {
+        ) {
         createField(input: {
+          user: $user,
           nombre: $nombre,
           telefono: $telefono,
           contactonombre: $contactonombre,
@@ -232,6 +232,7 @@ export class FieldformComponent implements OnInit {
     this.variables = {
       module: 'field',
       nombre: this.nombre,
+      user:this.user,
       telefono: this.telefono,
       contactonombre: this.contactonombre,
       contactoapellidos: this.contactoapellidos,
@@ -273,11 +274,7 @@ export class FieldformComponent implements OnInit {
               contactoapellidos,
               contactocelular,
               contactocorreo,
-              propietarionombre,
-              propietarioapellidos,
-              propietariocorreo,
-              photo,
-              propietariotelefono
+              photo
               }
       }`;
       this.variables = {
@@ -296,21 +293,14 @@ export class FieldformComponent implements OnInit {
     $contactoapellidos: String!,
     $contactocelular: String!,
     $contactocorreo: String!,
-    $propietarionombre: String!,
-    $propietarioapellidos: String!,
-    $propietariocorreo: String!,
-    $propietariotelefono: String!) {
+    ) {
       updateField(_id: $id, input: {
       nombre: $nombre,
       telefono: $telefono,
       contactonombre: $contactonombre,
       contactoapellidos: $contactoapellidos,
       contactocelular: $contactocelular,
-      contactocorreo: $contactocorreo,
-      propietarionombre: $propietarionombre,
-      propietarioapellidos: $propietarioapellidos,
-      propietariocorreo: $propietariocorreo,
-      propietariotelefono: $propietariotelefono
+      contactocorreo: $contactocorreo
     }){
       _id,
       nombre
