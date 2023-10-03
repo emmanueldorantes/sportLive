@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgForm, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TitleService } from '../../../services/title.service';
 import { UploadService } from '../../../services/upload.service';
 import { GraphqlService } from '../../../services/graphql.service';
@@ -35,7 +35,7 @@ export class FieldformComponent implements OnInit {
   contactocorreo : string;
 //Informacion de Propietario
   user: any;
-  listUsers: any;
+  listusers: any;
   displayedImageUrl: string;
   fieldId: any = '';
   file: any = '';
@@ -64,7 +64,7 @@ export class FieldformComponent implements OnInit {
       contactonombre: ['', Validators.required],
       contactoapellidos: ['', Validators.required],
       contactocelular: ['', Validators.required],
-      contactocorreo: ['', Validators.required],
+      contactocorreo: ['', Validators.required]
 
     });
    
@@ -80,7 +80,7 @@ export class FieldformComponent implements OnInit {
 
   async ngOnInit() {
     console.log(this.user);
-    this.listUsers = await this.getUsers();
+    this.listusers = await this.getUsers();
     this.route.params.subscribe(async params => {
       this.fieldId = params['id'];
       this.isCreating = (this.fieldId !== undefined) ? false : true;
@@ -102,9 +102,9 @@ export class FieldformComponent implements OnInit {
     });
   }
 
-  onSubmit() {
-    if (this.fieldForm.status === 'VALID') {
-      // let pathFile = this.userForm.get('file')?.value;
+  onSubmit(formField: NgForm) {
+    if (formField.valid) {
+       let pathFile = this.fieldForm.get('file')?.value;
       if (this.isCreating) {
         this.setMutationInsert();
         this.saveField();
@@ -254,7 +254,7 @@ export class FieldformComponent implements OnInit {
               _id
             },
             _id,
-            name,
+            name
         }
     }`;
     this.variables = {
@@ -274,8 +274,12 @@ export class FieldformComponent implements OnInit {
               contactoapellidos,
               contactocelular,
               contactocorreo,
-              photo
+              photo,
+              user {
+                _id
               }
+        },
+              
       }`;
       this.variables = {
         module: 'field',
@@ -284,32 +288,36 @@ export class FieldformComponent implements OnInit {
     } 
 
     setMutationUpdate() {
-     this.mutation = `
-    mutation(
-    $id: ID!,
-    $nombre: String!,
-    $telefono: String!,
-    $contactonombre: String!,
-    $contactoapellidos: String!,
-    $contactocelular: String!,
-    $contactocorreo: String!,
-    ) {
-      updateField(_id: $id, input: {
-      nombre: $nombre,
-      telefono: $telefono,
-      contactonombre: $contactonombre,
-      contactoapellidos: $contactoapellidos,
-      contactocelular: $contactocelular,
-      contactocorreo: $contactocorreo
-    }){
-      _id,
-      nombre
-    }
-  }`;
+      this.mutation = `
+      mutation (
+        $id: ID!,
+        $user: ID!,  
+        $nombre: String!,
+        $telefono: String!,
+        $contactonombre: String!,
+        $contactoapellidos: String!,
+        $contactocelular: String!,
+        $contactocorreo: String!
+      ) {
+        updateField(_id: $id, input: {
+          nombre: $nombre,
+          user: $user,
+          telefono: $telefono,
+          contactonombre: $contactonombre,
+          contactoapellidos: $contactoapellidos,
+          contactocelular: $contactocelular,
+          contactocorreo: $contactocorreo
+        }) {
+          _id,
+          nombre
+        }
+    }`;
+    
 this.variables = {
   
   module: 'field',
   id: this.fieldId,
+  user:this.user,
   nombre: this.nombre,
   telefono: this.telefono,
   contactonombre: this.contactonombre,
