@@ -45,6 +45,7 @@ export class PlayerformComponent implements OnInit {
   variables: any;
   query: string;
   matches: any;
+  disabledTeam: boolean = true;
 
   constructor(
     
@@ -84,6 +85,29 @@ export class PlayerformComponent implements OnInit {
     }
 
     async ngOnInit() {
+      this.route.params.subscribe(async params => {
+        this.playerId = params['id'];
+        this.isCreating = !this.playerId; 
+        if (!this.isCreating) {
+          this.titleService.setTitle('Torneo  / Editar Jugador');
+          let dataplayer = await this.getPlayer();
+           console.log(dataplayer)
+           this.tournament = dataplayer.tournament._id;
+           this.field = dataplayer.field._id;
+           this.team = dataplayer.team._id;
+           await this.changeFields();
+           await this.changeTournament();
+          
+          this.nombre = dataplayer.nombre;
+          this.apellidos = dataplayer.apellidos;
+          this.gender = dataplayer.gender;
+          this.celular = dataplayer.celular;
+          this.correo = dataplayer.correo;
+        } else {
+          this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
+        }
+      });
+    
       this.fields = await this.getFields();
     }
   
@@ -110,7 +134,6 @@ export class PlayerformComponent implements OnInit {
       if (this.field) {
         this.disabledTournament = false;
         this.tournaments = await this.getTournaments();
-        this.viewGridTeams();
       } else {
         this.disabledTournament = true;
         this.tournaments = [];
@@ -118,7 +141,14 @@ export class PlayerformComponent implements OnInit {
         this.teams = [];
       }
     }
-  
+    async changeTournament(): Promise<any> {
+      if (this.tournament) {
+        this.teams = await this.getTeams();
+      } else {
+        this.teams = [];
+        this.team = "";
+      }
+    }
     async getTournaments(): Promise<any> {
       this.setQryTournaments();
       let response = await this.graphqlService.post(this.query, this.variables);
@@ -143,23 +173,6 @@ export class PlayerformComponent implements OnInit {
       };
     }
   
-    async viewGridTeams() {
-      if (this.field && this.tournament) {
-        this.teams = [];
-        let i = -1;
-        const listTeams = await this.getTeams();
-        listTeams.forEach((team: any, index: number) => {
-          let mod = index % 6;
-          if (mod === 0) {
-            this.teams.push({ "row": [] });
-            ++i;
-          }
-          let escudo = `${environment.fileManager}/${team.photo}`;
-          this.teams[i].row.push({ id: team._id, "nombre": team.nombre, escudo });
-        });
-      }
-    }
-  
     async getTeams(): Promise<any> {
       this.setQryTeams();
       let response = await this.graphqlService.post(this.query, this.variables);
@@ -177,8 +190,7 @@ export class PlayerformComponent implements OnInit {
           }
         }){
             _id,
-            nombre,
-            photo
+            nombre
         }
       }`;
       this.variables = {
@@ -273,23 +285,38 @@ export class PlayerformComponent implements OnInit {
     }
   
     cleanForm() {
-      this.nombre = '';
       this.field=''
       this.tournament='';
+      this.team='';
+      this.nombre = '';
+      this.apellidos = '';
+      this.correo = '';
+      this.celular = '';
+      this.gender = '';
       this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
     }
   
     setMutationInsert() {
       this.mutation = `
       mutation CreatePlayer(
-        $nombre: String!,
         $field: ID!,
         $tournament: ID!,
+        $team: ID!,
+        $nombre: String!,
+        $apellidos: String!,
+        $correo: String!,
+        $celular: String!,
+        $gender: String!
       ) {
         createPlayer(input: {
-          nombre: $nombre,
           field: $field,
           tournament: $tournament,
+          team: $team,
+          nombre: $nombre,
+          apellidos: $apellidos,
+          correo: $correo,
+          celular: $celular,
+          gender: $gender
         }) {
           _id,
           nombre
@@ -297,9 +324,14 @@ export class PlayerformComponent implements OnInit {
       }`;
       this.variables = {
         module: 'players',
-        nombre: this.nombre,
         field: this.field,
         tournament : this.tournament,
+        team: this.team,
+        nombre: this.nombre,
+        apellidos: this.apellidos,
+        correo: this.correo,
+        celular: this.celular,
+        gender: this.gender
       };
   
     }
@@ -311,15 +343,23 @@ export class PlayerformComponent implements OnInit {
             inner: [
               { path: "field" }
               { path: "tournament" }
+              { path: "team" }
             ]
           }) {
-            _id
+            _id,
             nombre,
+            apellidos,
+            correo,
+            celular,
+            gender,
             photo,
             field {
               _id
             },
             tournament {
+              _id
+            },
+            team {
               _id
             }
           }
@@ -334,13 +374,23 @@ export class PlayerformComponent implements OnInit {
           mutation(
             $id: ID!,
             $field: ID!,
-            $tournament: ID!,
-            $nombre: String!,
+              $tournament: ID!,
+              $team: ID!,
+              $nombre: String!,
+              $apellidos: String!,
+              $correo: String!,
+              $celular: String!,
+              $gender: String!
           ) {
             updatePlayer(_id: $id, input: {
-              nombre: $nombre,
-              field: $field,
-              tournament: $tournament
+                field: $field,
+                tournament: $tournament,
+                team: $team,
+                nombre: $nombre,
+                apellidos: $apellidos,
+                correo: $correo,
+                celular: $celular,
+                gender: $gender
             }) {
               _id,
               nombre
@@ -351,8 +401,13 @@ export class PlayerformComponent implements OnInit {
           module: 'players',
           id: this.playerId,
           field: this.field,
+          tournament : this.tournament,
+          team: this.team,
           nombre: this.nombre,
-          tournament: this.tournament
+          apellidos: this.apellidos,
+          correo: this.correo,
+          celular: this.celular,
+          gender: this.gender
           
         };
       }
