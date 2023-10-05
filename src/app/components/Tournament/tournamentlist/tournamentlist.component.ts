@@ -22,8 +22,6 @@ export class TournamentlistComponent {
   tournament: any;
   status: boolean;
   mutation: string;
-  field: any;
-  fields: any = [];
   disabledTournament: boolean = true;
 
   
@@ -43,73 +41,43 @@ export class TournamentlistComponent {
     }
     async ngOnInit() {
       this.setQuery();
-      //const tournamentsRows = await this.getTournaments();
-      //this.tournaments = tournamentsRows;
-      this.fields = await this.getFields();
-      this.field = "";
-  
-      let scriptElement1 = document.createElement('script');
-      document.body.appendChild(scriptElement1);
+      const tournamentsRows = await this.getTournaments();
+      this.tournaments = tournamentsRows;
     }
 
-    async getFields(): Promise<any> {
-      this.setQryFields();
-      let response = await this.graphqlService.post(this.query, this.variables);
-      return response.data.getFields;
-    }
-
-    setQryFields() {
-      this.query = `
-      query {
-        getFields(filters: {}){
-            _id,
-            nombre
-        }
-      }`;
-      this.variables = {
-        module: 'field'
-      };
-    }
+    
     async getTournaments(): Promise<any> {
       this.setQuery();
       let response = await this.graphqlService.post(this.query, this.variables);
       return response.data.getTournaments;
     }
 
-    async changeFields(): Promise<any> {
-      if (this.field) {
-        this.disabledTournament = false;
-        this.tournaments = await this.getTournaments();
-      } else {
-        this.disabledTournament = true;
-        this.tournaments = [];
-      }
-    }
-  
+    
       setQuery() {
         this.query = `
-        query($idField: ID!) {
-          getTournaments(filters: {
-            qry: {
-              field: $idField
-            },
-            inner:[
-              {path: "field"}
+        query {
+          getTournaments(filters: {  
+            inner: [
+              { path: "field" }
             ]
           }){
               _id,
               nombre,
-              field {_id, nombre},
-              autoincrement,
               dia,
               horario,
-              status 
+              autoincrement,
+              status,
+              field {
+                _id,
+                nombre
+              }
           }
         }`;
-        this.variables = {
-          module: 'tournaments',
-          idField: this.field
-        };
+        
+    this.variables = {
+      module: 'tournaments',
+    };
+    
     }
   
     setUpdateStatus(id: string, status: boolean) {

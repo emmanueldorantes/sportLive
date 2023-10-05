@@ -17,7 +17,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let team of teams | filtroUsuario:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }; let i = index"
+                <tr *ngFor="let team of teams | filtroEquipo:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }; let i = index"
                     [ngClass]="i % 2 === 0 ? 'zebra-even' : 'zebra-odd'">
                     <td>{{ team.autoincrement }}</td>
                     <td>{{ team.field.nombre}}</td>

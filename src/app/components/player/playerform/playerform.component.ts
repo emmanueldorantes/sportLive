@@ -19,9 +19,14 @@ import { environment } from '../../../../environments/environment';
 export class PlayerformComponent implements OnInit {
 
   playerForm:FormGroup;
-  team: any;
-  tournament: any;
+  teams: any = [];
   field: any;
+  fields: any = [];
+  tournament: any;
+  tournaments: any = [];
+  disabledTournament: boolean = true;
+  lap: any;
+  team: any
   nombre: string;
   apellidos: string;
   correo: string;
@@ -30,15 +35,16 @@ export class PlayerformComponent implements OnInit {
   file: any;
   selectedFile: File | null = null;
   srcImage: string;
-  listfields: any;
-  listtournaments: any;
-  listteams: any;
-  query: string;
   mutation: string;
-  variables: any;
   isCreating: boolean = true;
   playerId: any = '';
   displayedImageUrl: string;
+  listfields: any[] = [];
+  listtournaments: any[] = [];
+  listteams: any[] = []; 
+  variables: any;
+  query: string;
+  matches: any;
 
   constructor(
     
@@ -78,35 +84,113 @@ export class PlayerformComponent implements OnInit {
     }
 
     async ngOnInit() {
-
-      this.listfields = await this.getFields();
-      this.listteams = await this.getTeams();
-      this.listtournaments = await this.getTournaments();
-
-      this.route.params.subscribe(async params => {
-        this.playerId = params['id'];
-        this.isCreating = (this.playerId !== undefined) ? false : true;
-        if (!this.isCreating) {
-          this.titleService.setTitle('Usuarios / Editar Usuario');
-          let dataPlayer = await this.getPlayer();
-          this.field = dataPlayer.field._id;
-          this.tournament = dataPlayer.tournament._id;
-          this.team = dataPlayer.team._id;
-          this.nombre = dataPlayer.nombre;
-          this.apellidos = dataPlayer.apellidos;
-          this.correo = dataPlayer.correo;
-          this.celular = dataPlayer.celular;
-          this.gender = dataPlayer.gender;
-          this.displayedImageUrl = dataPlayer.photo ? `${environment.fileManager}/${dataPlayer.photo}` : `${environment.fileManager}/user_default.png`;
-        } else {
-          this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
-        }
-      });
+      this.fields = await this.getFields();
     }
   
-    onSubmit(formplayer: NgForm) {
-      if (formplayer.valid) {
-        // let pathFile = this.userForm.get('file')?.value; {
+    async getFields(): Promise<any> {
+      this.setQryFields();
+      let response = await this.graphqlService.post(this.query, this.variables);
+      return response.data.getFields;
+    }
+  
+    setQryFields() {
+      this.query = `
+      query {
+        getFields(filters: {}){
+            _id,
+            nombre
+        }
+      }`;
+      this.variables = {
+        module: 'field'
+      };
+    }
+  
+    async changeFields(): Promise<any> {
+      if (this.field) {
+        this.disabledTournament = false;
+        this.tournaments = await this.getTournaments();
+        this.viewGridTeams();
+      } else {
+        this.disabledTournament = true;
+        this.tournaments = [];
+        this.tournament = "";
+        this.teams = [];
+      }
+    }
+  
+    async getTournaments(): Promise<any> {
+      this.setQryTournaments();
+      let response = await this.graphqlService.post(this.query, this.variables);
+      return response.data.getTournaments;
+    }
+  
+    setQryTournaments() {
+      this.query = `
+      query($idField: ID!) {
+        getTournaments(filters: {
+          qry: {
+            field: $idField
+          }
+        }){
+            _id,
+            nombre
+        }
+      }`;
+      this.variables = {
+        module: 'tournaments',
+        idField: this.field
+      };
+    }
+  
+    async viewGridTeams() {
+      if (this.field && this.tournament) {
+        this.teams = [];
+        let i = -1;
+        const listTeams = await this.getTeams();
+        listTeams.forEach((team: any, index: number) => {
+          let mod = index % 6;
+          if (mod === 0) {
+            this.teams.push({ "row": [] });
+            ++i;
+          }
+          let escudo = `${environment.fileManager}/${team.photo}`;
+          this.teams[i].row.push({ id: team._id, "nombre": team.nombre, escudo });
+        });
+      }
+    }
+  
+    async getTeams(): Promise<any> {
+      this.setQryTeams();
+      let response = await this.graphqlService.post(this.query, this.variables);
+      return response.data.getTeams;
+    }
+  
+    setQryTeams() {
+      this.query = `
+      query($idField: ID!, $idTournament: ID!) {
+        getTeams(filters: {
+          qry: {
+            field: $idField,          
+            tournament: $idTournament,
+            status: true
+          }
+        }){
+            _id,
+            nombre,
+            photo
+        }
+      }`;
+      this.variables = {
+        module: 'teams',
+        idField: this.field,
+        idTournament: this.tournament
+      };
+    }
+  
+    onSubmit(formTeam: NgForm) {
+      if (formTeam.valid) {
+      
         if (this.isCreating) {
           this.setMutationInsert();
           this.savePlayer();
@@ -122,322 +206,219 @@ export class PlayerformComponent implements OnInit {
         });
       }
     }
-  
-    async getFields() {
-      this.setQueryFields();
-      let response = await this.graphqlService.post(this.query, this.variables);
-      return response.data.getFields;
+    async updatePlayer() {
+      let response = await this.graphqlService.post(this.mutation, this.variables);
+      const miSnackBar = this.snakBar.open("El equipo ha sido modificado correctamente.", "Aceptar", {
+        duration: 0,
+        horizontalPosition: "center",
+        verticalPosition: "bottom"
+      });
+        if (this.selectedFile) {
+          const resizedImage = await this.resizeImage(this.selectedFile);
+          const formData = new FormData();
+          formData.append('image', resizedImage, `${this.playerId}_${this.selectedFile?.name}`);
+          let responseUpload = await this.uploadService.post(formData);
+          if (responseUpload && responseUpload.ok) {
+            this.displayedImageUrl = `${environment.fileManager}/image-${this.playerId}_${this.selectedFile?.name}`;
+            this.setMutationUpdateImage();
+            await this.graphqlService.post(this.mutation, this.variables);
+          }
+        }
+      miSnackBar.onAction().subscribe(() => {
+        this.router.navigateByUrl('/home/teamlist');
+      });
     }
-  
-    async getTeams() {
-      this.setQueryTeams();
-      let response = await this.graphqlService.post(this.query, this.variables);
-      return response.data.getTeams;
-    }
-
-    async getTournaments() {
-      this.setQueryTournaments();
-      let response = await this.graphqlService.post(this.query, this.variables);
-      return response.data.getTournaments;
-    }
-  
     async savePlayer() {
-      console.log(this.mutation, this.variables)
       try {
         let response = await this.graphqlService.post(this.mutation, this.variables);
-        let playerDocument = response.data.createPlayer;
+        let teamDocument = response.data.createPlayer;
         const dialog = this.dialog.open(ConfirmDialogComponent, {
           width: '390px',
           data: {
-            message: `El jugador ${playerDocument.nombre} ha sido creado correctamente.`,
+            message: `El equipo ${teamDocument.nombre} ha sido creado correctamente.`,
             question: "¿Deseas agregar otro Usuario?",
             ok: "Si",
             cancel: "No"
           }
         });
-  
-        if (playerDocument && this.selectedFile) {
+        if (this.selectedFile) {
           const resizedImage = await this.resizeImage(this.selectedFile);
-          const formData = new FormData();
-          formData.append('image', resizedImage, `${playerDocument._id}_${this.selectedFile?.name}`);
-          let responseUpload = await this.uploadService.post(formData);
-          if (responseUpload && responseUpload.ok) {
-            this.displayedImageUrl = `${environment.fileManager}/image-${playerDocument._id}_${this.selectedFile?.name}`;
-            this.setMutationUpdateImage(playerDocument._id);
+           const formData = new FormData();
+           console.log (`${teamDocument._id}_${this.selectedFile?.name}`)
+           formData.append('image', resizedImage, `${teamDocument._id}_${this.selectedFile?.name}`);
+           let responseUpload = await this.uploadService.post(formData);
+            if (responseUpload && responseUpload.ok) {
+            this.displayedImageUrl = `${environment.fileManager}/image-${teamDocument._id}_${this.selectedFile?.name}`;
+            this.setMutationUpdateImage(teamDocument._id);
             await this.graphqlService.post(this.mutation, this.variables);
+            }
           }
-        }
-  
         dialog.afterClosed().subscribe(async result => {
           if (result) {
             this.cleanForm();
+            
           } else {
-            this.router.navigateByUrl('/home/playerlist');
+            this.router.navigateByUrl('/home/teamlist');
           }
         });
       } catch (error) {
         console.log(error);
       }
+      
     }
-  
-    async updatePlayer() {
-      let response = await this.graphqlService.post(this.mutation, this.variables);
-      const miSnackBar = this.snakBar.open("El jugador ha sido modificado correctamente.", "Aceptar", {
-        duration: 0,
-        horizontalPosition: "center",
-        verticalPosition: "bottom"
-      });
-      if (this.selectedFile) {
-        const resizedImage = await this.resizeImage(this.selectedFile);
-        const formData = new FormData();
-        formData.append('image', resizedImage, `${this.playerId}_${this.selectedFile?.name}`);
-        let responseUpload = await this.uploadService.post(formData);
-        if (responseUpload && responseUpload.ok) {
-          this.displayedImageUrl = `${environment.fileManager}/image-${this.playerId}_${this.selectedFile?.name}`;
-          this.setMutationUpdateImage();
-          await this.graphqlService.post(this.mutation, this.variables);
-        }
-      }
-      miSnackBar.onAction().subscribe(() => {
-        this.router.navigateByUrl('/home/playerlist');
-      });
-    }
-  
     async getPlayer() {
-      this.setQueryPlayer();
+      this.setQueryPlayers();
       let response = await this.graphqlService.post(this.query, this.variables);
       return response.data.getPlayer;
     }
   
     cleanForm() {
-      this.nombre = "";
-      this.apellidos = "";
-      this.correo = "";
-      this.celular = "";
-      this.gender = "";
-      this.field='';
+      this.nombre = '';
+      this.field=''
       this.tournament='';
-      this.team='';
       this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
-    }
-  
-    setQueryFields() {
-      this.query = `
-      query {
-        getFields(filters: {
-        }){
-            _id,
-            nombre,
-        }
-      }`;
-      this.variables = {
-        module: 'field'
-      };
-    }
-  
-    setQueryTeams() {
-      this.query = `
-      query {
-        getTeams(filters: {
-        }){
-            _id,
-            nombre          
-        }
-      }`;
-      this.variables = {
-        module: 'teams'
-      };
-    }
-
-    setQueryTournaments() {
-      this.query = `
-      query {
-        getTournaments(filters: {
-        }){
-            _id,
-            nombre          
-        }
-      }`;
-      this.variables = {
-        module: 'tournaments'
-      };
     }
   
     setMutationInsert() {
       this.mutation = `
-        mutation(
-          $field: ID!, 
-          $team: ID!,
-          $tournament: ID!,
-          $nombre: String, 
-          $apellidos: String, 
-          $correo: String, 
-          $celular: String, 
-          $gender: String) {
-          createPlayer(input: {
-            field: $field, 
-            team: $team,
-            tournament: $tournament,
-            nombre: $nombre, 
-            apellidos: $apellidos, 
-            correo: $correo, 
-            celular: $celular, 
-            gender: $gender
-          }){
-              _id,
-              nombre
-          }
+      mutation CreatePlayer(
+        $nombre: String!,
+        $field: ID!,
+        $tournament: ID!,
+      ) {
+        createPlayer(input: {
+          nombre: $nombre,
+          field: $field,
+          tournament: $tournament,
+        }) {
+          _id,
+          nombre
+        }
       }`;
       this.variables = {
         module: 'players',
         nombre: this.nombre,
-        apellidos: this.apellidos,
-        correo: this.correo,
-        celular: `${this.celular}`,
-        gender: this.gender,
         field: this.field,
-        team: this.team,
-        tournament: this.tournament
+        tournament : this.tournament,
       };
+  
     }
   
-    setQueryPlayer() {
-      this.query = `
-      query($id: ID!) {
-        getPlayer(_id: $id, filters: {
-          inner: [
-            { path: "field" }
-            { path: "team" } 
-            { path: "tournament" }           
-          ]
-        }){
-            _id,
+      setQueryPlayers() {
+        this.query = `
+        query($id: ID!) {
+          getPlayer(_id: $id, filters: {
+            inner: [
+              { path: "field" }
+              { path: "tournament" }
+            ]
+          }) {
+            _id
             nombre,
-            apellidos,
-            correo,
-            celular,
-            gender,
             photo,
             field {
-              _id
-            },
-            team {
               _id
             },
             tournament {
               _id
             }
-        }
-      }`;
-      this.variables = {
-        module: 'players',
-        id: this.playerId
-      };
-    }
-  
-    setMutationUpdate() {
-      this.mutation = `
-      mutation(
-        $id: ID!,
-        $field: ID!, 
-        $team: ID!,
-        $tournament: ID!,
-        $nombre: String!, 
-        $apellidos: String!, 
-        $correo: String!, 
-        $celular: String!, 
-        $gender: String!) {
-        updatePlayer(_id: $id, input: {
-            field: $field, 
-            team: $team,
-            tournament: $tournament,
-            nombre: $nombre, 
-            apellidos: $apellidos, 
-            correo: $correo, 
-            celular: $celular, 
-            gender: $gender       
-        }){
-            _id,
-            nombre
-        }
-    }`;
-      this.variables = {
-        module: 'players',
-        id: this.playerId,
-        field: this.field,
-        team: this.team,
-        tournament: this.tournament,
-        nombre: this.nombre,
-        apellidos: this.apellidos,
-        correo: this.correo,
-        celular: `${this.celular}`,
-        gender: this.gender
-      };
-    }
-  
-    setMutationUpdateImage(id?: any) {
-      this.mutation = `
-      mutation(
-        $id: ID!,
-        $photo: String!
-      ) {
-        updatePlayer(_id: $id, input: {
-          photo: $photo        
-        }){
-            _id
-        }
-      }`;
-      let image = id ? `image-${id}_${this.selectedFile?.name}` : `image-${this.playerId}_${this.selectedFile?.name}`;
-      this.variables = {
-        module: 'players',
-        id: id || this.playerId,
-        photo: image
-      };
-    }
-  
-    onFileSelected(event: any) {
-      this.selectedFile = event.target.files[0];
-    }
-  
-    async resizeImage(image: File): Promise<Blob> {
-      return new Promise<Blob>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event: any) => {
-          const img = new Image();
-          img.src = event.target.result;
-  
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx: any = canvas.getContext('2d');
-  
-            // Define las dimensiones de redimensión
-            const maxWidth = 180;
-            const maxHeight = 180;
-            let width = img.width;
-            let height = img.height;
-  
-            if (width > maxWidth) {
-              height *= maxWidth / width;
-              width = maxWidth;
-            }
-  
-            if (height > maxHeight) {
-              width *= maxHeight / height;
-              height = maxHeight;
-            }
-  
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-  
-            // Convierte la imagen en un Blob redimensionado
-            canvas.toBlob((blob: any) => {
-              resolve(blob);
-            }, image.type);
-          };
+          }
+        }`;
+        this.variables = {
+          module: 'players',
+          id: this.playerId
         };
-        reader.readAsDataURL(image);
-      });
-    }
+      } 
+      setMutationUpdate() {
+        this.mutation = `
+          mutation(
+            $id: ID!,
+            $field: ID!,
+            $tournament: ID!,
+            $nombre: String!,
+          ) {
+            updatePlayer(_id: $id, input: {
+              nombre: $nombre,
+              field: $field,
+              tournament: $tournament
+            }) {
+              _id,
+              nombre
+            }
+          }
+        `;
+        this.variables = {
+          module: 'players',
+          id: this.playerId,
+          field: this.field,
+          nombre: this.nombre,
+          tournament: this.tournament
+          
+        };
+      }
+  
+  setMutationUpdateImage(id?: any) {
+    this.mutation = `
+    mutation(
+      $id: ID!,
+      $photo: String
+    ) {
+      updateTeam(_id: $id, input: {
+        photo: $photo        
+      }){
+          _id
+      }
+  }`;
+  let image = id ? `image-${id}_${this.selectedFile?.name}` : `image-${this.playerId}_${this.selectedFile?.name}`;
+    this.variables = {
+      module: 'players',
+      id: id || this.playerId,
+      photo: image
+    };
+  
+  }
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+  async resizeImage(image: File): Promise<Blob> {
+    return new Promise<Blob>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const img = new Image();
+        img.src = event.target.result;
+  
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx: any = canvas.getContext('2d');
+  
+          // Define las dimensiones de redimensión
+          const maxWidth = 180;
+          const maxHeight = 180;
+          let width = img.width;
+          let height = img.height;
+  
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+  
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+  
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+  
+          // Convierte la imagen en un Blob redimensionado
+          canvas.toBlob((blob: any) => {
+            resolve(blob);
+          }, image.type);
+        };
+      };
+      reader.readAsDataURL(image);
+    });
+  }
   }
   

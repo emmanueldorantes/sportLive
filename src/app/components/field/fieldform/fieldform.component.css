@@ -7,3 +7,10 @@
 .error {
     color: red;
 }
+/* Estilo para centrar la imagen en el contenedor */
+.image-center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Ajustar según la necesidad */
+}

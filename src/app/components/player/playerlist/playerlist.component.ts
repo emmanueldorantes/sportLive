@@ -46,65 +46,17 @@ export class PlayerlistComponent {
   }
     
   async ngOnInit() {
-
-  this.fields = await this.getFields();
-  this.teams = await this.getTeams();
-this.tournaments = await this.getTournaments();
-
-
-    this.setQuery();
+  this.setQuery();
     const playersRows = await this.getPlayers();
     this.players = playersRows;
+    let scriptElement1 = document.createElement('script');
+    scriptElement1.src = "../../../assets/js/pages/form_checkboxes_radios.js";
+    document.body.appendChild(scriptElement1);
   }
 
   async getPlayers(): Promise<any> {
     let response = await this.graphqlService.post(this.query, this.variables);
     return response.data.getPlayers;
-  }
-
-  async onFieldChange() {
-    // Actualizar tu consulta con el valor de selectedField y refrescar la lista de jugadores.
-      this.setQuery(this.selectedField);
-      const playersRows = await this.getPlayers();
-      this.players = playersRows;
-  }
-
-  async onTournamentChange() {
-    // Asumiendo que 'selectedTournament' contiene el ID del torneo seleccionado.
-    // El primer parámetro de 'setQuery' es para 'field', así que lo pasamos como 'null'.
-    this.setQuery(null, this.selectedTournament);
-    
-    const playersRows = await this.getPlayers();
-    this.players = playersRows;
-}
-
-
-async onTeamChange() {
-  // Asumiendo que 'selectedTeam' contiene el ID del equipo seleccionado.
-  // El primer y segundo parámetro de 'setQuery' son para 'field' y 'tournament', respectivamente. 
-  // Por eso, ambos se pasan como 'null' aquí.
-  this.setQuery(null, null, this.selectedTeam);
-  
-  const playersRows = await this.getPlayers();
-  this.players = playersRows;
-}
-
-  async getFields() {
-    this.setQueryFields();
-    let response = await this.graphqlService.post(this.query, this.variables);
-    return response.data.getFields;
-  }
-
-  async getTeams() {
-    this.setQueryTeams();
-    let response = await this.graphqlService.post(this.query, this.variables);
-    return response.data.getTeams;
-  }
-
-  async getTournaments() {
-    this.setQueryTournaments();
-    let response = await this.graphqlService.post(this.query, this.variables);
-    return response.data.getTournaments;
   }
 
   setQueryFields() {
@@ -149,30 +101,11 @@ async onTeamChange() {
     };
   }
   
-  setQuery(fieldId: string | null = null, tournamentId: string | null = null, teamId: string | null = null) {
-    // Aquí vamos a construir las condiciones de filtrado:
-    let conditions: string[] = [];
-    
-    if (fieldId) {
-        conditions.push(`field: "${fieldId}"`);
-    }
-
-    if (tournamentId) {
-        conditions.push(`tournament: "${tournamentId}"`);
-    }
-
-    if (teamId) {
-        conditions.push(`team: "${teamId}"`);
-    }
-
-    // Convertimos las condiciones en una cadena:
-    const conditionString = conditions.join(', ');
-
+  setQuery() {
     this.query = `
     query {
       getPlayers(filters: {
         qry: {
-          ${conditionString}
         },
         inner: [
           { path: "field" },
@@ -204,7 +137,6 @@ async onTeamChange() {
         module: 'players'
     };
 }
-
 
   setUpdateStatus(id: string, status: boolean) {
     this.mutation = `

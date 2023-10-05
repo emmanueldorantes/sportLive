@@ -1,35 +1,13 @@
 <div class="panel panel-flat">
     <div class="panel-body">
         <!-- Renglón de Filtros -->
+        <div class="table-responsive">
+            <div class="input-group">               
+                        <span class="input-group-addon"><i class="icon-filter3"></i></span>
+                        <input type="text" class="form-control" placeholder="Filtrar por Cancha, Torneo, Equipo, Nombre y Apellidos"
+                            [(ngModel)]="filtroNombre">
+                    </div>
         <div class="row mb-3">
-            <!-- Columna para Filtro de Cancha -->
-            <div class="col-md-4">
-                <label for="fielduser" class="form-label">Cancha:</label>
-                <select class="form-control" [(ngModel)]="selectedField" (change)="onFieldChange()">
-                    <option *ngFor="let field of fields" [value]="field._id">{{ field.nombre }}</option>
-                </select>
-            </div>
-
-            <!-- Columna para Filtro de Torneo -->
-            <div class="col-md-4">
-                <label for="tournament" class="form-label">Torneo:</label>
-                <select class="form-control" [(ngModel)]="selectedTournament" (change)="onTournamentChange()">
-                    <option *ngFor="let tournament of tournaments" [value]="tournament._id">{{ tournament.nombre }}</option>
-                </select>
-            </div>
-
-            <!-- Columna para Filtro de Equipo -->
-            <div class="col-md-4">
-                <label for="team" class="form-label">Equipo:</label>
-                <select class="form-control" [(ngModel)]="selectedTeam" (change)="onTeamChange()">
-                    <option *ngFor="let team of teams" [value]="team._id">{{ team.nombre }}</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Filtro de Nombre -->
-        <br><br>
-
         <!-- Tabla -->
         <div class="table-responsive">
         <table class="table">
@@ -46,13 +24,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let player of players | filtroUsuario:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
-                    <td>{{ player.autoincrement }}</td>
-                    <td>{{ player.field.nombre }}</td>
-                    <td>{{ player.tournament.nombre}}</td>
-                    <td>{{ player.team.nombre }}</td>
+                <tr *ngFor="let player of players | filtroJugador:filtroNombre | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
+                    <td>{{ player.autoincrement}}</td>
+                    <td>{{ player.field?.nombre}}</td>
+                    <td>{{ player.tournament?.nombre}}</td>
+                    <td>{{ player.team?.nombre}}</td>
                     <td>{{ player.nombre}}</td>
-                    <td>{{ player.apellidos }}</td>
+                    <td>{{ player.apellidos}}</td>
                     <td>
                         <mat-slide-toggle id="playerStatus{{player._id}}" (change)="changeStatus(player._id, player.status)"
                             [(ngModel)]="player.status">

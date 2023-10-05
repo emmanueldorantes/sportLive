@@ -1,25 +1,10 @@
 <div class="panel panel-flat">
-    <div class="panel-body">
-        <div class="row mb-3">
-            <!-- Primera columna: para el select -->
-            <div class="col-md-6">
-                <label for="canchas" class="form-label">Cancha</label>
-                <select id="field" name="field" [(ngModel)]="field" class="form-control" required
-                    (change)="changeFields()">
-                    <option value="">Seleccionar un opción</option>
-                    <option *ngFor="let field of fields" [value]="field._id">{{field.nombre}}</option>
-                </select>
-            </div>
-            <!-- Segunda columna: para el input de búsqueda -->
-            <div class="col-md-6">
-                <label for="canchas" class="form-label">Filtro</label>
-                <div class="input-group">
+    <div class="table-responsive">
+        <div class="input-group">               
                     <span class="input-group-addon"><i class="icon-filter3"></i></span>
                     <input type="text" class="form-control" placeholder="Filtrar por Torneo, Dia o Horario"
                         [(ngModel)]="filtroNombre">
                 </div>
-            </div>
-         </div>
     <div class="table-responsive">
         <table class="table">
             <thead>

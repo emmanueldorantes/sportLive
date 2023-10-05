@@ -4,8 +4,9 @@
             <div class="row">
                 <div class="col-12 col-md-12">
                     <label for="fielduser" class="form-label">Cancha:</label>
-                    <select [(ngModel)]="field" id="fielduser" name="fielduser" class="form-control" required>
-                        <option *ngFor="let field of listfields" value="{{field._id}}">{{field.nombre}}</option>
+                   <!-- Para Canchas -->
+                    <select formControlName="field">
+                        <option *ngFor="let field of listfields" [value]="field._id">{{ field.nombre }}</option>
                     </select>
                     <div *ngIf="!field" class="error">Este campo es obligatorio</div>
                 </div>
@@ -14,9 +15,9 @@
             <div class="row">
                 <div class="col-12 col-md-12">
                     <label for="tournamentuser" class="form-label">Torneo:</label>
-                    <select [(ngModel)]="tournament" id="tournamentuser" name="tournament" class="form-control" required>
-                        <option *ngFor="let tournament of listtournaments" value="{{tournament._id}}">{{tournament.nombre}}
-                        </option>
+                    <!-- Para Torneos -->
+                    <select formControlName="tournament">
+                        <option *ngFor="let tournament of listtournaments" [value]="tournament._id">{{ tournament.nombre }}</option>
                     </select>
                     <div *ngIf="!tournament" class="error">Este campo es obligatorio.</div>
                 </div>
@@ -25,15 +26,12 @@
             <div class="row">
                 <div class="col-12 col-md-12">
                     <label for="teamuser" class="form-label">Equipo:</label>
-                    <select [(ngModel)]="team" id="teamuser" name="team" class="form-control" required>
-                        <option *ngFor="let team of listteams" value="{{team._id}}">{{team.nombre}}
-                        </option>
+                    <select formControlName="team">
+                        <option *ngFor="let team of listteams" [value]="team._id">{{ team.nombre }}</option>
                     </select>
                     <div *ngIf="!team" class="error">Este campo es obligatorio.</div>
                 </div>
             </div>
-
-
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-6">

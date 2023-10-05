@@ -11,9 +11,26 @@ export class FiltroTorneoPipe implements PipeTransform {
     }
 
     filterText = filterText.toLowerCase();
-    console.log(filterText)
-    return items.filter(item =>
-      item.nombre.toLowerCase().includes(filterText) || item.dia.toLowerCase().includes(filterText) || item.horario.toLowerCase().includes(filterText)
-    );
-  }
+
+    return items.filter(item => {
+      let nombreMatch = item.nombre?.toLowerCase().includes(filterText) || false;
+      
+      // Logging para debug
+      if (!item.dia) {
+        console.log("Item sin dia:", item);
+      }
+      
+      let diaMatch = item.dia?.toString().toLowerCase().includes(filterText) || false;
+
+      // Logging para debug
+      if (item.field && !item.field.name) {
+        console.log("Item con field pero sin name:", item);
+      }
+
+      let horarioMatch = item.horario?.toLowerCase().includes(filterText) || false;
+      let fieldMatch = item.field?.name?.toLowerCase().includes(filterText) || false;
+
+      return nombreMatch || diaMatch || horarioMatch || fieldMatch;
+    });
+}
 }
