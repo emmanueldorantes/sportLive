@@ -2,7 +2,7 @@
     <div class="table-responsive">
         <div class="input-group">
             <span class="input-group-addon"><i class="icon-filter3"></i></span>
-            <input type="text" class="form-control" placeholder="Filtrar los torneos"
+            <input type="text" class="form-control" placeholder="Filtrar por Cancha, Torneo, Equipo, Status"
                 [(ngModel)]="filtroNombre">
         </div>
         <table class="table table-striped">
@@ -12,7 +12,7 @@
                     <th>Cancha</th>
                     <th>Torneo</th>
                     <th>Equipo</th>
-                    <th>status</th>
+                    <th>Status</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -23,7 +23,6 @@
                     <td>{{ team.field.nombre}}</td>
                     <td>{{ team.tournament.nombre}}</td>
                     <td>{{ team.nombre}}</td>
-                    <td>{{ team.status}}</td>
                     <td>
                         <mat-slide-toggle id="tournamentStatus{{team._id}}" (change)="changeStatus(team._id, team.status)"
                             [(ngModel)]="team.status">

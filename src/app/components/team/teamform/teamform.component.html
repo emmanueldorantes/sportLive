@@ -2,17 +2,18 @@
     <div class="panel-body">
         <form #formTeam="ngForm" (ngSubmit)="onSubmit(formTeam)" enctype="multipart/form-data" novalidate>
             <div class="row">
+                <!-- Columna para los campos de entrada -->
                 <div class="col-md-6">
                     <div class="row">
                         <!-- Etiqueta del campo de selección -->
                         <label for="fielduser" class="form-label">Cancha:</label>
 
                         <!-- Campo de selección (desplegable) -->
-                        <select [(ngModel)]="field" id="fielduser" name="fielduser" class="form-control" required>
-                            <option *ngFor="let fieldItem of listfields" value="{{fieldItem._id}}">{{fieldItem.nombre}}
-                            </option>
-                        </select>
-
+                        <select id="field" name="field" [(ngModel)]="field" class="form-control" required
+                            (change)="changeFields()">
+                             <option value="">Seleccionar un opción</option>
+                            <option *ngFor="let field of fields" [value]="field._id">{{field.nombre}}</option>
+                         </select>
                         <!-- Mensaje de error que se mostrará si el campo está vacío -->
                         <div *ngIf="!field" class="error">Este campo es obligatorio.</div>
                     </div>
@@ -21,11 +22,12 @@
                         <label for="tournamentuser" class="form-label">Torneo:</label>
 
                         <!-- Campo de selección (desplegable) -->
-                        <select [(ngModel)]="tournament" id="tournamentuser" name="tournamentuser" class="form-control"
-                            required>
-                            <option *ngFor="let tournamentItem of listtournaments" value="{{tournamentItem._id}}">
-                                {{tournamentItem.nombre}}</option>
-                        </select>
+                        <select id="tournament" name="tournament" [(ngModel)]="tournament" class="form-control"
+                                required>
+                                <option value="">Seleccionar un opción</option>
+                                <option *ngFor="let tournament of tournaments" [value]="tournament._id">
+                                    {{tournament.nombre}}</option>
+                            </select>
 
                         <!-- Mensaje de error que se mostrará si el campo está vacío -->
                         <div *ngIf="!tournament" class="error">Este campo es obligatorio.</div>
@@ -44,6 +46,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- Columna para la imagen predeterminada -->
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-12 col-md-12 text-center">
@@ -59,3 +62,4 @@
             </div>
         </form>
     </div>
+</div>

@@ -20,6 +20,8 @@ export class TeamformComponent implements OnInit {
   teamform: FormGroup
   tournament: any;
   field: any;
+  fields: any = [];
+  tournaments: any = [];
   listfields: any;
   listtournaments: any;
   isCreating: boolean = true;
@@ -28,6 +30,7 @@ export class TeamformComponent implements OnInit {
   variables: any;
   teamId : any = '';
   nombre: string;
+  disabledTournament: boolean = true;
   displayedImageUrl: string;
   file: any;
   selectedFile: File | null = null;
@@ -63,9 +66,6 @@ export class TeamformComponent implements OnInit {
   }
 
   async ngOnInit() {
-    
-    this.listfields = await this.getFields();
-    this.listtournaments = await this.getTournaments();
     this.route.params.subscribe(async params => {
       this.teamId = params['id'];
       this.isCreating = !this.teamId; 
@@ -73,15 +73,74 @@ export class TeamformComponent implements OnInit {
         this.titleService.setTitle('Equipo  / Editar Equipo');
         let datateam = await this.getTeam();
          console.log(datateam)
+         this.tournament = datateam.tournament._id;
+         this.field = datateam.field._id;
+         await this.changeFields();
         this.nombre = datateam.nombre;
-        this.field = datateam.field._id;
-        this.tournament = datateam.tournament._id;
         this.displayedImageUrl =  datateam.photo ? `${environment.fileManager}/${datateam.photo}` : `${environment.fileManager}/user_default.png`;
       } else {
         this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
       }
     });
-  }
+  
+
+  this.fields = await this.getFields();
+    }
+  
+    async getFields(): Promise<any> {
+      this.setQryFields();
+      let response = await this.graphqlService.post(this.query, this.variables);
+      return response.data.getFields;
+    }
+  
+    setQryFields() {
+      this.query = `
+      query {
+        getFields(filters: {}){
+            _id,
+            nombre
+        }
+      }`;
+      this.variables = {
+        module: 'field'
+      };
+    }
+  
+    async changeFields(): Promise<any> {
+      console.log('Nuevo valor de this.field:', this.field);
+      if (this.field) {
+        this.disabledTournament = false;
+        this.tournaments = await this.getTournaments();
+      } else {
+        this.disabledTournament = true;
+        this.tournaments = [];
+        this.tournament = "";
+      };
+    }
+      async getTournaments(): Promise<any> {
+        this.setQryTournaments();
+        let response = await this.graphqlService.post(this.query, this.variables);
+        return response.data.getTournaments;
+      }
+    
+      setQryTournaments() {
+        this.query = `
+        query($idField: ID!) {
+          getTournaments(filters: {
+            qry: {
+              field: $idField
+            }
+          }){
+              _id,
+              nombre
+          }
+        }`;
+        this.variables = {
+          module: 'tournaments',
+          idField: this.field
+        };
+      }
+    
   onSubmit(formTeam: NgForm) {
     if (formTeam.valid) {
     
@@ -100,18 +159,7 @@ export class TeamformComponent implements OnInit {
       });
     }
   }
-  async getFields() {
-    this.setQueryFields();
-    let response = await this.graphqlService.post(this.query, this.variables);
-    return response.data.getFields;
-  }
-
-  async getTournaments(){
-    this.setQueryTournaments();
-    let response = await this.graphqlService.post(this.query, this.variables);
-    return response.data.getTournaments;
-  }
-
+  
   async updateTeam() {
     let response = await this.graphqlService.post(this.mutation, this.variables);
     const miSnackBar = this.snakBar.open("El equipo ha sido modificado correctamente.", "Aceptar", {

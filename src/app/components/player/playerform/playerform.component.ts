@@ -57,6 +57,7 @@ export class PlayerformComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
+    private imageCompress: NgxImageCompressService,
     ) {
 
       this.titleService.setTitle('Jugador  / Nuevo Jugador');
@@ -72,7 +73,6 @@ export class PlayerformComponent implements OnInit {
       gender:['', Validators.required],
     });
 
-    this.titleService.setTitle('Jugador / Alta de Jugador');
     this.team= '';
     this.tournament= '';
     this.field= '';
@@ -89,20 +89,20 @@ export class PlayerformComponent implements OnInit {
         this.playerId = params['id'];
         this.isCreating = !this.playerId; 
         if (!this.isCreating) {
-          this.titleService.setTitle('Torneo  / Editar Jugador');
+          this.titleService.setTitle('Jugador  / Editar Jugador');
           let dataplayer = await this.getPlayer();
            console.log(dataplayer)
            this.tournament = dataplayer.tournament._id;
            this.field = dataplayer.field._id;
            this.team = dataplayer.team._id;
            await this.changeFields();
-           await this.changeTournament();
-          
+           await this.changeTournament();        
           this.nombre = dataplayer.nombre;
           this.apellidos = dataplayer.apellidos;
           this.gender = dataplayer.gender;
           this.celular = dataplayer.celular;
           this.correo = dataplayer.correo;
+          this.displayedImageUrl =  dataplayer.photo ? `${environment.fileManager}/${dataplayer.photo}` : `${environment.fileManager}/user_default.png`;
         } else {
           this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
         }
@@ -220,7 +220,7 @@ export class PlayerformComponent implements OnInit {
     }
     async updatePlayer() {
       let response = await this.graphqlService.post(this.mutation, this.variables);
-      const miSnackBar = this.snakBar.open("El equipo ha sido modificado correctamente.", "Aceptar", {
+      const miSnackBar = this.snakBar.open("El jugador ha sido modificado correctamente.", "Aceptar", {
         duration: 0,
         horizontalPosition: "center",
         verticalPosition: "bottom"
@@ -237,17 +237,17 @@ export class PlayerformComponent implements OnInit {
           }
         }
       miSnackBar.onAction().subscribe(() => {
-        this.router.navigateByUrl('/home/teamlist');
+        this.router.navigateByUrl('/home/playerlist');
       });
     }
     async savePlayer() {
       try {
         let response = await this.graphqlService.post(this.mutation, this.variables);
-        let teamDocument = response.data.createPlayer;
+        let playerDocument = response.data.createPlayer;
         const dialog = this.dialog.open(ConfirmDialogComponent, {
           width: '390px',
           data: {
-            message: `El equipo ${teamDocument.nombre} ha sido creado correctamente.`,
+            message: `El jugador ${playerDocument.nombre} ha sido creado correctamente.`,
             question: "¿Deseas agregar otro Usuario?",
             ok: "Si",
             cancel: "No"
@@ -256,12 +256,12 @@ export class PlayerformComponent implements OnInit {
         if (this.selectedFile) {
           const resizedImage = await this.resizeImage(this.selectedFile);
            const formData = new FormData();
-           console.log (`${teamDocument._id}_${this.selectedFile?.name}`)
-           formData.append('image', resizedImage, `${teamDocument._id}_${this.selectedFile?.name}`);
+           console.log (`${playerDocument._id}_${this.selectedFile?.name}`)
+           formData.append('image', resizedImage, `${playerDocument._id}_${this.selectedFile?.name}`);
            let responseUpload = await this.uploadService.post(formData);
             if (responseUpload && responseUpload.ok) {
-            this.displayedImageUrl = `${environment.fileManager}/image-${teamDocument._id}_${this.selectedFile?.name}`;
-            this.setMutationUpdateImage(teamDocument._id);
+            this.displayedImageUrl = `${environment.fileManager}/image-${playerDocument._id}_${this.selectedFile?.name}`;
+            this.setMutationUpdateImage(playerDocument._id);
             await this.graphqlService.post(this.mutation, this.variables);
             }
           }
@@ -270,7 +270,7 @@ export class PlayerformComponent implements OnInit {
             this.cleanForm();
             
           } else {
-            this.router.navigateByUrl('/home/teamlist');
+            this.router.navigateByUrl('/home/playerlist');
           }
         });
       } catch (error) {
@@ -418,7 +418,7 @@ export class PlayerformComponent implements OnInit {
       $id: ID!,
       $photo: String
     ) {
-      updateTeam(_id: $id, input: {
+      updatePlayer(_id: $id, input: {
         photo: $photo        
       }){
           _id
