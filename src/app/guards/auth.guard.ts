@@ -4,7 +4,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { inject } from "@angular/core";
 
 export const authGuard: CanActivateFn = (route, state) => {
-  let isAuthenticated = true;
+  let isAuthenticated = false;
   // let currentUser = new User();
   // inject(AuthenticationService).currentUser.subscribe( data => {
   //   currentUser = data

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { MenuComponent } from '../menu/menu.component';
+import{LoginComponent}from '../login/login.component';
 import { PerfilFormComponent } from '../perfiles/perfil-form/perfil-form.component';
 import { ListaComponent } from '../perfiles/lista/lista.component';
 import { UsuarioFormComponent } from '../usuarios/usuario-form/usuario-form.component';
@@ -31,6 +32,7 @@ import { CalendarioComponent } from '../programar/calendario/calendario.componen
 @NgModule({
   declarations: [
     HomeComponent,
+    LoginComponent,
     MenuComponent,
     PerfilFormComponent,
     ListaComponent,
@@ -61,6 +63,7 @@ import { CalendarioComponent } from '../programar/calendario/calendario.componen
     NgxPaginationModule,
     ReactiveFormsModule,
     ReactiveFormsModule,
+    
   ]
 })
 export class HomeModule { }
