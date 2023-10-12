@@ -27,6 +27,7 @@ import { PlayerformComponent } from '../player/playerform/playerform.component';
 import { PlayerlistComponent } from '../player/playerlist/playerlist.component';
 import { JornadasComponent } from '../programar/jornadas/jornadas.component';
 import { CalendarioComponent } from '../programar/calendario/calendario.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -57,6 +58,7 @@ import { CalendarioComponent } from '../programar/calendario/calendario.componen
   imports: [
     MaterialModule,
     CommonModule,
+    HttpClientModule,
     HomeRoutingModule,
     FormsModule,
     ReactiveFormsModule,
