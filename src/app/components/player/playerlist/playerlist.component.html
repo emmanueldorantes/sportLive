@@ -16,6 +16,7 @@
                     <th>Cancha</th>
                     <th>Torneo</th>
                     <th>Equipo</th>
+                    <th>Perfil</th>
                     <th>Nombre</th>
                     <th>Apellidos</th>
                     <th>Status</th>
@@ -28,8 +29,9 @@
                     <td>{{ player.field?.nombre}}</td>
                     <td>{{ player.tournament?.nombre}}</td>
                     <td>{{ player.team?.nombre}}</td>
-                    <td>{{ player.nombre}}</td>
-                    <td>{{ player.apellidos}}</td>
+                    <td>{{ player.profile?.name}}</td>
+                    <td>{{ player.name}}</td>
+                    <td>{{ player.lastName}}</td>
                     <td>
                         <mat-slide-toggle id="playerStatus{{player._id}}" (change)="changeStatus(player._id, player.status)"
                             [(ngModel)]="player.status">

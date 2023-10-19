@@ -3,6 +3,7 @@ import { NgForm, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { GraphqlService } from '../../services/graphql.service';
+import { AuthenticationService } from '../../services/authentication.service'; // Asegúrate de importar este servicio
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private graphqlService: GraphqlService,
     private snakBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private authService: AuthenticationService // Inyecta el servicio de autenticación aquí
   ) { 
     this.loginform = this.fb.group({
       email: ['', Validators.required],
@@ -48,7 +50,7 @@ export class LoginComponent implements OnInit {
     `;
 
     const variables = {
-      module: 'users', // Agregamos la propiedad module
+      module: 'users',
       email: this.email,
       password: this.password,
     };
@@ -57,11 +59,10 @@ export class LoginComponent implements OnInit {
       if (response && response.data && response.data.loginEmail) {
         const authToken = response.data.loginEmail;
         localStorage.setItem('authToken', authToken);
-    
-        // Redirige al usuario después de establecer el token
-        this.router.navigate(['/home']); // Utiliza navigate en lugar de navigateByUrl
+        
+        this.authService.isAuthenticated = true; // Establece el usuario como autenticado
+        this.router.navigate(['/home'], { replaceUrl: true });
       } else {
-        // Mostrar mensaje de error genérico
         this.snakBar.open("Error durante el inicio de sesión. Intente nuevamente.", "Aceptar", {
           duration: 0,
           horizontalPosition: "center",
@@ -76,6 +77,5 @@ export class LoginComponent implements OnInit {
         verticalPosition: "bottom"
       });
     });
-    
   }
 }

@@ -46,6 +46,11 @@ export class PlayerformComponent implements OnInit {
   query: string;
   matches: any;
   disabledTeam: boolean = true;
+  profile: string;
+  name: string; 
+  lastName: string; 
+  email: string;
+  mobile: string;
 
   constructor(
     
@@ -63,23 +68,23 @@ export class PlayerformComponent implements OnInit {
       this.titleService.setTitle('Jugador  / Nuevo Jugador');
     this.srcImage = "../../../../assets/images/user_default.png";
     this.playerForm = this.fb.group({
-      nombre: ['', Validators.required],
+      name : ['', Validators.required],
       field:['', Validators.required],
       tournament:['', Validators.required],
       team:['', Validators.required],
-      apellidos:['', Validators.required],
-      correo:['', Validators.required],
-      celular:['', Validators.required],
+      lastName:['', Validators.required],
+      email:['', Validators.required],
+      mobile:['', Validators.required],
       gender:['', Validators.required],
     });
 
     this.team= '';
     this.tournament= '';
     this.field= '';
-    this.nombre = '';
-    this.apellidos  = '';
-    this.correo = '';
-    this.celular = '';
+    this.name = '';
+    this.lastName  = '';
+    this.email = '';
+    this.mobile = '';
     this.gender = '';
     this.mutation = "";
     }
@@ -90,18 +95,18 @@ export class PlayerformComponent implements OnInit {
         this.isCreating = !this.playerId; 
         if (!this.isCreating) {
           this.titleService.setTitle('Jugador  / Editar Jugador');
-          let dataplayer = await this.getPlayer();
+          let dataplayer = await this.getUser();
            console.log(dataplayer)
            this.tournament = dataplayer.tournament._id;
            this.field = dataplayer.field._id;
            this.team = dataplayer.team._id;
            await this.changeFields();
            await this.changeTournament();        
-          this.nombre = dataplayer.nombre;
-          this.apellidos = dataplayer.apellidos;
+          this.name = dataplayer.name;
+          this.lastName = dataplayer.lastName;
           this.gender = dataplayer.gender;
-          this.celular = dataplayer.celular;
-          this.correo = dataplayer.correo;
+          this.mobile = dataplayer.mobile;
+          this.email = dataplayer.email;
           this.displayedImageUrl =  dataplayer.photo ? `${environment.fileManager}/${dataplayer.photo}` : `${environment.fileManager}/user_default.png`;
         } else {
           this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
@@ -243,11 +248,11 @@ export class PlayerformComponent implements OnInit {
     async savePlayer() {
       try {
         let response = await this.graphqlService.post(this.mutation, this.variables);
-        let playerDocument = response.data.createPlayer;
+        let playerDocument = response.data.createUser;
         const dialog = this.dialog.open(ConfirmDialogComponent, {
           width: '390px',
           data: {
-            message: `El jugador ${playerDocument.nombre} ha sido creado correctamente.`,
+            message: `El jugador ${playerDocument.name} ha sido creado correctamente.`,
             question: "¿Deseas agregar otro Usuario?",
             ok: "Si",
             cancel: "No"
@@ -278,82 +283,90 @@ export class PlayerformComponent implements OnInit {
       }
       
     }
-    async getPlayer() {
+    async getUser() {
       this.setQueryPlayers();
       let response = await this.graphqlService.post(this.query, this.variables);
-      return response.data.getPlayer;
+      return response.data.getUser;
     }
   
     cleanForm() {
       this.field=''
       this.tournament='';
       this.team='';
-      this.nombre = '';
-      this.apellidos = '';
-      this.correo = '';
-      this.celular = '';
+      this.name = '';
+      this.lastName = '';
+      this.email = '';
+      this.mobile = '';
       this.gender = '';
       this.displayedImageUrl = `${environment.fileManager}/user_default.png`;
     }
   
     setMutationInsert() {
       this.mutation = `
-      mutation CreatePlayer(
-        $field: ID!,
-        $tournament: ID!,
-        $team: ID!,
-        $nombre: String!,
-        $apellidos: String!,
-        $correo: String!,
-        $celular: String!,
-        $gender: String!
-      ) {
-        createPlayer(input: {
-          field: $field,
-          tournament: $tournament,
-          team: $team,
-          nombre: $nombre,
-          apellidos: $apellidos,
-          correo: $correo,
-          celular: $celular,
-          gender: $gender
-        }) {
-          _id,
-          nombre
-        }
+        mutation(
+          $field: ID!,
+          $profile: ID!,
+          $tournament: ID!,
+          $team: ID!,
+          $name: String!, 
+          $lastName: String, 
+          $email: String!, 
+          $mobile: String!, 
+          $gender: String!) {
+          createUser(input: { 
+            field: $field,
+            profile: $profile,
+            tournament: $tournament,
+            team: $team,
+            name: $name, 
+            lastName: $lastName, 
+            email: $email, 
+            mobile: $mobile, 
+            gender: $gender
+          }){
+              _id,
+              name
+          }
       }`;
+    
+      this.profile = '6526c8ca9ced4c6a5979fa02';  // Asigna el valor automáticamente
+    
       this.variables = {
-        module: 'players',
+        module: 'users',
+        profile: this.profile,
         field: this.field,
         tournament : this.tournament,
         team: this.team,
-        nombre: this.nombre,
-        apellidos: this.apellidos,
-        correo: this.correo,
-        celular: this.celular,
+        name: this.name,
+        lastName: this.lastName,
+        email: this.email,
+        mobile: `${this.mobile}`,
         gender: this.gender
       };
-  
     }
-  
+    
       setQueryPlayers() {
         this.query = `
         query($id: ID!) {
-          getPlayer(_id: $id, filters: {
+          getUser(_id: $id, filters: {
             inner: [
               { path: "field" }
+              { path: "profile" }
               { path: "tournament" }
               { path: "team" }
             ]
           }) {
             _id,
-            nombre,
-            apellidos,
-            correo,
-            celular,
+            name,
+            lastName,
+            email,
+            mobile,
             gender,
             photo,
             field {
+              _id
+            },
+            profile {
               _id
             },
             tournament {
@@ -365,7 +378,7 @@ export class PlayerformComponent implements OnInit {
           }
         }`;
         this.variables = {
-          module: 'players',
+          module: 'users',
           id: this.playerId
         };
       } 
@@ -376,37 +389,40 @@ export class PlayerformComponent implements OnInit {
             $field: ID!,
               $tournament: ID!,
               $team: ID!,
-              $nombre: String!,
-              $apellidos: String!,
-              $correo: String!,
-              $celular: String!,
+              $profile: ID!,
+              $name: String!,
+              $lastName: String!,
+              $email: String!,
+              $mobile: String!,
               $gender: String!
           ) {
-            updatePlayer(_id: $id, input: {
+            updateUser(_id: $id, input: {
                 field: $field,
                 tournament: $tournament,
+                profile: $profile,
                 team: $team,
-                nombre: $nombre,
-                apellidos: $apellidos,
-                correo: $correo,
-                celular: $celular,
+                name: $name,
+                lastName: $lastName,
+                email: $email,
+                mobile: $mobile,
                 gender: $gender
             }) {
               _id,
-              nombre
+              name
             }
           }
         `;
         this.variables = {
-          module: 'players',
+          module: 'users',
           id: this.playerId,
           field: this.field,
+          profile: this.profile,
           tournament : this.tournament,
           team: this.team,
-          nombre: this.nombre,
-          apellidos: this.apellidos,
-          correo: this.correo,
-          celular: this.celular,
+          name: this.name,
+          lastName: this.lastName,
+          email: this.email,
+          mobile: this.mobile,
           gender: this.gender
           
         };
@@ -426,7 +442,7 @@ export class PlayerformComponent implements OnInit {
   }`;
   let image = id ? `image-${id}_${this.selectedFile?.name}` : `image-${this.playerId}_${this.selectedFile?.name}`;
     this.variables = {
-      module: 'players',
+      module: 'users',
       id: id || this.playerId,
       photo: image
     };

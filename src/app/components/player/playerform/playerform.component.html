@@ -43,16 +43,16 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-6">
-                        <label for="nombre" class="form-label">Nombre:</label>
-                        <input [(ngModel)]="nombre" type="text" class="form-control" id="nombre" name="nombre" required>
-                        <div *ngIf="!nombre" class="error">Este campo es obligatorio.</div>
+                        <label for="name " class="form-label">Nombre:</label>
+                        <input [(ngModel)]="name" type="text" class="form-control" id="name" name="name" required>
+                        <div *ngIf="!name" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-6">
-                        <label for="apellidos" class="form-label">Apellidos:</label>
-                        <input [(ngModel)]="apellidos" type="text" class="form-control" id="apellidos" name="apellidos">
-                        <div *ngIf="!apellidos" class="error">Este campo es obligatorio.</div>
+                        <label for="lastName" class="form-label">Apellidos:</label>
+                        <input [(ngModel)]="lastName" type="text" class="form-control" id="lastName" name="lastName">
+                        <div *ngIf="!lastName" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
             </div>
@@ -60,15 +60,15 @@
             <div class="row">
                 <div class="col-md-6">
                     <label for="correouser" class="form-label">Correo</label>
-                    <input [(ngModel)]="correo" type="email" class="form-control" id="correo" name="correo" required>
-                    <div *ngIf="!correo" class="error">Este campo es obligatorio.</div>
+                    <input [(ngModel)]="email" type="email" class="form-control" id="email" name="email" required>
+                    <div *ngIf="!email" class="error">Este campo es obligatorio.</div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-6">
                         <label for="celularuser" class="form-label">Celular:</label>
-                        <input [(ngModel)]="celular" type="text" class="form-control" id="celular" name="celular"
+                        <input [(ngModel)]="mobile" type="text" class="form-control" id="mobile" name="mobile"
                             required>
-                        <div *ngIf="!celular" class="error">Este campo es obligatorio.</div>
+                        <div *ngIf="!mobile" class="error">Este campo es obligatorio.</div>
                     </div>
                 </div>
             </div>

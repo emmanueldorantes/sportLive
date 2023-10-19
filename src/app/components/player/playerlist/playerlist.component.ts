@@ -47,16 +47,18 @@ export class PlayerlistComponent {
     
   async ngOnInit() {
   this.setQuery();
-    const playersRows = await this.getPlayers();
+    const playersRows = await this.getUsers();
     this.players = playersRows;
+    console.log(this.players);
     let scriptElement1 = document.createElement('script');
     scriptElement1.src = "../../../assets/js/pages/form_checkboxes_radios.js";
     document.body.appendChild(scriptElement1);
   }
 
-  async getPlayers(): Promise<any> {
+  async getUsers(): Promise<any> {
+    
     let response = await this.graphqlService.post(this.query, this.variables);
-    return response.data.getPlayers;
+    return response.data.getUsers;
   }
 
   setQueryFields() {
@@ -100,19 +102,27 @@ export class PlayerlistComponent {
       module: 'tournaments'
     };
   }
-  
-  setQuery() {
+  setQueryProfiles() {
     this.query = `
     query {
-      getPlayers(filters: {
-        qry: {
-        },
-        inner: [
-          { path: "field" },
-          { path: "tournament" },
-          { path: "team" }
-        ]
+      getProfiles(filters: {
       }){
+          _id,
+          name          
+      }
+    }`;
+    this.variables = {
+      module: 'profiles'
+    };
+  }
+  setQuery() {
+    this.query = `
+    query($profileIds: [ID!]) {
+      getUsers(profileIds: $profileIds){
+        profile {
+          _id,
+          name
+        },
         field {
           _id,
           nombre
@@ -126,29 +136,30 @@ export class PlayerlistComponent {
           nombre
         },
         _id,
-        nombre, 
+        name, 
         status,
-        apellidos,
+        lastName,
         autoincrement
       }
     }`;
-
     this.variables = {
-        module: 'players'
+        module: 'users',
+        profileIds: ["6526c8ca9ced4c6a5979fa02", "6526c81b9ced4c6a5979f9bc"]
     };
 }
 
+  
   setUpdateStatus(id: string, status: boolean) {
     this.mutation = `
       mutation($id: ID!, $status: Boolean) {
-        updatePlayer(_id: $id, input: {
+        updateUser(_id: $id, input: {
           status: $status
         }){
             _id
         }
     }`;
     this.variables = {
-      module: 'players',
+      module: 'users',
       id,
       status
     };
@@ -157,14 +168,14 @@ export class PlayerlistComponent {
   setMutationDelete(id: string) {
     this.mutation = `
       mutation($id: ID!) {
-        updatePlayer(_id: $id, input: {
+        updateUser(_id: $id, input: {
           delete: true
         }){
             _id
         }
     }`;
     this.variables = {
-      module: 'players',
+      module: 'users',
       id
     };
   }
@@ -173,11 +184,11 @@ export class PlayerlistComponent {
     this.router.navigate(['/home/playerform', id]);
   }
 
-  eliminarJugador(id: string, nombre: string) {
+  eliminarJugador(id: string, name: string) {
     const dialog = this.dialog.open(ConfirmDialogComponent, {
       width: '390px',
       data: {
-        message: `¿Confirma que desea eliminar el jugador ${nombre}?`,
+        message: `¿Confirma que desea eliminar el jugador ${name}?`,
         ok: "Si",
         cancel: "No"
       }

@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { TitleService } from '../../services/title.service';
 import { Router } from '@angular/router';
+import { AuthenticationService } from '../../services/authentication.service'; // Importa tu AuthenticationService
 
 @Component({
   selector: 'app-home',
@@ -14,7 +15,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private titleService: TitleService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private authService: AuthenticationService  // Inyecta el AuthenticationService
   ) {
     this.title = "Home / Estadisticas";
   }
@@ -28,9 +30,10 @@ export class HomeComponent implements OnInit {
     let scriptElement = document.createElement('script');
     scriptElement.src = "../../../assets/js/core/app.js";
     document.body.appendChild(scriptElement);
-    
-    // let scriptElement2 = document.createElement('script');
-    // scriptElement2.src = "../../../assets/js/pages/extra_fullcalendar.js";
-    // document.body.appendChild(scriptElement2);
+  }
+
+  cerrarSesion(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']); // Redirige al usuario a la página de login
   }
 }
