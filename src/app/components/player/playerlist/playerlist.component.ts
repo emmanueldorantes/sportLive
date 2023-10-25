@@ -46,15 +46,16 @@ export class PlayerlistComponent {
   }
     
   async ngOnInit() {
-  this.setQuery();
-    const playersRows = await this.getUsers();
-    this.players = playersRows;
+    this.setQueryUsersByProfiles();
+    const users = await this.getUsers();
+    this.players = users;
     console.log(this.players);
     let scriptElement1 = document.createElement('script');
     scriptElement1.src = "../../../assets/js/pages/form_checkboxes_radios.js";
     document.body.appendChild(scriptElement1);
   }
-
+  
+  
   async getUsers(): Promise<any> {
     
     let response = await this.graphqlService.post(this.query, this.variables);
@@ -115,40 +116,49 @@ export class PlayerlistComponent {
       module: 'profiles'
     };
   }
-  setQuery() {
+  
+  setQueryUsersByProfiles() {
     this.query = `
-    query($profileIds: [ID!]) {
-      getUsers(profileIds: $profileIds){
-        profile {
-          _id,
-          name
-        },
+      query {
+        getUsers(filters: { qry: {profile: ["6526c81b9ced4c6a5979f9bc", "6526c8ca9ced4c6a5979fa02"]  }, 
+        inner: [
+          { path: "profile" },
+          { path: "team" },
+          { path: "tournament" },
+          { path: "field" }
+        ]
+      }) 
+      {
         field {
-          _id,
+          _id
           nombre
         },
         tournament {
-          _id,
+          _id
           nombre
         },
         team {
-          _id,
+          _id
           nombre
         },
-        _id,
-        name, 
-        status,
-        lastName,
-        autoincrement
+          profile {
+            _id
+            name
+          },
+          _id,
+          name,
+          lastName,
+          status,
+          autoincrement
+        }
       }
-    }`;
+    `;
     this.variables = {
-        module: 'users',
-        profileIds: ["6526c8ca9ced4c6a5979fa02", "6526c81b9ced4c6a5979f9bc"]
+      module: 'users'
     };
-}
-
+  }
   
+
   setUpdateStatus(id: string, status: boolean) {
     this.mutation = `
       mutation($id: ID!, $status: Boolean) {

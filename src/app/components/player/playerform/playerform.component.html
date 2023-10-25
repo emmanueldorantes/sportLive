@@ -39,6 +39,24 @@
                             </select>
                     <div *ngIf="!team" class="error">Este campo es obligatorio.</div>
                 </div>
+                <!--... código anterior ...-->
+
+<div class="row">
+    <div class="col-12 col-md-12">
+        <label for="posicion" class="form-label">Posición:</label>
+        <select id="posicion" name="posicion" [(ngModel)]="posicion" class="form-control" required>
+            <option value="">Seleccionar un opción</option>
+            <option value="portero">Portero</option>
+            <option value="delantero">Delantero</option>
+            <option value="defensa">Defensa</option>
+            <option value="medio">Medio</option>
+        </select>
+        <div *ngIf="!posicion" class="error">Este campo es obligatorio.</div>
+    </div>
+</div>
+
+<!--... código siguiente ...-->
+
             </div>
             <div class="row">
                 <div class="col-md-6">
@@ -72,9 +90,9 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
-
+            </div>
+            
                 <div class="col-md-6">
                     <div class="row">
                         <label class="form-label">Genero</label>
@@ -83,7 +101,7 @@
                             <mat-radio-button value="femenino">Femenino</mat-radio-button>
                         </mat-radio-group>
                         <div *ngIf="!gender" class="error">Este campo es obligatorio.</div>
-                    </div>
+                                     
                     <div class="row">
                         <div class="col-12 col-md-12">
                             <div class="input-group mb-3">

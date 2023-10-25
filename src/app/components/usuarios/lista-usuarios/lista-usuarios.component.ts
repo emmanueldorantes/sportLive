@@ -59,7 +59,9 @@ export class ListaUsuariosComponent {
             { path: "state" },
             { path: "profile" }
           ]
-        }){
+        })
+        
+        {
             profile {
               _id,
               name

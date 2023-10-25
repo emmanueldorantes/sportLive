@@ -32,6 +32,7 @@ export class PlayerformComponent implements OnInit {
   correo: string;
   celular: string;
   gender: string;
+  posicion: string;
   file: any;
   selectedFile: File | null = null;
   srcImage: string;
@@ -434,7 +435,7 @@ export class PlayerformComponent implements OnInit {
       $id: ID!,
       $photo: String
     ) {
-      updatePlayer(_id: $id, input: {
+      updateUser(_id: $id, input: {
         photo: $photo        
       }){
           _id
