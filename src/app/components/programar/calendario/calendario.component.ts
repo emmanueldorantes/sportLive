@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import * as moment from 'moment';
-import 'moment-timezone';
+import * as moment from 'moment-timezone';
+// import 'moment-timezone';
 declare var $: any;
 
 @Component({

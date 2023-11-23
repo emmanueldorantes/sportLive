@@ -7,8 +7,8 @@ import { NgForm } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
-import 'moment-timezone';
+import * as moment from 'moment-timezone';
+// import 'moment-timezone';
 
 @Component({
   selector: 'app-jornadas',
@@ -24,7 +24,7 @@ export class JornadasComponent implements OnInit {
   tournaments: any = [];
   disabledTournament: boolean = true;
   lap: any;
-  types: any = ["torneo", "semana", "mes"];
+  types: any = ["torneo", "mes"];
   type: string;
   laps: any = [
     { "value": "ida", "description": "Ida" },
@@ -34,6 +34,7 @@ export class JornadasComponent implements OnInit {
   mutation: string;
   variables: any;
   matches: any;
+  totalFileds: number;
 
   constructor(
     private snakBar: MatSnackBar,
@@ -52,6 +53,7 @@ export class JornadasComponent implements OnInit {
     this.teams = [];
     this.field = "";
     this.tournament = "";
+    this.totalFileds = 0;
   }
 
   async ngOnInit() {
@@ -67,7 +69,9 @@ export class JornadasComponent implements OnInit {
   setQryFields() {
     this.qry = `
     query {
-      getFields(filters: {}){
+      getFields(filters: {
+        status: true
+      }){
           _id,
           nombre
       }
@@ -81,6 +85,7 @@ export class JornadasComponent implements OnInit {
     if (this.field) {
       this.disabledTournament = false;
       this.tournaments = await this.getTournaments();
+      this.totalFileds = 3; //await this.getNumFileds();//?Aqui se va el numero total de canchas por bloque.      
       this.viewGridTeams();
     } else {
       this.disabledTournament = true;
@@ -88,6 +93,25 @@ export class JornadasComponent implements OnInit {
       this.tournament = "";
       this.teams = [];
     }
+  }
+
+  async getNumFileds(): Promise<any> {
+    this.setQuerynumberFileds();
+    let response = await this.graphqlService.post(this.qry, this.variables);
+    return response.data.getField;
+  }
+
+  setQuerynumberFileds() {
+    this.qry = `
+    query($id: ID!) {
+      getField(_id: $id, filters: {}){
+          nombre
+      }
+    }`;
+    this.variables = {
+      module: 'field',
+      id: this.field
+    };
   }
 
   async getTournaments(): Promise<any> {
@@ -101,7 +125,8 @@ export class JornadasComponent implements OnInit {
     query($idField: ID!) {
       getTournaments(filters: {
         qry: {
-          field: $idField
+          field: $idField,
+          status: true
         }
       }){
           _id,
@@ -185,50 +210,84 @@ export class JornadasComponent implements OnInit {
   }
 
   async matchScheduling() {
+    const { dia, horario, _id } = await this.getTournament();
+    let datesMatchs = this.getDays(dia);
+
     let teamsObjects: any = [];
+
     this.teams.forEach((rows: any) => {
       rows.row.forEach((team: any) => {
         teamsObjects.push(team);
       });
     });
+
+
     let totalTeams = teamsObjects.length;
     let totalMatchDays = teamsObjects.length;
-    const isAnOddNumber = totalTeams % 2;
-    if (isAnOddNumber) {
+    if (totalTeams % 2) {
       teamsObjects.push({ id: 0, "nombre": "descansa" });
       totalTeams = teamsObjects.length;
     }
-
     const halfTeams = totalTeams / 2;
 
-    // let teamsBlock1 = teamsObjects.slice(0, halfTeams);
-    // let teamsBlock2 = teamsObjects.slice(halfTeams, totalTeams);
-
     let matchday;
-    for (let i = 0; i < totalTeams - 1; i++) {
+    let numberFieldAsigment = 0;
+    for (let i = 0; i < totalTeams - 1; i++) { //? Ciclo que recorre el total de equipos
       matchday = i + 1;
       if (matchday < totalMatchDays) {
         let dataMatchDay = await this.getMatchDay("Activo", matchday);
-        // if (!dataMatchDay.length)
-        //   let docmentMatch = this.createMatchDay();
-      }
+        let matchDayDocuemnt = (!dataMatchDay.length) ? await this.createMatchDay(matchday) : dataMatchDay[0];
+        const IDMatchDay = matchDayDocuemnt._id;
 
-      for (let x = 0; x < halfTeams; x++) {
-        // this.matches = [];
-        // if (teamsObjects[x].id !== 0 && teamsObjects[(totalTeams - 1 - x)].id !== 0) {
-        //   let matchTeam = await this.getLastMatchTeam(teamsObjects[x].id, "Sin Jugar", "Activo");
-        //   if (!matchTeam.length) {
-        //     let indexTeamVs = totalTeams - 1 - x;
-        //     // this.addMatchObject(teamsObjects, x, indexTeamVs, matchday);
-        //   } else {
+        for (let x = 0; x < halfTeams; x++) {
+          let homeTeamID = teamsObjects[x].id;
+          let awayTeamID = teamsObjects[(totalTeams - 1 - x)].id;
+          if (homeTeamID !== 0 && awayTeamID !== 0) {
+            let matchTemasWithoutPlaying = await this.getMatch(IDMatchDay, homeTeamID, awayTeamID, 'Sin Jugar');
+            let matchTemasPlayed = await this.getMatch(IDMatchDay, homeTeamID, awayTeamID, 'Jugado');
 
-        //   }
-        // }
+            if (this.lap === 'ida') {
+              if (!matchTemasWithoutPlaying.length && !matchTemasPlayed.length) {
+                if (numberFieldAsigment === this.totalFileds)
+                  numberFieldAsigment = 0;
+
+                ++numberFieldAsigment;
+                let match = {
+                  homeTeam: homeTeamID,
+                  awayTeam: awayTeamID,
+                  status: "Sin Jugar",
+                  type: "Local",
+                  date: moment.tz('America/Mexico_city').format(),
+                  rescheduledMatch: false,
+                  fieldNumber: numberFieldAsigment
+                };
+                let updateMatchDay = await this.updateMatchDay(IDMatchDay, match);
+              }
+            } else {
+              //           if (!matchTemasWithoutPlaying.length && !matchTemasPlayed.length) {
+              //             let match = {
+              //               homeTeam: homeTeamID,
+              //               awayTeam: awayTeamID,
+              //               status: "Sin Jugar",
+              //               type: "Local",
+              //               date: moment.tz('America/Mexico_city').format(),
+              //               rescheduledMatch: false
+              //             };
+              //             await this.updateMatchDay(IDMatchDay, match);
+              //           } else {
+
+              //           }
+            }
+          } else {
+            //         let teamOnRestID = homeTeamID === 0 ? awayTeamID : homeTeamID;
+            //         await this.updateMatchDay(IDMatchDay, {
+            //           teamOnRest: teamOnRestID
+            //         });
+          }
+        }
       }
-      teamsObjects.splice(1, 0, teamsObjects.pop()!);
+      //   teamsObjects.splice(1, 0, teamsObjects.pop()!);
     }
-
-    // this.router.navigateByUrl('/home/calendario');
   }
 
   async getLastMatchTeam(team: any, status: string, statusMatch: string): Promise<any> {
@@ -273,15 +332,48 @@ export class JornadasComponent implements OnInit {
     };
   }
 
-  async getMatchDay(status: string, matchDay: any): Promise<any> {
-    this.setQueryMatchDay(status, matchDay);
+  async getMatch(IDMatchDay: any, homeTeam: any, awayTeam: any, status: string): Promise<any> {
+    this.setQueryMatch(IDMatchDay, homeTeam, awayTeam, status);
     let response = await this.graphqlService.post(this.qry, this.variables);
     return response.data.getMatchs;
   }
 
-  setQueryMatchDay(status: string, matchDay: number) {
+  setQueryMatch(IDMatchDay: any, homeTeam: any, awayTeam: any, status: string) {
     this.qry = `
-    query($tournament: ID!, $status: String!, $matchday: Int) {
+    query($id: ID, $homeTeam: ID, $awayTeam: ID, $status: String) {
+      getMatchs(filters: {
+        qry: {
+          _id: $id,
+          matchs: {
+            elemMatch: {
+              homeTeam: $homeTeam,
+              awayTeam: $awayTeam,
+              status: $status
+            }
+          }
+        }
+      }){
+          _id          
+      }
+    }`;
+    this.variables = {
+      module: 'matchs',
+      id: IDMatchDay,
+      homeTeam,
+      awayTeam,
+      status
+    };
+  }
+
+  async getMatchDay(statusTournament: string, matchDay: number): Promise<any> {
+    this.setQueryMatchDay(statusTournament, matchDay);
+    let response = await this.graphqlService.post(this.qry, this.variables);
+    return response.data.getMatchs;
+  }
+
+  setQueryMatchDay(status: string, matchday: number) {
+    this.qry = `
+    query($tournament: ID, $status: String, $matchday: Int) {
       getMatchs(filters: {
         qry: {
           tournament: $tournament,
@@ -289,19 +381,14 @@ export class JornadasComponent implements OnInit {
           matchday: $matchday                    
         }
       }){
-          _id,
-          matchs {
-            homeTeam,
-            type,
-            status
-          }
+          _id
       }
     }`;
     this.variables = {
       module: 'matchs',
       tournament: this.tournament,
       status,
-      matchDay
+      matchday
     };
   }
 
@@ -329,12 +416,113 @@ export class JornadasComponent implements OnInit {
       });
   }
 
-  async createMatchDay(): Promise<any> {
-    
+  async createMatchDay(matchDay: number): Promise<any> {
+    this.setQueryCreateMatchDay(matchDay);
+    let response = await this.graphqlService.post(this.mutation, this.variables);
+    return response.data.createMatch;
+  }
+
+  setQueryCreateMatchDay(matchday: number) {
+    this.mutation = `
+    mutation($tournament: ID, $matchday: Int, $status: String) {
+      createMatch(input: {
+          tournament: $tournament,
+          matchday: $matchday,
+          status: $status
+      }){
+          _id
+      }
+    }`;
+    this.variables = {
+      module: 'matchs',
+      tournament: this.tournament,
+      status: "Activo",
+      matchday
+    };
+  }
+
+  async updateMatchDay(idMatchDay: any, match: any) {
+    this.setQueryUpdateMatchDay(idMatchDay, match);
+    let response = await this.graphqlService.post(this.mutation, this.variables);
+    return response.data.updateMatch;
+  }
+
+  setQueryUpdateMatchDay(idMatchDay: any, match: any) {
+    this.mutation = `
+    mutation($idMatchDay: ID, $match: Any) {
+      updatePushMatch(_id: $idMatchDay, match: $match){
+          _id,
+          matchs {
+            homeTeam,
+            awayTeam,
+            matchResults,
+            status,
+            type,
+            date,
+            rescheduledMatch
+          }
+      }
+    }`;
+    this.variables = {
+      module: 'matchs',
+      idMatchDay,
+      match
+    };
+  }
+
+  setQueryCreate() {
+
   }
 
   saveGame(): void {
     console.log(this.matches)
   }
 
+  async getTournament(): Promise<any> {
+    this.setQueryTournament();
+    let response = await this.graphqlService.post(this.qry, this.variables);
+    return response.data.getTournament;
+  }
+
+  setQueryTournament() {
+    this.qry = `
+    query($id: ID!) {
+      getTournament(_id: $id, filters: {}) {
+        _id
+        dia
+        horario
+      }
+    }`;
+    this.variables = {
+      module: 'tournaments',
+      id: this.tournament
+    };
+  }
+
+  getDays(day: string): any {
+    const fechaActual = moment();
+    const proximosSabados: string[] = [];
+    let contador = 0;
+    try {
+      switch (day) {
+        case "lav":
+          break;
+        case "sabado":
+          while (contador < 4) {
+            fechaActual.add(1, 'day');
+            if (fechaActual.day() === 6) {
+              proximosSabados.push(fechaActual.format('YYYY-MM-DD'));
+              contador++;
+            }
+          }
+          return proximosSabados;
+          break;
+        case "domingo":
+          break;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    console.log(fechaActual);
+  }
 }
