@@ -210,17 +210,20 @@ export class JornadasComponent implements OnInit {
   }
 
   async matchScheduling() {
+    let timeFormat = moment.tz('America/Mexico_city');
     const { dia, horario, _id } = await this.getTournament();
     let datesMatchs = this.getDays(dia);
+    const time = await this.convertirHora12a24(horario);
+    timeFormat.set('hour', time.hour);
+    timeFormat.set('minutes', time.min);
+    timeFormat.set('second', 0);
 
     let teamsObjects: any = [];
-
     this.teams.forEach((rows: any) => {
       rows.row.forEach((team: any) => {
         teamsObjects.push(team);
       });
     });
-
 
     let totalTeams = teamsObjects.length;
     let totalMatchDays = teamsObjects.length;
@@ -242,26 +245,30 @@ export class JornadasComponent implements OnInit {
         for (let x = 0; x < halfTeams; x++) {
           let homeTeamID = teamsObjects[x].id;
           let awayTeamID = teamsObjects[(totalTeams - 1 - x)].id;
+
           if (homeTeamID !== 0 && awayTeamID !== 0) {
             let matchTemasWithoutPlaying = await this.getMatch(IDMatchDay, homeTeamID, awayTeamID, 'Sin Jugar');
             let matchTemasPlayed = await this.getMatch(IDMatchDay, homeTeamID, awayTeamID, 'Jugado');
 
             if (this.lap === 'ida') {
               if (!matchTemasWithoutPlaying.length && !matchTemasPlayed.length) {
-                if (numberFieldAsigment === this.totalFileds)
+                if (numberFieldAsigment === this.totalFileds) {
                   numberFieldAsigment = 0;
+                  timeFormat.add(1, 'h');
+                }
 
                 ++numberFieldAsigment;
+
                 let match = {
                   homeTeam: homeTeamID,
                   awayTeam: awayTeamID,
                   status: "Sin Jugar",
                   type: "Local",
-                  date: moment.tz('America/Mexico_city').format(),
+                  date: timeFormat.format(),
                   rescheduledMatch: false,
                   fieldNumber: numberFieldAsigment
                 };
-                let updateMatchDay = await this.updateMatchDay(IDMatchDay, match);
+                await this.updateMatchDay(IDMatchDay, match);
               }
             } else {
               //           if (!matchTemasWithoutPlaying.length && !matchTemasPlayed.length) {
@@ -279,14 +286,13 @@ export class JornadasComponent implements OnInit {
               //           }
             }
           } else {
-            //         let teamOnRestID = homeTeamID === 0 ? awayTeamID : homeTeamID;
-            //         await this.updateMatchDay(IDMatchDay, {
-            //           teamOnRest: teamOnRestID
-            //         });
+            const teamOnRest = homeTeamID === 0 ? awayTeamID : homeTeamID;
+            await this.updateMatch(IDMatchDay, teamOnRest);
           }
         }
       }
-      //   teamsObjects.splice(1, 0, teamsObjects.pop()!);
+      console.log("A")
+      teamsObjects.splice(1, 0, teamsObjects.pop()!);
     }
   }
 
@@ -441,6 +447,26 @@ export class JornadasComponent implements OnInit {
     };
   }
 
+  async updateMatch(idMatch: any, updateFields: any) {
+    this.setQueryUpdateMatch(idMatch, updateFields);
+    let response = await this.graphqlService.post(this.mutation, this.variables);
+    return response.data.updateMatch;
+  }
+
+  setQueryUpdateMatch(idMatch: any, updateField: any) {
+    this.mutation = `
+    mutation($idMatch: ID!, $updateField: ID) {
+      updateMatch(_id: $idMatch, input: { teamOnRest: $updateField }){
+          _id
+      }
+    }`;
+    this.variables = {
+      module: 'matchs',
+      idMatch,
+      updateField
+    };
+  }
+
   async updateMatchDay(idMatchDay: any, match: any) {
     this.setQueryUpdateMatchDay(idMatchDay, match);
     let response = await this.graphqlService.post(this.mutation, this.variables);
@@ -524,5 +550,28 @@ export class JornadasComponent implements OnInit {
       console.log(error);
     }
     console.log(fechaActual);
+  }
+
+  async convertirHora12a24(hour12: string): Promise<any | null> {
+    const hour12Regex = /^(1[0-2]|0?[1-9]):[0-5][0-9] (am|pm)$/i;
+
+    if (!hour12Regex.test(hour12))
+      return null;
+
+    const [, hour, minutes, period] = hour12.match(/(\d+):(\d+) (am|pm)/i) || [];
+
+    if (!hour || !period)
+      return null;
+
+    let hour24: number = parseInt(hour, 10);
+
+    if (period.toLowerCase() === 'pm' && hour24 !== 12)
+      hour24 += 12;
+    else if (period.toLowerCase() === 'am' && hour24 === 12)
+      hour24 = 0;
+
+    // const hour24Format = hour24.toString().padStart(2, '0') + ':' + minutes; //hour.match(/:(\d+)/)![1];
+
+    return { hour: hour24.toString().padStart(2, '0'), min: Number(minutes) };
   }
 }

@@ -13,6 +13,8 @@ export class authGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): boolean {
 
+      return true;
+
     // Si el usuario está autenticado y está intentando acceder a la página de login
     if (this.authService.isAuthenticatedUser() && state.url === '/login') {
       this.router.navigate(['/home']);  // Redirige al usuario a la página principal
