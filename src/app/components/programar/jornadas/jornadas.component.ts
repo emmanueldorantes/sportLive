@@ -235,9 +235,18 @@ export class JornadasComponent implements OnInit {
 
     let matchday;
     let numberFieldAsigment = 0;
+    let monthTemp;
+    let dayTemp;
     for (let i = 0; i < totalTeams - 1; i++) { //? Ciclo que recorre el total de equipos
       matchday = i + 1;
       if (matchday < totalMatchDays) {
+        if (this.type === "mes") {
+          monthTemp = datesMatchs[0].split("-")[1];
+          dayTemp = datesMatchs[0].split("-")[2];
+        }
+        console.log(monthTemp)
+        console.log(dayTemp)
+        
         let dataMatchDay = await this.getMatchDay("Activo", matchday);
         let matchDayDocuemnt = (!dataMatchDay.length) ? await this.createMatchDay(matchday) : dataMatchDay[0];
         const IDMatchDay = matchDayDocuemnt._id;
@@ -245,6 +254,8 @@ export class JornadasComponent implements OnInit {
         for (let x = 0; x < halfTeams; x++) {
           let homeTeamID = teamsObjects[x].id;
           let awayTeamID = teamsObjects[(totalTeams - 1 - x)].id;
+
+          
 
           if (homeTeamID !== 0 && awayTeamID !== 0) {
             let matchTemasWithoutPlaying = await this.getMatch(IDMatchDay, homeTeamID, awayTeamID, 'Sin Jugar');
@@ -479,8 +490,12 @@ export class JornadasComponent implements OnInit {
       updatePushMatch(_id: $idMatchDay, match: $match){
           _id,
           matchs {
-            homeTeam,
-            awayTeam,
+            homeTeam {
+              _id
+            },
+            awayTeam {
+              _id
+            },
             matchResults,
             status,
             type,
